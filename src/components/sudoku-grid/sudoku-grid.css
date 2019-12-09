@@ -1,0 +1,28 @@
+.sudoku-grid {
+    --line-color: #e7e7e7;
+    --line-color-bold: #333333;
+    --digit-color: #333333;
+    --line-width: 2;
+    --line-width-bold: 5;
+}
+
+.sudoku-grid > svg {
+    width: 90vw;
+    height: 90vh;
+    margin-top: 5vh;
+}
+
+.sudoku-grid .line {
+    stroke: var(--line-color);
+    stroke-width: var(--line-width);
+}
+
+.sudoku-grid .line-bold {
+    stroke: var(--line-color-bold);
+    stroke-width: var(--line-width-bold);
+}
+
+.cell text.digit {
+    fill: var(--digit-color);
+    font-family: Arial, Helvetica, sans-serif;
+}
