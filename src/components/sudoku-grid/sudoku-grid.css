@@ -2,6 +2,7 @@
     --line-color: #e7e7e7;
     --line-color-bold: #333333;
     --digit-color: #333333;
+    --selected-fill-color: #ffc38f;
     --line-width: 2;
     --line-width-bold: 5;
 }
@@ -20,6 +21,14 @@
 .sudoku-grid .line-bold {
     stroke: var(--line-color-bold);
     stroke-width: var(--line-width-bold);
+}
+
+.cell-bg {
+    fill: transparent;
+}
+
+.cell-bg.selected {
+    fill: var(--selected-fill-color);
 }
 
 .cell text.digit {

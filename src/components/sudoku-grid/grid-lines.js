@@ -13,7 +13,7 @@ function GridLines() {
         <g>
             <path className="line" d={fineLines}/>
             <path className="line-bold" d={boldLines}/>
-            <rect className="line-bold" x="50" y="50" width="900" height="900" fill="transparent"/>
+            <rect className="line-bold" x="50" y="50" width="900" height="900" fill="transparent" pointerEvents="none" />
         </g>
     );
 }
