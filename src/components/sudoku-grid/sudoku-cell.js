@@ -2,15 +2,15 @@ import React from 'react';
 
 function CellBackground({cell}) {
     const classes = [ 'cell-bg' ];
-    if (cell.selected) {
+    if (cell.get('selected')) {
         classes.push('selected');
     }
     return (
         <rect
             className={classes.join(' ')}
-            x={cell.x}
-            y={cell.y}
-            data-cell-index={cell.index}
+            x={cell.get('x')}
+            y={cell.get('y')}
+            data-cell-index={cell.get('index')}
             width="100"
             height="100"
         />
@@ -18,16 +18,16 @@ function CellBackground({cell}) {
 }
 
 function CellDigit({cell}) {
-    if (cell.hasDigit) {
+    if (cell.get('hasDigit')) {
         return (
             <text
                 className="digit"
-                x={cell.column * 100}
-                y={cell.row * 100 + 25}
+                x={cell.get('column') * 100}
+                y={cell.get('row') * 100 + 25}
                 fontSize="65"
                 textAnchor="middle"
             >
-                {cell.digit}
+                {cell.get('digit')}
             </text>
         )
     }
@@ -37,13 +37,14 @@ function CellDigit({cell}) {
 function CellCover({cell, eventHandler}) {
     return (
         <rect
-            x={cell.x}
-            y={cell.y}
-            data-cell-index={cell.index}
+            x={cell.get('x')}
+            y={cell.get('y')}
+            data-cell-index={cell.get('index')}
             width="100"
             height="100"
             fill="transparent"
             onMouseDown={eventHandler}
+            onMouseOver={eventHandler}
             pointerEvents="fill"
         />
     )
@@ -60,4 +61,4 @@ function SudokuCell({cell, eventHandler}) {
     );
 }
 
-export default SudokuCell;
+export default React.memo( SudokuCell );

@@ -6,7 +6,9 @@ import SudokuCell from './sudoku-cell';
 import GridLines from './grid-lines.js';
 
 function SudokuGrid({grid, eventHandler}) {
-    const cellContents = grid.mapCells((c) => <SudokuCell key={c.location} cell={c} eventHandler={eventHandler} />);
+    const cellContents = grid.cells.map((c) => {
+        return <SudokuCell key={c.get('location')} cell={c} eventHandler={eventHandler} />
+    });
     return (
         <div className="sudoku-grid">
             <svg version="1.1"

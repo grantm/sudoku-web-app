@@ -1,27 +1,26 @@
+import { List, Map, Range } from 'immutable';
 
-class Cell {
-    constructor (index, digit) {
-        this.index = index;
-        this.digit = digit || '0';
-        if (!this.digit.match(/^[0-9]$/)) {
-            throw new RangeError(
-                `Invalid Cell() value '${this.digit}', expected '0'..'9'`
-            );
-        }
-        this.row = Math.floor(index / 9) + 1;
-        this.column = (index % 9) + 1;
-        this.box = Math.floor((this.row - 1) / 3) * 3 + Math.floor((this.column - 1) / 3) + 1;
-        this.location = `R${this.row}C${this.column}`;
-        this.hasDigit = this.digit !== '0';
-        this.x = 50 + (this.column - 1) * 100;
-        this.y = 50 + (this.row - 1) * 100;
-        this.selected = false;
+function newCell(index, digit) {
+    digit = digit || '0';
+    if (!digit.match(/^[0-9]$/)) {
+        throw new RangeError(
+            `Invalid Cell() value '${digit}', expected '0'..'9'`
+        );
     }
-
-    mutate (changes) {
-        const newCell = new Cell(this.index, this.digit);
-        return Object.assign(newCell, this, changes);
-    }
+    const row = Math.floor(index / 9) + 1;
+    const column = (index % 9) + 1;
+    return Map({
+        index,
+        digit,
+        row,
+        column,
+        box: Math.floor((row - 1) / 3) * 3 + Math.floor((column - 1) / 3) + 1,
+        location: `R${row}C${column}`,
+        hasDigit: digit !== '0',
+        x: 50 + (column - 1) * 100,
+        y: 50 + (row - 1) * 100,
+        selected: false,
+    });
 }
 
 class SudokuModel {
@@ -29,18 +28,41 @@ class SudokuModel {
         this.cells = cells;
     }
 
-    mapCells (handler) {
-        return this.cells.map(handler);
+    static newFromString81 (str) {
+        const cells = List(Range(0, 81)).map(i => newCell(i, str[i]));
+        // const cells = [...Array(81).keys()].map(i => newCell(i, str[i]));
+        return new SudokuModel(cells);
     }
 
-    mutateCells (mapFunc) {
-        const newCells = this.mapCells(mapFunc);
+    mutateCells (mutations, index) {
+        const mutateMethods = mutations.map(name => {
+            if (this[name]) {
+                return this[name];
+            }
+            throw new Error(`Unknown cell mutation: ${name}`);
+        });
+        const newCells = this.cells.map((c) => {
+            mutateMethods.forEach(f => c = f(c, index));
+            return c;
+        });
         return new SudokuModel(newCells);
     }
 
-    static newFromString81 (str) {
-        const cells = [...Array(81).keys()].map(i => new Cell(i, str[i]));
-        return new SudokuModel(cells);
+    setSelection (c, index) {
+        if (c.get('index') === index) {
+            return c.set('selected', true);
+        }
+        else if (c.get('selected')) {
+            return c.set('selected', false);
+        }
+        return c;
+    }
+
+    extendSelection (c, index) {
+        if (c.get('index') === index && !c.get('selected')) {
+            return c.set('selected', true);
+        }
+        return c;
     }
 
 }

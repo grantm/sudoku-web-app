@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './app.css';
 
 import SudokuModel from '../../lib/sudoku-model.js';
@@ -9,37 +9,43 @@ const defaultGrid = SudokuModel.newFromString81(
     '000001230123008040804007650765000000000000000000000123012300804080400765076500000'
 );
 
-function cellEventHandler (e, grid, setGrid) {
+function cellEventHandler (e, setGrid) {
     const type = e.type;
     const index = parseInt(e.target.dataset.cellIndex, 10);
-    console.log(`${type} event on cell[${index}]`, grid.cells[index]);
 
+    let mutations = [];
     if (type === 'mousedown') {
-        setGrid(grid.mutateCells((c) => {
-            if (c.index === index) {
-                return c.mutate({selected: true});
-            }
-            else if (c.selected) {
-                return c.mutate({selected: false});
-            }
-            return c;
-        }));
+        if (e.ctrlKey) {
+            mutations.push('extendSelection');
+        }
+        else {
+            mutations.push('setSelection');
+        }
+    }
+    else if (type === 'mouseover') {
+        if ((e.buttons & 1) === 1) {
+            mutations.push('extendSelection');
+        }
     }
     else {
         console.log('Unhandled event type:', type);
+    }
+    if (mutations.length > 0) {
+        setGrid((grid) => grid.mutateCells(mutations, index))
     }
 }
 
 function App() {
     const [grid, setGrid] = useState(defaultGrid);
 
-    const eventProxy = (e) => {
-        cellEventHandler(e, grid, setGrid);
-    };
+    const eventHandler = useCallback(
+        (e) => cellEventHandler(e, setGrid),
+        [setGrid]
+    );
 
     return (
         <div className="app">
-            <SudokuGrid grid={grid} eventHandler={eventProxy} />
+            <SudokuGrid grid={grid} eventHandler={eventHandler} />
         </div>
     );
 }
