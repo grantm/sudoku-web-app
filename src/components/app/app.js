@@ -9,43 +9,47 @@ const defaultGrid = SudokuModel.newFromString81(
     '000001230123008040804007650765000000000000000000000123012300804080400765076500000'
 );
 
-function cellEventHandler (e, setGrid) {
-    const type = e.type;
-    const index = parseInt(e.target.dataset.cellIndex, 10);
+function indexFromCellEvent (e) {
+    return parseInt(e.target.dataset.cellIndex, 10);
+}
 
-    let mutations = [];
-    if (type === 'mousedown') {
-        if (e.ctrlKey) {
-            mutations.push('extendSelection');
-        }
-        else {
-            mutations.push('setSelection');
-        }
-    }
-    else if (type === 'mouseover') {
-        if ((e.buttons & 1) === 1) {
-            mutations.push('extendSelection');
-        }
+function cellMouseDownHandler (e, setGrid) {
+    const index = indexFromCellEvent(e);
+    if (e.ctrlKey) {
+        setGrid((grid) => grid.applyCellOp('extendSelection', index));
     }
     else {
-        console.log('Unhandled event type:', type);
+        setGrid((grid) => grid.applyCellOp('setSelection', index));
     }
-    if (mutations.length > 0) {
-        setGrid((grid) => grid.mutateCells(mutations, index))
+}
+
+function cellMouseOverHandler (e, setGrid) {
+    const index = indexFromCellEvent(e);
+    if ((e.buttons & 1) === 1) {
+        setGrid((grid) => grid.applyCellOp('extendSelection', index));
     }
 }
 
 function App() {
     const [grid, setGrid] = useState(defaultGrid);
 
-    const eventHandler = useCallback(
-        (e) => cellEventHandler(e, setGrid),
+    const mouseDownHandler = useCallback(
+        (e) => cellMouseDownHandler(e, setGrid),
+        [setGrid]
+    );
+
+    const mouseOverHandler = useCallback(
+        (e) => cellMouseOverHandler(e, setGrid),
         [setGrid]
     );
 
     return (
         <div className="app">
-            <SudokuGrid grid={grid} eventHandler={eventHandler} />
+            <SudokuGrid
+                grid={grid}
+                mouseDownHandler={mouseDownHandler}
+                mouseOverHandler={mouseOverHandler}
+            />
         </div>
     );
 }

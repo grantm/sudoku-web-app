@@ -16,7 +16,7 @@ function newCell(index, digit) {
         column,
         box: Math.floor((row - 1) / 3) * 3 + Math.floor((column - 1) / 3) + 1,
         location: `R${row}C${column}`,
-        hasDigit: digit !== '0',
+        isGiven: digit !== '0',
         x: 50 + (column - 1) * 100,
         y: 50 + (row - 1) * 100,
         selected: false,
@@ -34,17 +34,12 @@ class SudokuModel {
         return new SudokuModel(cells);
     }
 
-    mutateCells (mutations, index) {
-        const mutateMethods = mutations.map(name => {
-            if (this[name]) {
-                return this[name];
-            }
-            throw new Error(`Unknown cell mutation: ${name}`);
-        });
-        const newCells = this.cells.map((c) => {
-            mutateMethods.forEach(f => c = f(c, index));
-            return c;
-        });
+    applyCellOp (opName, index) {
+        const op = this[opName];
+        if (!op) {
+            throw new Error(`Unknown cell operation: '${opName}'`);
+        }
+        const newCells = this.cells.map(c => op(c, index));
         return new SudokuModel(newCells);
     }
 

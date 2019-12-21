@@ -5,9 +5,16 @@ import './sudoku-grid.css';
 import SudokuCell from './sudoku-cell';
 import GridLines from './grid-lines.js';
 
-function SudokuGrid({grid, eventHandler}) {
+function SudokuGrid({grid, mouseDownHandler, mouseOverHandler}) {
     const cellContents = grid.cells.map((c) => {
-        return <SudokuCell key={c.get('location')} cell={c} eventHandler={eventHandler} />
+        return (
+            <SudokuCell
+                key={c.get('location')}
+                cell={c}
+                mouseDownHandler={mouseDownHandler}
+                mouseOverHandler={mouseOverHandler}
+            />
+        )
     });
     return (
         <div className="sudoku-grid">

@@ -18,7 +18,7 @@ function CellBackground({cell}) {
 }
 
 function CellDigit({cell}) {
-    if (cell.get('hasDigit')) {
+    if (cell.get('digit') !== '0') {
         return (
             <text
                 className="digit"
@@ -34,7 +34,7 @@ function CellDigit({cell}) {
     return null;
 }
 
-function CellCover({cell, eventHandler}) {
+function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
     return (
         <rect
             x={cell.get('x')}
@@ -43,20 +43,24 @@ function CellCover({cell, eventHandler}) {
             width="100"
             height="100"
             fill="transparent"
-            onMouseDown={eventHandler}
-            onMouseOver={eventHandler}
+            onMouseDown={mouseDownHandler}
+            onMouseOver={mouseOverHandler}
             pointerEvents="fill"
         />
     )
 }
 
 
-function SudokuCell({cell, eventHandler}) {
+function SudokuCell({cell, mouseDownHandler, mouseOverHandler}) {
     return (
         <g className="cell">
             <CellBackground cell={cell} />
             <CellDigit cell={cell} />
-            <CellCover cell={cell} eventHandler={eventHandler} />
+            <CellCover
+                cell={cell}
+                mouseDownHandler={mouseDownHandler}
+                mouseOverHandler={mouseOverHandler}
+            />
         </g>
     );
 }
