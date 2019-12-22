@@ -40,7 +40,8 @@ export const modelHelpers = {
         const [actionName, ...args] = action;
         const f = modelHelpers[actionName];
         if (!f) {
-            throw new Error(`No helper to apply action: '${actionName}'`)
+            console.log(`No helper to apply action: '${actionName}'`);
+            return grid;
         }
         grid = f(grid, ...args);
         return grid
@@ -96,7 +97,8 @@ export const modelHelpers = {
     updateSelectedCells: (grid, opName, ...args) => {
         const op = modelHelpers[opName + 'AsAction'];
         if (!op) {
-            throw new Error(`Unknown cell update operation: '${opName}'`);
+            console.log(`Unknown cell update operation: '${opName}'`);
+            return grid;
         }
         const action = op(grid, opName, ...args);
         return modelHelpers.applyAction(grid, action);
@@ -117,7 +119,8 @@ export const modelHelpers = {
     applyCellOp: (grid, opName, ...args) => {
         const op = modelHelpers[opName];
         if (!op) {
-            throw new Error(`Unknown cell operation: '${opName}'`);
+            console.log(`Unknown cell operation: '${opName}'`);
+            return grid;
         }
         const newCells = grid.get('cells').map(c => op(c, ...args));
         if (opName === 'setSelection' || opName === 'extendSelection') {
