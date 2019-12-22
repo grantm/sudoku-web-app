@@ -52,8 +52,12 @@ function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
 
 
 function SudokuCell({cell, mouseDownHandler, mouseOverHandler}) {
+    const classes = [ 'cell' ];
+    if (cell.get('isGiven')) {
+        classes.push('given');
+    }
     return (
-        <g className="cell">
+        <g className={classes.join(' ')}>
             <CellBackground cell={cell} />
             <CellDigit cell={cell} />
             <CellCover

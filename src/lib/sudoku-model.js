@@ -34,16 +34,16 @@ class SudokuModel {
         return new SudokuModel(cells);
     }
 
-    applyCellOp (opName, index) {
+    applyCellOp (opName, args) {
         const op = this[opName];
         if (!op) {
             throw new Error(`Unknown cell operation: '${opName}'`);
         }
-        const newCells = this.cells.map(c => op(c, index));
+        const newCells = this.cells.map(c => op(c, args));
         return new SudokuModel(newCells);
     }
 
-    setSelection (c, index) {
+    setSelection (c, [index]) {
         if (c.get('index') === index) {
             return c.set('selected', true);
         }
@@ -53,9 +53,23 @@ class SudokuModel {
         return c;
     }
 
-    extendSelection (c, index) {
+    extendSelection (c, [index]) {
         if (c.get('index') === index && !c.get('selected')) {
             return c.set('selected', true);
+        }
+        return c;
+    }
+
+    setDigit(c, [newDigit]) {
+        if (c.get('selected') && !c.get('isGiven') && c.get('digit') !== newDigit) {
+            return c.set('digit', newDigit)
+        }
+        return c;
+    }
+
+    clearDigits(c) {
+        if (c.get('selected') && !c.get('isGiven')) {
+            return c.set('digit', '0')
         }
         return c;
     }

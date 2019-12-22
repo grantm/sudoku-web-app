@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './app.css';
 
 import SudokuModel from '../../lib/sudoku-model.js';
@@ -16,17 +16,30 @@ function indexFromCellEvent (e) {
 function cellMouseDownHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if (e.ctrlKey) {
-        setGrid((grid) => grid.applyCellOp('extendSelection', index));
+        setGrid((grid) => grid.applyCellOp('extendSelection', [index]));
     }
     else {
-        setGrid((grid) => grid.applyCellOp('setSelection', index));
+        setGrid((grid) => grid.applyCellOp('setSelection', [index]));
     }
 }
 
 function cellMouseOverHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if ((e.buttons & 1) === 1) {
-        setGrid((grid) => grid.applyCellOp('extendSelection', index));
+        setGrid((grid) => grid.applyCellOp('extendSelection', [index]));
+    }
+}
+
+function docKeyHandler (e, setGrid) {
+    if (48 <= e.keyCode  && e.keyCode <= 57) {  // independent of shift/ctrl/etc
+        const key = String.fromCharCode(e.keyCode);
+        setGrid((grid) => grid.applyCellOp('setDigit', [key]));
+    }
+    else if (e.key === "Backspace") {
+        setGrid((grid) => grid.applyCellOp('clearDigits', [e.key]));
+    }
+    else {
+        console.log('keydown event:', e);
     }
 }
 
@@ -40,6 +53,15 @@ function App() {
 
     const mouseOverHandler = useCallback(
         (e) => cellMouseOverHandler(e, setGrid),
+        [setGrid]
+    );
+
+    useEffect(
+        () => {
+            const handler = (e) => docKeyHandler(e, setGrid);
+            document.addEventListener('keydown', handler);
+            return () => document.removeEventListener('keydown', handler);
+        },
         [setGrid]
     );
 
