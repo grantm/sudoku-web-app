@@ -51,15 +51,10 @@ export const modelHelpers = {
     },
 
     setCellProperties: (grid, cellProps) => {
-        const isUndo = false;
         let cells = grid.get('cells');
         cellProps.forEach(cellUpdate => {
-            const [index, ...propUpdates] = cellUpdate;
-            let c = cells.get(index);
-            propUpdates.forEach(update => {
-                const [propName, oldValue, newValue] = update;
-                c = c.set(propName, isUndo ? oldValue : newValue);
-            });
+            const [index, propUpdates] = cellUpdate;
+            const c = cells.get(index).merge(propUpdates);
             cells = cells.map(cell => cell.get('index') === index ? c : cell);
         });
         return grid.set('cells', cells);
@@ -110,8 +105,7 @@ export const modelHelpers = {
             .map(c => {
                 return [
                     c.get('index'),
-                    [ 'digit', c.get('digit'), newDigit ],
-                    // [ 'selected', true, false ],
+                    Map({'digit': newDigit})
                 ]
             }).toJS();
         return [ 'setCellProperties', cellUpdates ];
