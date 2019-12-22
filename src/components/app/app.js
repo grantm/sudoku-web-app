@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import './app.css';
 
-import SudokuModel from '../../lib/sudoku-model.js';
+import { newSudokuModel, modelHelpers } from '../../lib/sudoku-model.js';
 
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
 
-const defaultGrid = SudokuModel.newFromString81(
+const defaultGrid = newSudokuModel(
     '000001230123008040804007650765000000000000000000000123012300804080400765076500000'
 );
 
@@ -16,27 +16,27 @@ function indexFromCellEvent (e) {
 function cellMouseDownHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if (e.ctrlKey) {
-        setGrid((grid) => grid.applyCellOp('extendSelection', [index]));
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
     }
     else {
-        setGrid((grid) => grid.applyCellOp('setSelection', [index]));
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', index));
     }
 }
 
 function cellMouseOverHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if ((e.buttons & 1) === 1) {
-        setGrid((grid) => grid.applyCellOp('extendSelection', [index]));
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
     }
 }
 
 function docKeyHandler (e, setGrid) {
     if (48 <= e.keyCode  && e.keyCode <= 57) {  // independent of shift/ctrl/etc
         const key = String.fromCharCode(e.keyCode);
-        setGrid((grid) => grid.applyCellOp('setDigit', [key]));
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'setDigit', key));
     }
     else if (e.key === "Backspace") {
-        setGrid((grid) => grid.applyCellOp('clearDigits', [e.key]));
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearDigits', e.key));
     }
     else {
         console.log('keydown event:', e);

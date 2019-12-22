@@ -23,27 +23,40 @@ function newCell(index, digit) {
     });
 }
 
-class SudokuModel {
-    constructor (cells) {
-        this.cells = cells;
-    }
+export const newSudokuModel = (initialDigits) => {
+    const grid = Map({
+        undoList: List(),
+        redoList: List(),
+        cells: List(),
+    });
+    return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits]);
+};
 
-    static newFromString81 (str) {
-        const cells = List(Range(0, 81)).map(i => newCell(i, str[i]));
-        // const cells = [...Array(81).keys()].map(i => newCell(i, str[i]));
-        return new SudokuModel(cells);
-    }
+export const modelHelpers = {
+    applyAction: (grid, action) => {
+        const [actionName, ...args] = action;
+        const f = modelHelpers[actionName];
+        grid = grid
+            .update('undoList', list => list.push(action))
+            .set('redoList', List());
+        return f(grid, ...args);
+    },
 
-    applyCellOp (opName, args) {
-        const op = this[opName];
+    setInitialDigits: (grid, initialDigits) => {
+        const cells = List(Range(0, 81)).map(i => newCell(i, initialDigits[i]));
+        return grid.set('cells', cells);
+    },
+
+    applyCellOp: (grid, opName, ...args) => {
+        const op = modelHelpers[opName];
         if (!op) {
             throw new Error(`Unknown cell operation: '${opName}'`);
         }
-        const newCells = this.cells.map(c => op(c, args));
-        return new SudokuModel(newCells);
-    }
+        const newCells = grid.get('cells').map(c => op(c, args));
+        return grid.set('cells', newCells);
+    },
 
-    setSelection (c, [index]) {
+    setSelection: (c, [index]) => {
         if (c.get('index') === index) {
             return c.set('selected', true);
         }
@@ -51,29 +64,27 @@ class SudokuModel {
             return c.set('selected', false);
         }
         return c;
-    }
+    },
 
-    extendSelection (c, [index]) {
+    extendSelection: (c, [index]) => {
         if (c.get('index') === index && !c.get('selected')) {
             return c.set('selected', true);
         }
         return c;
-    }
+    },
 
-    setDigit(c, [newDigit]) {
+    setDigit: (c, [newDigit]) => {
         if (c.get('selected') && !c.get('isGiven') && c.get('digit') !== newDigit) {
             return c.set('digit', newDigit)
         }
         return c;
-    }
+    },
 
-    clearDigits(c) {
+    clearDigits: (c) => {
         if (c.get('selected') && !c.get('isGiven')) {
             return c.set('digit', '0')
         }
         return c;
-    }
+    },
 
 }
-
-export default SudokuModel;
