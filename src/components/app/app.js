@@ -41,6 +41,12 @@ function docKeyHandler (e, setGrid) {
     else if (e.key === "Escape") {
         return setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
     }
+    else if (e.key === "z" && e.ctrlKey) {
+        return setGrid((grid) => modelHelpers.undoOneAction(grid));
+    }
+    else if (e.key === "y" && e.ctrlKey) {
+        return setGrid((grid) => modelHelpers.redoOneAction(grid));
+    }
     else {
         console.log('keydown event:', e);
     }

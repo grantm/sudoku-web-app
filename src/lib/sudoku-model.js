@@ -23,7 +23,7 @@ function newCell(index, digit) {
     });
 }
 
-export const newSudokuModel = (initialDigits) => {
+export const newSudokuModel = (initialDigits = '') => {
     const grid = Map({
         undoList: List(),
         redoList: List(),
@@ -63,6 +63,36 @@ export const modelHelpers = {
             cells = cells.map(cell => cell.get('index') === index ? c : cell);
         });
         return grid.set('cells', cells);
+    },
+
+    undoOneAction: (grid) => {
+        let undoList = grid.get('undoList');
+        let redoList = grid.get('redoList');
+        if (undoList.size <= 1) {
+            return grid;
+        }
+        grid = newSudokuModel();
+        const last = undoList.last();
+        undoList = undoList.pop();
+        redoList = redoList.push(last);
+        undoList.forEach(action => {
+            grid = modelHelpers.applyAction(grid, action)
+        });
+        return grid
+            .set('undoList', undoList)
+            .set('redoList', redoList);
+    },
+
+    redoOneAction: (grid) => {
+        let redoList = grid.get('redoList');
+        if (redoList.size < 1) {
+            return grid;
+        }
+        const last = redoList.last();
+        redoList = redoList.pop();
+        grid = modelHelpers.applyAction(grid, last);
+        return grid
+            .set('redoList', redoList);
     },
 
     updateSelectedCells: (grid, opName, ...args) => {
