@@ -31,12 +31,15 @@ function cellMouseOverHandler (e, setGrid) {
 }
 
 function docKeyHandler (e, setGrid) {
-    if (48 <= e.keyCode  && e.keyCode <= 57) {  // independent of shift/ctrl/etc
+    if (48 <= e.keyCode && e.keyCode <= 57) {  // independent of shift/ctrl/etc
         const key = String.fromCharCode(e.keyCode);
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'setDigit', key));
+        return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
     }
     else if (e.key === "Backspace") {
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearDigits', e.key));
+        return setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearDigits'));
+    }
+    else if (e.key === "Escape") {
+        return setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
     }
     else {
         console.log('keydown event:', e);
