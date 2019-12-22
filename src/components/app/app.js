@@ -47,6 +47,21 @@ function docKeyHandler (e, setGrid) {
     else if (e.key === "y" && e.ctrlKey) {
         return setGrid((grid) => modelHelpers.redoOneAction(grid));
     }
+    else if (e.key === "ArrowRight") {
+        return setGrid((grid) => modelHelpers.moveFocus(grid, 1, 0, e.ctrlKey));
+    }
+    else if (e.key === "ArrowLeft") {
+        return setGrid((grid) => modelHelpers.moveFocus(grid, -1, 0, e.ctrlKey));
+    }
+    else if (e.key === "ArrowUp") {
+        return setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, e.ctrlKey));
+    }
+    else if (e.key === "ArrowDown") {
+        return setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, e.ctrlKey));
+    }
+    else if (e.key === "Home") {
+        return setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
+    }
     else {
         console.log('keydown event:', e);
     }

@@ -28,11 +28,14 @@ export const newSudokuModel = (initialDigits = '') => {
         undoList: List(),
         redoList: List(),
         cells: List(),
+        focusIndex: null,
     });
     return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits]);
 };
 
 export const modelHelpers = {
+    CENTER_CELL: 40,
+
     applyAction: (grid, action) => {
         const [actionName, ...args] = action;
         const f = modelHelpers[actionName];
@@ -117,6 +120,9 @@ export const modelHelpers = {
             throw new Error(`Unknown cell operation: '${opName}'`);
         }
         const newCells = grid.get('cells').map(c => op(c, ...args));
+        if (opName === 'setSelection' || opName === 'extendSelection') {
+            grid = grid.set('focusIndex', args[0]);
+        }
         return grid.set('cells', newCells);
     },
 
@@ -156,6 +162,20 @@ export const modelHelpers = {
             return c.set('digit', '0')
         }
         return c;
+    },
+
+    moveFocus: (grid, deltaX, deltaY, isExtend) => {
+        let focusIndex = grid.get('focusIndex');
+        if (focusIndex === null) {
+            focusIndex = modelHelpers.CENTER_CELL;
+        }
+        else  {
+            const newCol = (9 + focusIndex % 9 + deltaX) % 9;
+            const newRow = (9 + Math.floor(focusIndex / 9) + deltaY) % 9;
+            focusIndex = newRow * 9 + newCol;
+        }
+        const operation = isExtend ? 'extendSelection' : 'setSelection';
+        return modelHelpers.applyCellOp(grid, operation, focusIndex);
     },
 
 }
