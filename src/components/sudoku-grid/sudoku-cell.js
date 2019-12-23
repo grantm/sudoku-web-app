@@ -72,6 +72,25 @@ function CellOuterPencilMarks({cell}) {
     return <g className="outer-pencil">{marks}</g>;
 }
 
+function CellInnerPencilMarks({cell}) {
+    const pm = cell.get('innerPencils');
+    if (cell.get('digit') !== '0' || pm.size === 0) {
+        return null;
+    }
+    const digits = allDigits.filter(d => pm.includes(d)).join('');
+    return (
+        <text
+            className="inner-pencil"
+            x={cell.get('x') + 49}
+            y={cell.get('y') + 61}
+            fontSize="26"
+            textAnchor="middle"
+        >
+            {digits}
+        </text>
+    );
+}
+
 function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
     return (
         <rect
@@ -99,6 +118,7 @@ function SudokuCell({cell, mouseDownHandler, mouseOverHandler}) {
             <CellBackground cell={cell} />
             <CellDigit cell={cell} />
             <CellOuterPencilMarks cell={cell} />
+            <CellInnerPencilMarks cell={cell} />
             <CellCover
                 cell={cell}
                 mouseDownHandler={mouseDownHandler}

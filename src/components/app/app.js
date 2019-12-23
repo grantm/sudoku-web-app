@@ -33,10 +33,15 @@ function cellMouseOverHandler (e, setGrid) {
 function docKeyHandler (e, setGrid) {
     if (48 <= e.keyCode && e.keyCode <= 57) {  // independent of shift/ctrl/etc
         const key = String.fromCharCode(e.keyCode);
-        const mode = e.ctrlKey ? 'toggleInnerPencil'
-            : e.shiftKey ? 'toggleOuterPencil'
-            : 'setDigit';
-        return setGrid((grid) => modelHelpers.updateSelectedCells(grid, mode, key));
+        if (e.ctrlKey) {
+            return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', 'inner', key));
+        }
+        else if (e.shiftKey) {
+            return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', 'outer', key));
+        }
+        else {
+            return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
+        }
     }
     else if (e.key === "Backspace") {
         return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));

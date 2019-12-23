@@ -43,6 +43,7 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+text.inner-pencil,
 .outer-pencil text {
     fill: var(--pencil-mark-color);
     font-family: Arial, Helvetica, sans-serif;

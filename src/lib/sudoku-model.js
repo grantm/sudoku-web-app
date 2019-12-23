@@ -138,15 +138,16 @@ export const modelHelpers = {
         return [ 'setCellProperties', cellUpdates ];
     },
 
-    toggleOuterPencilAsAction: (grid, opName, digit) => {
+    togglePencilMarkAsAction: (grid, opName, mode, digit) => {
+        const setKey = mode === 'outer' ? 'outerPencils' : 'innerPencils';
         const cellUpdates = grid.get('cells')
             .filter(c => c.get('digit') === '0' && c.get('selected'))
             .map(c => {
-                let outerPencils = c.get('outerPencils');
-                outerPencils = outerPencils.includes(digit)
-                    ? outerPencils.delete(digit)
-                    : outerPencils.add(digit);
-                return [ c.get('index'), Map({outerPencils}) ];
+                let pencilMarks = c.get(setKey);
+                pencilMarks = pencilMarks.includes(digit)
+                    ? pencilMarks.delete(digit)
+                    : pencilMarks.add(digit);
+                return [ c.get('index'), Map({[setKey]: pencilMarks}) ];
             });
         return [ 'setCellProperties', cellUpdates ];
     },
