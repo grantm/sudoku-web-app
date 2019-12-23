@@ -178,6 +178,7 @@ export const modelHelpers = {
                         'digit': newDigit,
                         'outerPencils': Set(),
                         'innerPencils': Set(),
+                        'isError': false,
                     })
                 ]
             });
@@ -194,6 +195,7 @@ export const modelHelpers = {
                         'digit': '0',
                         'outerPencils': Set(),
                         'innerPencils': Set(),
+                        'isError': false,
                     })
                 ]
             });
