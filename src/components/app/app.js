@@ -5,6 +5,16 @@ import { newSudokuModel, modelHelpers } from '../../lib/sudoku-model.js';
 
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
 
+// Keycode definitions (independent of shift/ctrl/etc)
+const KEYCODE = {
+    digit0: 48,
+    digit9: 57,
+    W: 87,
+    A: 65,
+    S: 83,
+    D: 68,
+}
+
 const defaultGrid = newSudokuModel(
     '000001230123008040804007650765000000000000000000000123012300804080400765076500000'
 );
@@ -31,7 +41,7 @@ function cellMouseOverHandler (e, setGrid) {
 }
 
 function docKeyHandler (e, setGrid) {
-    if (48 <= e.keyCode && e.keyCode <= 57) {  // independent of shift/ctrl/etc
+    if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
         const key = String.fromCharCode(e.keyCode);
         if (e.ctrlKey) {
             return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', 'inner', key));
@@ -55,16 +65,16 @@ function docKeyHandler (e, setGrid) {
     else if (e.key === "y" && e.ctrlKey) {
         return setGrid((grid) => modelHelpers.redoOneAction(grid));
     }
-    else if (e.key === "ArrowRight") {
+    else if (e.key === "ArrowRight" || e.keyCode === KEYCODE.D) {
         return setGrid((grid) => modelHelpers.moveFocus(grid, 1, 0, e.ctrlKey));
     }
-    else if (e.key === "ArrowLeft") {
+    else if (e.key === "ArrowLeft" || e.keyCode === KEYCODE.A) {
         return setGrid((grid) => modelHelpers.moveFocus(grid, -1, 0, e.ctrlKey));
     }
-    else if (e.key === "ArrowUp") {
+    else if (e.key === "ArrowUp" || e.keyCode === KEYCODE.W) {
         return setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, e.ctrlKey));
     }
-    else if (e.key === "ArrowDown") {
+    else if (e.key === "ArrowDown" || e.keyCode === KEYCODE.S) {
         return setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, e.ctrlKey));
     }
     else if (e.key === "Enter") {
