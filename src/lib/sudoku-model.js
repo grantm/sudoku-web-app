@@ -17,6 +17,7 @@ function newCell(index, digit) {
         box: Math.floor((row - 1) / 3) * 3 + Math.floor((column - 1) / 3) + 1,
         location: `R${row}C${column}`,
         isGiven: digit !== '0',
+        isError: false,
         x: 50 + (column - 1) * 100,
         y: 50 + (row - 1) * 100,
         selected: false,
@@ -97,40 +98,64 @@ export const modelHelpers = {
     },
 
     gameOverCheck: (grid) => {
-        console.log('GAME OVER DUDE!');
         const result = modelHelpers.checkGridForErrors(grid);
+        grid = modelHelpers.applyCellOp(grid, 'clearSelection');
+        if (result.isError) {
+            const {isError} = result;
+            const cells = grid.get('cells').map((c) => {
+                const index = c.get('index');
+                const ok = (
+                    c.get('isGiven')
+                    || c.get('isError') === (isError[index] || false)
+                );
+                return ok ? c : c.set('isError', isError[index] || false);
+            });
+            grid = grid.set('cells', cells);
+        }
         console.log('Result:', result);
         return grid;
     },
 
     checkGridForErrors: (grid) => {
         const cells = grid.get('cells');
-        const incompleteCells = cells.filter(c => c.get('digit') === '0').count();
-        const result = {
-            incompleteCells
-        };
-        let errors = Set();
-        Range(1, 10).forEach((i) => {
-            errors = errors
-                .merge(modelHelpers.duplicatesInGroup(cells, 'row', i))
-                .merge(modelHelpers.duplicatesInGroup(cells, 'column', i))
-                .merge(modelHelpers.duplicatesInGroup(cells, 'box', i));
+        let incompleteCount = 0;
+        const seen = {};
+        const isError = {};
+        cells.forEach(c => {
+            const index = c.get('index');
+            const digit = c.get('digit');
+            if (digit === '0') {
+                incompleteCount++;
+            }
+            else {
+                ['row', 'column', 'box'].forEach(type => {
+                    const key = type + c.get(type);
+                    seen[key] = seen[key] || {};
+                    if (seen[key].hasOwnProperty(digit)) {
+                        isError[index] = true;
+                        isError[ seen[key][digit] ] = true;
+                    }
+                    seen[key][digit] = index;
+                });
+            }
         });
-        result.errorCells = errors.toArray();
+        const noErrors = Object.keys(isError).length === 0;
+        const result = {};
+        const s = incompleteCount === 1 ? '' : 's';
+        if (noErrors) {
+            if (incompleteCount === 0) {
+                result.allComplete = true;
+            }
+            else {
+                result.errorMessage =
+                    `No errors found but ${incompleteCount} cell${s} still empty`;
+            }
+        }
+        else {
+            result.isError = isError;
+            result.errorMessage = `Errors found in highlighted cell${s}`;
+        }
         return result;
-    },
-
-    duplicatesInGroup: (cells, groupType, num) => {
-        const group = cells.filter(c => c.get(groupType) === num);
-        const countByDigit = (h, v) => { return { ...h, [v]: (h[v] || 0) + 1}; };
-        const tally = group
-            .map(c => c.get('digit'))
-            .filter(d => d !== '0')
-            .reduce(countByDigit, {});
-        return group
-            .filter(c => (tally[c.get('digit')] || 0) > 1)
-            .map(c => c.get('index'))
-            .toArray();
     },
 
     updateSelectedCells: (grid, opName, ...args) => {
@@ -220,8 +245,8 @@ export const modelHelpers = {
     },
 
     clearSelection: (c) => {
-        if (c.get('selected')) {
-            return c.set('selected', false);
+        if (c.get('selected') || c.get('isError')) {
+            return c.set('selected', false).set('isError', false);
         }
         return c;
     },

@@ -4,6 +4,7 @@
     --given-digit-color: #333333;
     --digit-color: #4444dd;
     --pencil-mark-color: #4444dd;
+    --error-fill-color: #ffbbbb;
     --selected-fill-color: #fff49b;
     --line-width: 2;
     --line-width-bold: 5;
@@ -27,6 +28,11 @@
 
 .cell-bg {
     fill: transparent;
+}
+
+
+.cell-bg.error {
+    fill: var(--error-fill-color);
 }
 
 .cell-bg.selected {

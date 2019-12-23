@@ -15,6 +15,9 @@ const outerPencilOffsets = [
 
 function CellBackground({cell}) {
     const classes = [ 'cell-bg' ];
+    if (cell.get('isError')) {
+        classes.push('error');
+    }
     if (cell.get('selected')) {
         classes.push('selected');
     }
