@@ -3,6 +3,7 @@
     --line-color-bold: #333333;
     --given-digit-color: #333333;
     --digit-color: #4444dd;
+    --pencil-mark-color: #4444dd;
     --selected-fill-color: #fff49b;
     --line-width: 2;
     --line-width-bold: 5;
@@ -39,5 +40,10 @@
 
 .cell.given text.digit {
     fill: var(--given-digit-color);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.outer-pencil text {
+    fill: var(--pencil-mark-color);
     font-family: Arial, Helvetica, sans-serif;
 }

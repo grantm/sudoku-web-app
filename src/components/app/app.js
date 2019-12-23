@@ -33,10 +33,13 @@ function cellMouseOverHandler (e, setGrid) {
 function docKeyHandler (e, setGrid) {
     if (48 <= e.keyCode && e.keyCode <= 57) {  // independent of shift/ctrl/etc
         const key = String.fromCharCode(e.keyCode);
-        return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
+        const mode = e.ctrlKey ? 'toggleInnerPencil'
+            : e.shiftKey ? 'toggleOuterPencil'
+            : 'setDigit';
+        return setGrid((grid) => modelHelpers.updateSelectedCells(grid, mode, key));
     }
     else if (e.key === "Backspace") {
-        return setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearDigits'));
+        return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));
     }
     else if (e.key === "Escape") {
         return setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
@@ -62,9 +65,7 @@ function docKeyHandler (e, setGrid) {
     else if (e.key === "Home") {
         return setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
     }
-    else {
-        console.log('keydown event:', e);
-    }
+    // else { console.log('keydown event:', e); }
 }
 
 function App() {

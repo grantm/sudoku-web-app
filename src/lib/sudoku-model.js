@@ -1,4 +1,4 @@
-import { List, Map, Range } from 'immutable';
+import { List, Map, Range, Set } from 'immutable';
 
 function newCell(index, digit) {
     digit = digit || '0';
@@ -20,6 +20,8 @@ function newCell(index, digit) {
         x: 50 + (column - 1) * 100,
         y: 50 + (row - 1) * 100,
         selected: false,
+        outerPencils: Set(),
+        innerPencils: Set(),
     });
 }
 
@@ -110,9 +112,42 @@ export const modelHelpers = {
             .map(c => {
                 return [
                     c.get('index'),
-                    Map({'digit': newDigit})
+                    Map({
+                        'digit': newDigit,
+                        'outerPencils': Set(),
+                        'innerPencils': Set(),
+                    })
                 ]
-            }).toJS();
+            });
+        return [ 'setCellProperties', cellUpdates ];
+    },
+
+    clearCellAsAction: (grid) => {
+        const cellUpdates = grid.get('cells')
+            .filter(c => !c.get('isGiven') && c.get('selected'))
+            .map(c => {
+                return [
+                    c.get('index'),
+                    Map({
+                        'digit': '0',
+                        'outerPencils': Set(),
+                        'innerPencils': Set(),
+                    })
+                ]
+            });
+        return [ 'setCellProperties', cellUpdates ];
+    },
+
+    toggleOuterPencilAsAction: (grid, opName, digit) => {
+        const cellUpdates = grid.get('cells')
+            .filter(c => c.get('digit') === '0' && c.get('selected'))
+            .map(c => {
+                let outerPencils = c.get('outerPencils');
+                outerPencils = outerPencils.includes(digit)
+                    ? outerPencils.delete(digit)
+                    : outerPencils.add(digit);
+                return [ c.get('index'), Map({outerPencils}) ];
+            });
         return [ 'setCellProperties', cellUpdates ];
     },
 
@@ -149,20 +184,6 @@ export const modelHelpers = {
     clearSelection: (c) => {
         if (c.get('selected')) {
             return c.set('selected', false);
-        }
-        return c;
-    },
-
-    setDigit: (c, newDigit) => {
-        if (c.get('selected') && !c.get('isGiven') && c.get('digit') !== newDigit) {
-            return c.set('digit', newDigit)
-        }
-        return c;
-    },
-
-    clearDigits: (c) => {
-        if (c.get('selected') && !c.get('isGiven')) {
-            return c.set('digit', '0')
         }
         return c;
     },
