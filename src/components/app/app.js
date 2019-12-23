@@ -43,7 +43,7 @@ function docKeyHandler (e, setGrid) {
             return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
         }
     }
-    else if (e.key === "Backspace") {
+    else if (e.key === "Backspace" || e.key === "Delete") {
         return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));
     }
     else if (e.key === "Escape") {
