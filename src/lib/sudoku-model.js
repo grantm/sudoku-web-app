@@ -96,6 +96,43 @@ export const modelHelpers = {
             .set('redoList', redoList);
     },
 
+    gameOverCheck: (grid) => {
+        console.log('GAME OVER DUDE!');
+        const result = modelHelpers.checkGridForErrors(grid);
+        console.log('Result:', result);
+        return grid;
+    },
+
+    checkGridForErrors: (grid) => {
+        const cells = grid.get('cells');
+        const incompleteCells = cells.filter(c => c.get('digit') === '0').count();
+        const result = {
+            incompleteCells
+        };
+        let errors = Set();
+        Range(1, 10).forEach((i) => {
+            errors = errors
+                .merge(modelHelpers.duplicatesInGroup(cells, 'row', i))
+                .merge(modelHelpers.duplicatesInGroup(cells, 'column', i))
+                .merge(modelHelpers.duplicatesInGroup(cells, 'box', i));
+        });
+        result.errorCells = errors.toArray();
+        return result;
+    },
+
+    duplicatesInGroup: (cells, groupType, num) => {
+        const group = cells.filter(c => c.get(groupType) === num);
+        const countByDigit = (h, v) => { return { ...h, [v]: (h[v] || 0) + 1}; };
+        const tally = group
+            .map(c => c.get('digit'))
+            .filter(d => d !== '0')
+            .reduce(countByDigit, {});
+        return group
+            .filter(c => (tally[c.get('digit')] || 0) > 1)
+            .map(c => c.get('index'))
+            .toArray();
+    },
+
     updateSelectedCells: (grid, opName, ...args) => {
         const op = modelHelpers[opName + 'AsAction'];
         if (!op) {

@@ -67,6 +67,9 @@ function docKeyHandler (e, setGrid) {
     else if (e.key === "ArrowDown") {
         return setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, e.ctrlKey));
     }
+    else if (e.key === "Enter") {
+        return setGrid((grid) => modelHelpers.gameOverCheck(grid));
+    }
     else if (e.key === "Home") {
         return setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
     }
