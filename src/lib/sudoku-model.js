@@ -101,42 +101,44 @@ export const modelHelpers = {
         const result = modelHelpers.checkGridForErrors(grid);
         grid = modelHelpers.applyCellOp(grid, 'clearSelection');
         if (result.isError) {
-            const {isError} = result;
-            const cells = grid.get('cells').map((c) => {
-                const index = c.get('index');
-                const ok = (
-                    c.get('isGiven')
-                    || c.get('isError') === (isError[index] || false)
-                );
-                return ok ? c : c.set('isError', isError[index] || false);
-            });
-            grid = grid.set('cells', cells);
+            grid = modelHelpers.applyErrorHighlights(grid, result.isError);
         }
         console.log('Result:', result);
         return grid;
     },
 
+    applyErrorHighlights: (grid, isError) => {
+        const cells = grid.get('cells').map((c) => {
+            const index = c.get('index');
+            const ok = (
+                c.get('isGiven')
+                || c.get('isError') === (isError[index] || false)
+            );
+            return ok ? c : c.set('isError', isError[index] || false);
+        });
+        return grid.set('cells', cells);
+    },
+
     checkGridForErrors: (grid) => {
         const cells = grid.get('cells');
         let incompleteCount = 0;
-        const seen = {};
+        const type = ['row', 'column', 'box'];
+        const seen = [ {}, {}, {} ];
         const isError = {};
-        cells.forEach(c => {
-            const index = c.get('index');
+        cells.forEach((c, index) => {
             const digit = c.get('digit');
             if (digit === '0') {
                 incompleteCount++;
             }
             else {
-                ['row', 'column', 'box'].forEach(type => {
-                    const key = type + c.get(type);
-                    seen[key] = seen[key] || {};
-                    if (seen[key].hasOwnProperty(digit)) {
+                for(let t = 0; t < 3; t++) {
+                    const key = c.get(type[t]) + digit;
+                    if (seen[t][key] !== undefined) {
                         isError[index] = true;
-                        isError[ seen[key][digit] ] = true;
+                        isError[ seen[t][key] ] = true;
                     }
-                    seen[key][digit] = index;
-                });
+                    seen[t][key] = index;
+                };
             }
         });
         const noErrors = Object.keys(isError).length === 0;
