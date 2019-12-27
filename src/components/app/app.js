@@ -34,12 +34,14 @@ function cellMouseDownHandler (e, setGrid) {
     else {
         setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', index));
     }
+    e.preventDefault();
 }
 
 function cellMouseOverHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if ((e.buttons & 1) === 1) {
         setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
+        e.preventDefault();
     }
 }
 
