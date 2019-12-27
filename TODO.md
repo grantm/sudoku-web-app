@@ -1,9 +1,6 @@
 ## Things to do:
 (Not necessarily in priority order)
 
-* Set initial digits from querystring
-* Input mode for setting initial digits
-* Timer
 * Pause timer
 * On-screen buttons for mobile/touch input
 * Cell colouring
@@ -19,3 +16,6 @@
 * Inner & outer pencil marks
 * Enter key to trigger a check & highlight errors
 * Undo/redo support
+* Set initial digits from querystring
+* Input mode for setting initial digits
+* Timer
