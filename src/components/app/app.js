@@ -3,6 +3,7 @@ import './app.css';
 
 import { newSudokuModel, modelHelpers } from '../../lib/sudoku-model.js';
 
+import StatusBar from '../status-bar/status-bar';
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
 
 // Keycode definitions (independent of shift/ctrl/etc)
@@ -42,7 +43,10 @@ function cellMouseOverHandler (e, setGrid) {
     }
 }
 
-function docKeyHandler (e, setGrid) {
+function docKeyHandler (e, setGrid, solved) {
+    if (solved) {
+        return;
+    }
     if (e.altKey) {
         return;     // Don't intercept browser hot-keys
     }
@@ -108,10 +112,8 @@ function docKeyHandler (e, setGrid) {
 
 function App() {
     const [grid, setGrid] = useState(initialGridFromURL);
+    const solved = grid.get('solved');
     const mode = grid.get('mode');
-    const startButton = mode === 'enter'
-        ? <a href={'?s=' + modelHelpers.asDigits(grid)}>Start</a>
-        : null;
 
     const mouseDownHandler = useCallback(
         (e) => cellMouseDownHandler(e, setGrid),
@@ -125,15 +127,28 @@ function App() {
 
     useEffect(
         () => {
-            const handler = (e) => docKeyHandler(e, setGrid);
+            const handler = (e) => docKeyHandler(e, setGrid, solved);
             document.addEventListener('keydown', handler);
             return () => document.removeEventListener('keydown', handler);
         },
-        [setGrid]
+        [setGrid, solved]
     );
 
+    const classes = [`sudoku-app mode-${mode}`];
+    if (solved) {
+        classes.push('solved');
+    }
+
+    const startButton = mode === 'enter'
+        ? <a href={'?s=' + modelHelpers.asDigits(grid)}>Start</a>
+        : null;
+
     return (
-        <div className={`sudoku-app mode-${mode}`}>
+        <div className={classes.join(' ')}>
+            <StatusBar
+                startTime={grid.get('startTime')}
+                endTime={grid.get('endTime')}
+            />
             <SudokuGrid
                 grid={grid}
                 mouseDownHandler={mouseDownHandler}
@@ -142,11 +157,14 @@ function App() {
             <div className="buttons">
                 {startButton}
             </div>
-            <p>
-                Example puzzle links:
-                &nbsp;<a href="?s=000001230123008040804007650765000000000000000000000123012300804080400765076500000">Easy</a>
-                &nbsp;<a href="?s=000007000051802009200450007000906230000000000069305000800034002300209870000500000">Hard</a>
-            </p>
+            {
+                // <p>
+                //     Example puzzle links:
+                //     &nbsp;<a href="?s=000001230123008040804007650765000000000000000000000123012300804080400765076500000">Easy</a>
+                //     &nbsp;<a href="?s=000007000051802009200450007000906230000000000069305000800034002300209870000500000">Hard</a>
+                //     &nbsp;<a href="?s=123456789456789123789123456912345678345608912678912345234567891567891234891234567">Nearly done</a>
+                // </p>
+            }
         </div>
     );
 }

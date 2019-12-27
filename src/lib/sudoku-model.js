@@ -30,6 +30,8 @@ export const newSudokuModel = (initialDigits) => {
     const mode = initialDigits ? 'play' : 'enter';
     const grid = Map({
         mode,
+        startTime: mode === 'play' ? Date.now() : undefined,
+        endTime: undefined,
         undoList: List(),
         redoList: List(),
         cells: List(),
@@ -42,6 +44,9 @@ export const modelHelpers = {
     CENTER_CELL: 40,
 
     applyAction: (grid, action) => {
+        if (grid.get('solved')) {
+            return grid;
+        }
         const [actionName, ...args] = action;
         const f = modelHelpers[actionName];
         if (!f) {
@@ -60,6 +65,9 @@ export const modelHelpers = {
     },
 
     setCellProperties: (grid, cellProps) => {
+        if (grid.get('solved')) {
+            return grid;
+        }
         let cells = grid.get('cells');
         cellProps.forEach(cellUpdate => {
             const [index, propUpdates] = cellUpdate;
@@ -75,7 +83,7 @@ export const modelHelpers = {
         if (undoList.size <= 1) {
             return grid;
         }
-        grid = newSudokuModel();
+        grid = grid.set('cells', List());
         const last = undoList.last();
         undoList = undoList.pop();
         redoList = redoList.push(last);
@@ -102,11 +110,12 @@ export const modelHelpers = {
 
     gameOverCheck: (grid) => {
         const result = modelHelpers.checkGridForErrors(grid);
-        grid = modelHelpers.applyCellOp(grid, 'clearSelection');
         if (result.isError) {
             grid = modelHelpers.applyErrorHighlights(grid, result.isError);
         }
-        console.log('Result:', result);
+        if (result.errorMessage) {
+            alert(result.errorMessage);
+        }
         return grid;
     },
 
@@ -164,6 +173,9 @@ export const modelHelpers = {
     },
 
     updateSelectedCells: (grid, opName, ...args) => {
+        if (grid.get('solved')) {
+            return grid;
+        }
         const mode = grid.get('mode');
         if (mode === 'enter' && opName === 'togglePencilMark') {
             opName = 'setDigit';
@@ -231,16 +243,24 @@ export const modelHelpers = {
     },
 
     highlightErrorCells: (grid) => {
-        const mode = grid.get('mode');
-        if (mode !== 'enter') {
-            return grid;
-        }
         const result = modelHelpers.checkGridForErrors(grid);
+        if (result.allComplete && !grid.get('endTime')) {
+            grid = modelHelpers.setGridSolved(grid);
+        }
         grid = modelHelpers.applyErrorHighlights(grid, result.isError || {});
         return grid;
     },
 
+    setGridSolved: (grid) => {
+        return modelHelpers.applyCellOp(grid, 'clearSelection')
+            .set('solved', true)
+            .set('endTime', Date.now());
+    },
+
     applyCellOp: (grid, opName, ...args) => {
+        if (grid.get('solved')) {
+            return grid;
+        }
         const op = modelHelpers[opName];
         if (!op) {
             console.log(`Unknown cell operation: '${opName}'`);

@@ -1,21 +1,7 @@
-.sudoku-app {
-    --line-color: #e7e7e7;
-    --line-color-bold: #333333;
-    --given-digit-color: #333333;
-    --digit-color: #4444dd;
-    --pencil-mark-color: #4444dd;
-    --error-fill-color: #ffbbbb;
-    --selected-fill-color: #fff49b;
-    --error-selected-fill-color: #ff8c8c;
-    --button-bg-color: #acddfb;
-    --button-text-color: #333333;
-    --line-width: 2;
-    --line-width-bold: 5;
-}
 
 .sudoku-grid > svg {
-    width: 90vw;
-    height: 90vh;
+    width: 80vw;
+    height: 80vh;
     margin-top: 5vh;
 }
 
@@ -43,6 +29,10 @@
 
 .cell-bg.error.selected {
     fill: var(--error-selected-fill-color);
+}
+
+.solved .cell-bg {
+    fill: var(--solved-fill-color);
 }
 
 .cell text.digit {

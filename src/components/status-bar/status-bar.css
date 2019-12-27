@@ -1,0 +1,17 @@
+
+.status-bar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    font-size: 4vh;
+    padding: 0.4em 0.6em;
+    color: var(--status-bar-text-color);
+    background-color: var(--status-bar-bg-color);
+    border-bottom: 1px solid var(--status-bar-border-color);
+}
+
+.solved .elapsed-time {
+    color: var(--solved-text-color);
+    font-weight: bold;
+}
