@@ -26,14 +26,16 @@ function newCell(index, digit) {
     });
 }
 
-export const newSudokuModel = (initialDigits = '') => {
+export const newSudokuModel = (initialDigits) => {
+    const mode = initialDigits ? 'play' : 'enter';
     const grid = Map({
+        mode,
         undoList: List(),
         redoList: List(),
         cells: List(),
         focusIndex: null,
     });
-    return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits]);
+    return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits || '']);
 };
 
 export const modelHelpers = {
@@ -80,6 +82,7 @@ export const modelHelpers = {
         undoList.forEach(action => {
             grid = modelHelpers.applyAction(grid, action)
         });
+        grid = modelHelpers.highlightErrorCells(grid);
         return grid
             .set('undoList', undoList)
             .set('redoList', redoList);
@@ -93,8 +96,8 @@ export const modelHelpers = {
         const last = redoList.last();
         redoList = redoList.pop();
         grid = modelHelpers.applyAction(grid, last);
-        return grid
-            .set('redoList', redoList);
+        grid = modelHelpers.highlightErrorCells(grid);
+        return grid.set('redoList', redoList);
     },
 
     gameOverCheck: (grid) => {
@@ -161,13 +164,22 @@ export const modelHelpers = {
     },
 
     updateSelectedCells: (grid, opName, ...args) => {
+        const mode = grid.get('mode');
+        if (mode === 'enter' && opName === 'togglePencilMark') {
+            opName = 'setDigit';
+        }
         const op = modelHelpers[opName + 'AsAction'];
         if (!op) {
             console.log(`Unknown cell update operation: '${opName}'`);
             return grid;
         }
         const action = op(grid, opName, ...args);
-        return modelHelpers.applyAction(grid, action);
+        grid = modelHelpers.applyAction(grid, action);
+        grid = modelHelpers.highlightErrorCells(grid);
+        if (mode === 'enter' && opName === 'setDigit') {
+            grid = modelHelpers.autoAdvanceFocus(grid);
+        }
+        return grid;
     },
 
     setDigitAsAction: (grid, opName, newDigit) => {
@@ -204,8 +216,8 @@ export const modelHelpers = {
         return [ 'setCellProperties', cellUpdates ];
     },
 
-    togglePencilMarkAsAction: (grid, opName, mode, digit) => {
-        const setKey = mode === 'outer' ? 'outerPencils' : 'innerPencils';
+    togglePencilMarkAsAction: (grid, opName, digit, target) => {
+        const setKey = target === 'outer' ? 'outerPencils' : 'innerPencils';
         const cellUpdates = grid.get('cells')
             .filter(c => c.get('digit') === '0' && c.get('selected'))
             .map(c => {
@@ -216,6 +228,16 @@ export const modelHelpers = {
                 return [ c.get('index'), Map({[setKey]: pencilMarks}) ];
             });
         return [ 'setCellProperties', cellUpdates ];
+    },
+
+    highlightErrorCells: (grid) => {
+        const mode = grid.get('mode');
+        if (mode !== 'enter') {
+            return grid;
+        }
+        const result = modelHelpers.checkGridForErrors(grid);
+        grid = modelHelpers.applyErrorHighlights(grid, result.isError || {});
+        return grid;
     },
 
     applyCellOp: (grid, opName, ...args) => {
@@ -267,6 +289,27 @@ export const modelHelpers = {
         }
         const operation = isExtend ? 'extendSelection' : 'setSelection';
         return modelHelpers.applyCellOp(grid, operation, focusIndex);
+    },
+
+    autoAdvanceFocus: (grid) => {
+        const cells = grid.get('cells')
+        const focusIndex = grid.get('focusIndex');
+        const focusCell = cells.toList().get(focusIndex);
+        if (focusCell && focusCell.get('isError')) {
+            return grid;
+        }
+        if (cells.filter(c => c.get('selected')).count() !== 1) {
+            return grid;
+        }
+        grid = modelHelpers.moveFocus(grid, 1, 0, false);
+        if (grid.get('focusIndex') % 9 === 0) {
+            grid = modelHelpers.moveFocus(grid, 0, 1, false);
+        }
+        return grid;
+    },
+
+    asDigits: (grid) => {
+        return grid.get('cells').map(c => c.get('digit')).join('');
     },
 
 }

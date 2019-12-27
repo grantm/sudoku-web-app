@@ -15,9 +15,11 @@ const KEYCODE = {
     D: 68,
 }
 
-const defaultGrid = newSudokuModel(
-    '000001230123008040804007650765000000000000000000000123012300804080400765076500000'
-);
+function initialGridFromURL () {
+    const params = new URLSearchParams(window.location.search);
+    const digits = params.get("s");
+    return newSudokuModel(digits);
+}
 
 function indexFromCellEvent (e) {
     return parseInt(e.target.dataset.cellIndex, 10);
@@ -44,50 +46,69 @@ function docKeyHandler (e, setGrid) {
     if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
         const key = String.fromCharCode(e.keyCode);
         if (e.ctrlKey) {
-            return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', 'inner', key));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', key, 'inner'));
         }
         else if (e.shiftKey) {
-            return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', 'outer', key));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', key, 'outer'));
         }
         else {
-            return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
         }
+        return;
     }
     else if (e.key === "Backspace" || e.key === "Delete") {
-        return setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));
+        setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));
+        return;
     }
     else if (e.key === "Escape") {
-        return setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
+        return;
     }
     else if (e.key === "z" && e.ctrlKey) {
-        return setGrid((grid) => modelHelpers.undoOneAction(grid));
+        setGrid((grid) => modelHelpers.undoOneAction(grid));
+        return;
     }
     else if (e.key === "y" && e.ctrlKey) {
-        return setGrid((grid) => modelHelpers.redoOneAction(grid));
+        setGrid((grid) => modelHelpers.redoOneAction(grid));
+        return;
     }
     else if (e.key === "ArrowRight" || e.keyCode === KEYCODE.D) {
-        return setGrid((grid) => modelHelpers.moveFocus(grid, 1, 0, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, 1, 0, e.ctrlKey));
+        e.preventDefault();
+        return;
     }
     else if (e.key === "ArrowLeft" || e.keyCode === KEYCODE.A) {
-        return setGrid((grid) => modelHelpers.moveFocus(grid, -1, 0, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, -1, 0, e.ctrlKey));
+        e.preventDefault();
+        return;
     }
     else if (e.key === "ArrowUp" || e.keyCode === KEYCODE.W) {
-        return setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, e.ctrlKey));
+        e.preventDefault();
+        return;
     }
     else if (e.key === "ArrowDown" || e.keyCode === KEYCODE.S) {
-        return setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, e.ctrlKey));
+        e.preventDefault();
+        return;
     }
     else if (e.key === "Enter") {
-        return setGrid((grid) => modelHelpers.gameOverCheck(grid));
+        setGrid((grid) => modelHelpers.gameOverCheck(grid));
+        return;
     }
     else if (e.key === "Home") {
-        return setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
+        return;
     }
     // else { console.log('keydown event:', e); }
 }
 
 function App() {
-    const [grid, setGrid] = useState(defaultGrid);
+    const [grid, setGrid] = useState(initialGridFromURL);
+    const mode = grid.get('mode');
+    const startButton = mode === 'enter'
+        ? <a href={'?s=' + modelHelpers.asDigits(grid)}>Start</a>
+        : null;
 
     const mouseDownHandler = useCallback(
         (e) => cellMouseDownHandler(e, setGrid),
@@ -109,12 +130,20 @@ function App() {
     );
 
     return (
-        <div className="app">
+        <div className={`sudoku-app mode-${mode}`}>
             <SudokuGrid
                 grid={grid}
                 mouseDownHandler={mouseDownHandler}
                 mouseOverHandler={mouseOverHandler}
             />
+            <div className="buttons">
+                {startButton}
+            </div>
+            <p>
+                Example puzzle links:
+                &nbsp;<a href="?s=000001230123008040804007650765000000000000000000000123012300804080400765076500000">Easy</a>
+                &nbsp;<a href="?s=000007000051802009200450007000906230000000000069305000800034002300209870000500000">Hard</a>
+            </p>
         </div>
     );
 }

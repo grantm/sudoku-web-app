@@ -1,4 +1,4 @@
-.sudoku-grid {
+.sudoku-app {
     --line-color: #e7e7e7;
     --line-color-bold: #333333;
     --given-digit-color: #333333;
@@ -6,6 +6,9 @@
     --pencil-mark-color: #4444dd;
     --error-fill-color: #ffbbbb;
     --selected-fill-color: #fff49b;
+    --error-selected-fill-color: #ff8c8c;
+    --button-bg-color: #acddfb;
+    --button-text-color: #333333;
     --line-width: 2;
     --line-width-bold: 5;
 }
@@ -30,13 +33,16 @@
     fill: transparent;
 }
 
-
 .cell-bg.error {
     fill: var(--error-fill-color);
 }
 
 .cell-bg.selected {
     fill: var(--selected-fill-color);
+}
+
+.cell-bg.error.selected {
+    fill: var(--error-selected-fill-color);
 }
 
 .cell text.digit {
@@ -53,4 +59,21 @@ text.inner-pencil,
 .outer-pencil text {
     fill: var(--pencil-mark-color);
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.buttons {
+    width: 90vw;
+    text-align: center;
+}
+
+.buttons a {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: bold;
+    padding: 0.4em 0.8em;
+    margin: 0.3em;
+    color: var(--button-text-color);
+    background-color: var(--button-bg-color);
+    border-radius: 0.1em;
 }
