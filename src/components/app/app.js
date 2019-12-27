@@ -28,7 +28,7 @@ function indexFromCellEvent (e) {
 
 function cellMouseDownHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.shiftKey) {
         setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
     }
     else {
@@ -52,6 +52,7 @@ function docKeyHandler (e, setGrid, solved) {
     if (e.altKey) {
         return;     // Don't intercept browser hot-keys
     }
+    const shiftOrCtrl = e.shiftKey || e.ctrlKey;
     if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
         const key = String.fromCharCode(e.keyCode);
         if (e.ctrlKey) {
@@ -83,22 +84,22 @@ function docKeyHandler (e, setGrid, solved) {
         return;
     }
     else if (e.key === "ArrowRight" || e.keyCode === KEYCODE.D) {
-        setGrid((grid) => modelHelpers.moveFocus(grid, 1, 0, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, 1, 0, shiftOrCtrl));
         e.preventDefault();
         return;
     }
     else if (e.key === "ArrowLeft" || e.keyCode === KEYCODE.A) {
-        setGrid((grid) => modelHelpers.moveFocus(grid, -1, 0, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, -1, 0, shiftOrCtrl));
         e.preventDefault();
         return;
     }
     else if (e.key === "ArrowUp" || e.keyCode === KEYCODE.W) {
-        setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, shiftOrCtrl));
         e.preventDefault();
         return;
     }
     else if (e.key === "ArrowDown" || e.keyCode === KEYCODE.S) {
-        setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, e.ctrlKey));
+        setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, shiftOrCtrl));
         e.preventDefault();
         return;
     }
