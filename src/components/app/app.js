@@ -43,6 +43,9 @@ function cellMouseOverHandler (e, setGrid) {
 }
 
 function docKeyHandler (e, setGrid) {
+    if (e.altKey) {
+        return;     // Don't intercept browser hot-keys
+    }
     if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
         const key = String.fromCharCode(e.keyCode);
         if (e.ctrlKey) {
