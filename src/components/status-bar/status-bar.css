@@ -18,11 +18,15 @@
     font-weight: bold;
 }
 
-.menu {
-    position: absolute;
-    right: 0;
+.menu .overlay {
+    position: fixed;
     top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: transparent;
 }
+
 
 .menu button {
     position: absolute;

@@ -69,8 +69,13 @@ function MenuButton ({initialDigits, startTime, endTime}) {
 
     const emailURL = emailShareURL(initialDigits, startTime, endTime);
 
+    const overlay = hidden
+        ? null
+        : <div className="overlay" onClick={() => setHidden(true)} />
+
     return (
         <div className={classes.join(' ')}>
+            { overlay }
             <button onClick={toggleHandler}>{'\u2261'}</button>
             <ul>
                 <li><a href={emailURL}>Share this puzzle via email</a></li>
