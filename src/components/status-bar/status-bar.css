@@ -1,6 +1,8 @@
 
 .status-bar {
+    box-sizing: border-box;
     position: fixed;
+    height: 7.5vh;
     left: 0;
     top: 0;
     width: 100%;
@@ -14,4 +16,57 @@
 .solved .elapsed-time {
     color: var(--solved-text-color);
     font-weight: bold;
+}
+
+.menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.menu button {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    width: 1.6em;
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-size: 6vh;
+    background-color: transparent;
+}
+
+.menu button:hover {
+    background-color: var(--menu-button-hover-color);
+}
+
+.menu.hidden ul {
+    display: none;
+}
+
+.menu ul {
+    position: absolute;
+    right: 10px;
+    top: 1.8em;
+    padding: 6px;
+    margin: 0;
+    border: 1px solid var(--menu-border-color);
+    background-color: var(--menu-bg-color);
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.menu li {
+    white-space: nowrap;
+    list-style: none;
+    padding: 0;
+}
+
+.menu a {
+    display: block;
+    padding: 0.4em 0.8em;
+    text-decoration: none;
+}
+
+.menu a:hover {
+    background-color: var(--menu-hover-bg-color);
 }

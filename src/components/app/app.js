@@ -148,6 +148,7 @@ function App() {
             <StatusBar
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}
+                initialDigits={grid.get('initialDigits')}
             />
             <SudokuGrid
                 grid={grid}

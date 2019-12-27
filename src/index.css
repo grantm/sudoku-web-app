@@ -8,6 +8,10 @@ body {
     --status-bar-text-color: #777777;
     --status-bar-bg-color: #e7e7e7;
     --status-bar-border-color: #c7c7c7;
+    --menu-button-hover-color: #dddddd;
+    --menu-border-color: #888888;
+    --menu-bg-color: #ffffff;
+    --menu-hover-bg-color: #e7e7e7;
     --solved-text-color: #00a000;
     --line-color: #e7e7e7;
     --line-color-bold: #333333;

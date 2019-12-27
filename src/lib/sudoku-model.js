@@ -29,6 +29,7 @@ function newCell(index, digit) {
 export const newSudokuModel = (initialDigits) => {
     const mode = initialDigits ? 'play' : 'enter';
     const grid = Map({
+        initialDigits: '',
         mode,
         startTime: mode === 'play' ? Date.now() : undefined,
         endTime: undefined,
@@ -61,7 +62,9 @@ export const modelHelpers = {
 
     setInitialDigits: (grid, initialDigits) => {
         const cells = Range(0, 81).map(i => newCell(i, initialDigits[i]));
-        return grid.set('cells', cells);
+        return grid
+            .set('initialDigits', initialDigits)
+            .set('cells', cells);
     },
 
     setCellProperties: (grid, cellProps) => {
