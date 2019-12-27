@@ -61,6 +61,7 @@ function docKeyHandler (e, setGrid, solved) {
         else {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
         }
+        e.preventDefault();
         return;
     }
     else if (e.key === "Backspace" || e.key === "Delete") {
