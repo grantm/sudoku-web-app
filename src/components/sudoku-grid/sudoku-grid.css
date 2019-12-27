@@ -1,4 +1,8 @@
 
+.sudoku-grid {
+    text-align: center;
+}
+
 .sudoku-grid > svg {
     width: 80vw;
     height: 80vh;
@@ -52,7 +56,6 @@ text.inner-pencil,
 }
 
 .buttons {
-    width: 90vw;
     text-align: center;
 }
 

@@ -73,8 +73,8 @@ function MenuButton ({initialDigits, startTime, endTime}) {
         <div className={classes.join(' ')}>
             <button onClick={toggleHandler}>{'\u2261'}</button>
             <ul>
-                <li><a href="./">New puzzle</a></li>
-                <li><a href={emailURL}>Share via email</a></li>
+                <li><a href={emailURL}>Share this puzzle via email</a></li>
+                <li><a href="./">Enter a new puzzle</a></li>
             </ul>
         </div>
     )
