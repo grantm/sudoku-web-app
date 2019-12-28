@@ -19,3 +19,4 @@
 * Set initial digits from querystring
 * Input mode for setting initial digits
 * Timer
+* Highlight matching digits & pencil marks
