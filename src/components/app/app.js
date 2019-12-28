@@ -23,16 +23,25 @@ function initialGridFromURL () {
 }
 
 function indexFromCellEvent (e) {
-    return parseInt(e.target.dataset.cellIndex, 10);
+    const index = e.target.dataset.cellIndex;
+    if (index === undefined) {
+        return;
+    }
+    return parseInt(index, 10);
 }
 
 function cellMouseDownHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
-    if (e.ctrlKey || e.shiftKey) {
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
+    if (index === undefined) {
+        setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
     }
     else {
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', index));
+        if (e.ctrlKey || e.shiftKey) {
+            setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
+        }
+        else {
+            setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', index));
+        }
     }
     e.preventDefault();
 }
@@ -148,7 +157,7 @@ function App() {
         : null;
 
     return (
-        <div className={classes.join(' ')}>
+        <div className={classes.join(' ')} onMouseDown={mouseDownHandler}>
             <StatusBar
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}

@@ -282,6 +282,9 @@ export const modelHelpers = {
                 grid = grid.set('matchDigit', '0');
             }
         }
+        else if (opName === 'clearSelection') {
+            grid = grid.set('matchDigit', '0');
+        }
         return grid.set('cells', newCells);
     },
 

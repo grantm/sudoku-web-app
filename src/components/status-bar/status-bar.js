@@ -90,8 +90,10 @@ function StatusBar ({startTime, endTime, initialDigits}) {
     const timer = startTime
         ? <ElapsedTime startTime={startTime} endTime={endTime} />
         : null;
+    const stopPropagation = (e) => e.stopPropagation();
+    
     return (
-        <div className="status-bar">
+        <div className="status-bar" onMouseDown={stopPropagation}>
             {timer}
             <MenuButton
                 initialDigits={initialDigits}
