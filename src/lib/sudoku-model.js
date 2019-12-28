@@ -35,6 +35,7 @@ export const newSudokuModel = (initialDigits) => {
         endTime: undefined,
         undoList: List(),
         redoList: List(),
+        inUndo: false,
         cells: List(),
         focusIndex: null,
         matchDigit: 0,
@@ -87,13 +88,14 @@ export const modelHelpers = {
         if (undoList.size <= 1) {
             return grid;
         }
-        grid = grid.set('cells', List());
+        grid = grid.set('cells', List()).set('inUndo', true);
         const last = undoList.last();
         undoList = undoList.pop();
         redoList = redoList.push(last);
         undoList.forEach(action => {
             grid = modelHelpers.applyAction(grid, action)
         });
+        grid = grid.set('inUndo', false);
         grid = modelHelpers.highlightErrorCells(grid);
         return grid
             .set('undoList', undoList)
@@ -191,9 +193,11 @@ export const modelHelpers = {
         }
         const action = op(grid, opName, ...args);
         grid = modelHelpers.applyAction(grid, action);
-        grid = modelHelpers.highlightErrorCells(grid);
-        if (mode === 'enter' && opName === 'setDigit') {
-            grid = modelHelpers.autoAdvanceFocus(grid);
+        if (!grid.get('inUndo')) {
+            grid = modelHelpers.highlightErrorCells(grid);
+            if (mode === 'enter' && opName === 'setDigit') {
+                grid = modelHelpers.autoAdvanceFocus(grid);
+            }
         }
         return grid;
     },
