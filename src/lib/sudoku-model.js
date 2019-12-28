@@ -37,6 +37,7 @@ export const newSudokuModel = (initialDigits) => {
         redoList: List(),
         cells: List(),
         focusIndex: null,
+        matchDigit: 0,
     });
     return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits || '']);
 };
@@ -271,7 +272,15 @@ export const modelHelpers = {
         }
         const newCells = grid.get('cells').map(c => op(c, ...args));
         if (opName === 'setSelection' || opName === 'extendSelection') {
-            grid = grid.set('focusIndex', args[0]);
+            const currIndex = args[0];
+            grid = grid.set('focusIndex', currIndex);
+            if (opName === 'setSelection') {
+                const currDigit = newCells.get(currIndex).get('digit');
+                grid = grid.set('matchDigit', currDigit);
+            }
+            else {
+                grid = grid.set('matchDigit', '0');
+            }
         }
         return grid.set('cells', newCells);
     },

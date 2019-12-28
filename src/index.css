@@ -19,7 +19,9 @@ body {
     --digit-color: #4444dd;
     --pencil-mark-color: #4444dd;
     --error-fill-color: #ffbbbb;
-    --selected-fill-color: #fff49b;
+    --selected-fill-color: #8bb3ff;
+    --matched-fill-color: #cce3f7;
+    --selected-matched-fill-color: #8bb3ff;
     --solved-fill-color: #b9ffb9;
     --error-selected-fill-color: #ff8c8c;
     --button-bg-color: #acddfb;

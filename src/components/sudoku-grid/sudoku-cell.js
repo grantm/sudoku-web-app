@@ -13,13 +13,23 @@ const outerPencilOffsets = [
     { key: 'cc', x: 49, y: 61 },
 ];
 
-function CellBackground({cell}) {
+function hasPencilledDigit(cell, d) {
+    return cell.get('innerPencils').includes(d) || cell.get('outerPencils').includes(d);
+}
+
+function CellBackground({cell, matchDigit}) {
+    const digit = cell.get('digit')
     const classes = [ 'cell-bg' ];
     if (cell.get('isError')) {
         classes.push('error');
     }
     if (cell.get('selected')) {
         classes.push('selected');
+    }
+    if (matchDigit !== '0') {
+        if (digit === matchDigit || hasPencilledDigit(cell, matchDigit)) {
+            classes.push('matched');
+        }
     }
     return (
         <rect
@@ -111,14 +121,14 @@ function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
 }
 
 
-function SudokuCell({cell, mouseDownHandler, mouseOverHandler}) {
+function SudokuCell({cell, matchDigit, mouseDownHandler, mouseOverHandler}) {
     const classes = [ 'cell' ];
     if (cell.get('isGiven')) {
         classes.push('given');
     }
     return (
         <g className={classes.join(' ')}>
-            <CellBackground cell={cell} />
+            <CellBackground cell={cell} matchDigit={matchDigit} />
             <CellDigit cell={cell} />
             <CellOuterPencilMarks cell={cell} />
             <CellInnerPencilMarks cell={cell} />

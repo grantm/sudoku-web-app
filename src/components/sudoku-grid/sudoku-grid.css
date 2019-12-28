@@ -35,6 +35,14 @@
     fill: var(--error-selected-fill-color);
 }
 
+.cell-bg.matched {
+    fill: var(--matched-fill-color);
+}
+
+.cell-bg.selected.matched {
+    fill: var(--selected-matched-fill-color);
+}
+
 .solved .cell-bg {
     fill: var(--solved-fill-color);
 }

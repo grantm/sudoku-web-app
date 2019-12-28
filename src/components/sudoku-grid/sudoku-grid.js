@@ -6,11 +6,13 @@ import SudokuCell from './sudoku-cell';
 import GridLines from './grid-lines.js';
 
 function SudokuGrid({grid, mouseDownHandler, mouseOverHandler}) {
+    const matchDigit = grid.get('matchDigit');
     const cellContents = grid.get('cells').map((c) => {
         return (
             <SudokuCell
                 key={c.get('location')}
                 cell={c}
+                matchDigit={matchDigit}
                 mouseDownHandler={mouseDownHandler}
                 mouseOverHandler={mouseOverHandler}
             />
