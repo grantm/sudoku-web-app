@@ -205,6 +205,9 @@ export const modelHelpers = {
                     grid = grid.set('matchDigit', digit);
                 }
             }
+            else if (opName === 'clearCell') {
+                grid = grid.set('matchDigit', 0);
+            }
         }
         return grid;
     },
