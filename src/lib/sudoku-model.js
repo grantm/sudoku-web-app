@@ -318,7 +318,7 @@ export const modelHelpers = {
 
     clearSelection: (c) => {
         if (c.get('selected') || c.get('isError')) {
-            return c.set('selected', false).set('isError', false);
+            return c.set('selected', false);
         }
         return c;
     },
