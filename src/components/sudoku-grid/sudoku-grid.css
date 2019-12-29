@@ -23,16 +23,8 @@
     fill: transparent;
 }
 
-.cell-bg.error {
-    fill: var(--error-fill-color);
-}
-
 .cell-bg.selected {
     fill: var(--selected-fill-color);
-}
-
-.cell-bg.error.selected {
-    fill: var(--error-selected-fill-color);
 }
 
 .cell-bg.matched {
@@ -41,6 +33,14 @@
 
 .cell-bg.selected.matched {
     fill: var(--selected-matched-fill-color);
+}
+
+.cell-bg.error.selected {
+    fill: var(--error-selected-fill-color);
+}
+
+.cell-bg.error {
+    fill: var(--error-fill-color);
 }
 
 .solved .cell-bg {
