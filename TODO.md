@@ -7,6 +7,9 @@
 * Help text
 * Tests for model
 * Tests for UI
+* UI themes - in particular a dark mode
+* Allow pasting in a digit string in 'enter' mode
+* Allow copy to digit string
 
 ## Things done
 * Render cell layout and text using SVG+CSS

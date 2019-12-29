@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Sudoku",
+  "name": "Play and share any classic Sudoko puzzle",
   "icons": [
     {
       "src": "favicon.ico",
