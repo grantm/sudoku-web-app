@@ -10,6 +10,8 @@ import SudokuGrid from '../sudoku-grid/sudoku-grid';
 const KEYCODE = {
     digit0: 48,
     digit9: 57,
+    numPadDigit0: 96,
+    numPadDigit9: 105,
     W: 87,
     A: 65,
     S: 83,
@@ -62,16 +64,22 @@ function docKeyHandler (e, setGrid, solved) {
         return;     // Don't intercept browser hot-keys
     }
     const shiftOrCtrl = e.shiftKey || e.ctrlKey;
+    let digit = undefined;
     if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
-        const key = String.fromCharCode(e.keyCode);
+        digit = String.fromCharCode(e.keyCode);
+    }
+    if (KEYCODE.numPadDigit0 <= e.keyCode && e.keyCode <= KEYCODE.numPadDigit9) {
+        digit = String.fromCharCode(KEYCODE.digit0 + e.keyCode - KEYCODE.numPadDigit0);
+    }
+    if (digit !== undefined) {
         if (e.ctrlKey) {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', key, 'inner'));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', digit, 'inner'));
         }
         else if (e.shiftKey) {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', key, 'outer'));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', digit, 'outer'));
         }
         else {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', key));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', digit));
         }
         e.preventDefault();
         return;
