@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import './app.css';
 
 import { newSudokuModel, modelHelpers } from '../../lib/sudoku-model.js';
+import useWindowSize from '../../lib/use-window-size.js';
 
 import StatusBar from '../status-bar/status-bar';
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
@@ -131,6 +132,17 @@ function docKeyHandler (e, setGrid, solved) {
     // else { console.log('keydown event:', e); }
 }
 
+function getDimensions(winSize) {
+    const dim = { ...winSize };
+    dim.orientation = dim.width > dim.height ? 'landscape' : 'portrait';
+    dim.gridLength = Math.min(
+        Math.floor(dim.height * 0.80),
+        Math.floor(dim.width * 0.52)
+    );
+    dim.vkbdWidth = Math.floor(dim.gridLength * 0.65);
+    return dim;
+}
+
 function App() {
     const [grid, setGrid] = useState(initialGridFromURL);
     const solved = grid.get('solved');
@@ -148,7 +160,10 @@ function App() {
         [solved]
     );
 
-    const classes = [`sudoku-app mode-${mode}`];
+    const winSize = useWindowSize();
+    const dimensions = useMemo(() => getDimensions(winSize), [winSize])
+
+    const classes = [`sudoku-app mode-${mode} ${dimensions.orientation}`];
     if (solved) {
         classes.push('solved');
     }
