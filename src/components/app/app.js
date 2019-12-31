@@ -136,15 +136,8 @@ function App() {
     const solved = grid.get('solved');
     const mode = grid.get('mode');
 
-    const mouseDownHandler = useCallback(
-        (e) => cellMouseDownHandler(e, setGrid),
-        [setGrid]
-    );
-
-    const mouseOverHandler = useCallback(
-        (e) => cellMouseOverHandler(e, setGrid),
-        [setGrid]
-    );
+    const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
+    const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
 
     useEffect(
         () => {
@@ -152,7 +145,7 @@ function App() {
             document.addEventListener('keydown', handler);
             return () => document.removeEventListener('keydown', handler);
         },
-        [setGrid, solved]
+        [solved]
     );
 
     const classes = [`sudoku-app mode-${mode}`];
