@@ -2,9 +2,11 @@
 body {
     --vkbd-bg-fill-color: #cccccc;
     --vkbd-button-fill-color: #ffffff;
+    --vkbd-button-text-color: #333333;
     --vkbd-mode-panel-fill-color: #e6e6e6;
+    --vkbd-mode-text-color: #888888;
     --vkbd-active-mode-fill-color: #777777;
-    --vkbd-mode-icon-fill-color: #444444;
+    --vkbd-mode-icon-fill-color: #333333;
     --vkbd-active-mode-icon-fill-color: #eeeeee;
 }
 
@@ -16,8 +18,17 @@ body {
     fill: var(--vkbd-button-fill-color);
 }
 
+.vkbd text,
+.vkbd path {
+    fill: var(--vkbd-button-text-color);
+}
+
 .vkbd-mode-panel .background {
     fill: var(--vkbd-mode-panel-fill-color);
+}
+
+.vkbd-mode-panel text {
+    fill: var(--vkbd-mode-text-color);
 }
 
 .vkbd-mode-panel .button-bg {
@@ -42,4 +53,12 @@ body {
 
 .vkbd .mode-button-icon.active {
     fill: var(--vkbd-active-mode-icon-fill-color);
+}
+
+.vkbd .input-mode-color rect {
+    opacity: 0.7;
+}
+
+.vkbd .input-mode-color.active rect {
+    opacity: 1;
 }

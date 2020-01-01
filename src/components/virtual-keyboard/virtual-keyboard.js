@@ -169,9 +169,12 @@ const buttonIcons = {
         );
     },
 
-    'mode-color': (x, y) => {
+    'mode-color': (x, y, activeClass) => {
         return (
-            <g transform={`translate(${x},${y})`}>
+            <g
+                className={`mode-button-icon input-mode-color ${activeClass}`}
+                transform={`translate(${x},${y})`}
+            >
                 <rect x="20" y="20" width="45" height="45" fill="#ff8080" />
                 <rect x="65" y="20" width="45" height="45" fill="#80b3ff" />
                 <rect x="20" y="65" width="45" height="45" fill="#ffe680" />
@@ -251,6 +254,7 @@ function VkbdModePanel({inputMode, clickHandler}) {
     const digitClass = inputMode === 'digit' ? 'active' : '';
     const outerClass = inputMode === 'outer' ? 'active' : '';
     const innerClass = inputMode === 'inner' ? 'active' : '';
+    const colorClass = inputMode === 'color' ? 'active' : '';
     return (
         <g className={`vkbd-mode-panel input-mode-${inputMode}`}>
             <rect className="background" x="40" y="40" width="920" height="180" rx="20" />
@@ -258,7 +262,7 @@ function VkbdModePanel({inputMode, clickHandler}) {
                 className="mode-label"
                 x="175"
                 y="160"
-                fontSize="80"
+                fontSize="68"
                 textAnchor="middle"
             >
                 Mode:
@@ -271,7 +275,7 @@ function VkbdModePanel({inputMode, clickHandler}) {
             <VkbdButtonIcon btn={{icon: 'mode-digit', left: 320, top: 65, activeClass: digitClass}} />
             <VkbdButtonIcon btn={{icon: 'mode-outer', left: 480, top: 65, activeClass: outerClass}} />
             <VkbdButtonIcon btn={{icon: 'mode-inner', left: 640, top: 65, activeClass: innerClass}} />
-            <VkbdButtonIcon btn={{icon: 'mode-color', left: 800, top: 65}} />
+            <VkbdButtonIcon btn={{icon: 'mode-color', left: 800, top: 65, activeClass: colorClass}} />
             <rect x="320" y="65" width="130" height="130" fill="transparent"
                 data-key-value="input-mode-digit" onClick={clickHandler} onMouseDown={stopPropagation} />
             <rect x="480" y="65" width="130" height="130" fill="transparent"
@@ -288,7 +292,7 @@ export default function VirtualKeyboard({dimensions, inputMode, clickHandler}) {
     return (
         <div className="vkbd">
             <svg version="1.1"
-                style={{width: dimensions.gridLength * 0.8333}}
+                style={{width: dimensions.vkbdWidth}}
                 baseProfile="full"
                 viewBox="0 0 1000 1200"
                 xmlns="http://www.w3.org/2000/svg"

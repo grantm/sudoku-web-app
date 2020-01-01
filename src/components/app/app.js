@@ -220,7 +220,7 @@ function getDimensions(winSize) {
         Math.floor(dim.height * 0.80),
         Math.floor(dim.width * 0.52)
     );
-    dim.vkbdWidth = Math.floor(dim.gridLength * 0.65);
+    dim.vkbdWidth = Math.floor(dim.gridLength * 0.56);
     return dim;
 }
 
