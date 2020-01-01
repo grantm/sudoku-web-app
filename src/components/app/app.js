@@ -18,6 +18,13 @@ const KEYCODE = {
     A: 65,
     S: 83,
     D: 68,
+};
+
+const inputModeFromHotKey = {
+    z: 'digit',
+    x: 'outer',
+    c: 'inner',
+    v: 'color',
 }
 
 function initialGridFromURL () {
@@ -58,7 +65,7 @@ function cellMouseOverHandler (e, setGrid) {
     }
 }
 
-function docKeyHandler (e, setGrid, solved) {
+function docKeyPressHandler (e, setGrid, solved) {
     if (solved) {
         return;
     }
@@ -130,7 +137,27 @@ function docKeyHandler (e, setGrid, solved) {
         setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
         return;
     }
+    else if (e.key === "Control") {
+        setGrid((grid) => modelHelpers.setTempInputMode(grid, 'inner'));
+        return;
+    }
+    else if (e.key === "Shift") {
+        setGrid((grid) => modelHelpers.setTempInputMode(grid, 'outer'));
+        return;
+    }
+    else if (inputModeFromHotKey[e.key]) {
+        setGrid((grid) => modelHelpers.setInputMode(grid, inputModeFromHotKey[e.key]));
+        return;
+    }
     // else { console.log('keydown event:', e); }
+}
+
+function docKeyReleaseHandler(e, setGrid) {
+    if (e.key === "Control" || e.key === 'Shift') {
+        setGrid((grid) => modelHelpers.clearTempInputMode(grid));
+        return;
+    }
+    // else { console.log('keyup event:', e); }
 }
 
 function vkbdClickHandler(e, setGrid, inputMode) {
@@ -202,6 +229,7 @@ function App() {
     const solved = grid.get('solved');
     const mode = grid.get('mode');
     const inputMode = grid.get('inputMode');
+    const tempInputMode = grid.get('tempInputMode');
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
@@ -209,9 +237,14 @@ function App() {
 
     useEffect(
         () => {
-            const handler = (e) => docKeyHandler(e, setGrid, solved);
-            document.addEventListener('keydown', handler);
-            return () => document.removeEventListener('keydown', handler);
+            const pressHandler = (e) => docKeyPressHandler(e, setGrid, solved);
+            document.addEventListener('keydown', pressHandler);
+            const releaseHandler = (e) => docKeyReleaseHandler(e, setGrid);
+            document.addEventListener('keyup', releaseHandler);
+            return () => {
+                document.removeEventListener('keydown', pressHandler)
+                document.removeEventListener('keyup', releaseHandler)
+            };
         },
         [solved]
     );
@@ -244,7 +277,7 @@ function App() {
                 />
                 <VirtualKeyboard
                     dimensions={dimensions}
-                    inputMode={inputMode}
+                    inputMode={tempInputMode || inputMode}
                     clickHandler={vkbdHandler}
                 />
             </div>

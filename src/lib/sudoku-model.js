@@ -32,6 +32,7 @@ export const newSudokuModel = (initialDigits) => {
         initialDigits: '',
         mode,
         inputMode: 'digit',
+        tempInputMode: undefined,
         startTime: mode === 'play' ? Date.now() : undefined,
         endTime: undefined,
         undoList: List(),
@@ -363,6 +364,17 @@ export const modelHelpers = {
             grid = grid.set('inputMode', newMode);
         }
         return grid;
+    },
+
+    setTempInputMode: (grid, newMode) => {
+        if (newMode.match(/^(inner|outer)$/)) {
+            grid = grid.set('tempInputMode', newMode);
+        }
+        return grid;
+    },
+
+    clearTempInputMode: (grid) => {
+        return grid.set('tempInputMode', undefined);
     },
 
     asDigits: (grid) => {
