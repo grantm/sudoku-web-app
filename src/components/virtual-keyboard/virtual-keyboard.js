@@ -2,7 +2,7 @@ import React from 'react';
 
 import "./virtual-keyboard.css";
 
-const baseButton = {
+const landscapePlayBaseButton = {
     width: 200,
     height: 200,
     textX: 100,
@@ -10,7 +10,7 @@ const baseButton = {
     fontSize: 170,
 };
 
-const buttonDefs = [
+const landscapePlayButtonDefs = [
     {
         value: "1",
         left: 40,
@@ -60,8 +60,8 @@ const buttonDefs = [
         value: "delete",
         text: "Delete",
         left: 40,
-        top: 965,
-        width: 445,
+        top: 970,
+        width: 440,
         textX: 222,
         textY: 130,
         fontSize: 90,
@@ -69,10 +69,9 @@ const buttonDefs = [
     {
         value: "check",
         text: "Check",
-        // icon: "check",
         left: 520,
-        top: 965,
-        width: 445,
+        top: 970,
+        width: 440,
         textX: 222,
         textY: 130,
         fontSize: 90,
@@ -80,20 +79,114 @@ const buttonDefs = [
     {
         value: "undo",
         icon: "undo",
-        left: 758,
+        left: 760,
         top: 250,
     },
     {
         value: "redo",
         icon: "redo",
-        left: 758,
+        left: 760,
         top: 490,
     },
     {
         value: "restart",
         icon: "restart",
-        left: 758,
+        left: 760,
         top: 730,
+    },
+];
+
+const portraitPlayBaseButton = {
+    width: 200,
+    height: 200,
+    textX: 100,
+    textY: 160,
+    fontSize: 170,
+};
+
+const portraitPlayButtonDefs = [
+    {
+        value: "1",
+        left: 40,
+        top: 250,
+    },
+    {
+        value: "2",
+        left: 280,
+        top: 250,
+    },
+    {
+        value: "3",
+        left: 520,
+        top: 250,
+    },
+    {
+        value: "4",
+        left: 40,
+        top: 490,
+    },
+    {
+        value: "5",
+        left: 280,
+        top: 490,
+    },
+    {
+        value: "6",
+        left: 520,
+        top: 490,
+    },
+    {
+        value: "7",
+        left: 40,
+        top: 730,
+    },
+    {
+        value: "8",
+        left: 280,
+        top: 730,
+    },
+    {
+        value: "9",
+        left: 520,
+        top: 730,
+    },
+    {
+        value: "delete",
+        text: "Delete",
+        left: 760,
+        top: 730,
+        width: 440,
+        textX: 222,
+        textY: 130,
+        fontSize: 90,
+    },
+    {
+        value: "check",
+        icon: "check",
+        left: 760,
+        top: 250,
+        width: 200,
+        textX: 222,
+        textY: 130,
+        fontSize: 90,
+    },
+    {
+        value: "undo",
+        icon: "undo",
+        left: 760,
+        top: 490,
+    },
+    {
+        value: "redo",
+        icon: "redo",
+        left: 1000,
+        top: 490,
+    },
+    {
+        value: "restart",
+        icon: "restart",
+        left: 1000,
+        top: 250,
     },
 ];
 
@@ -233,10 +326,8 @@ function VkbdButton({btn, clickHandler}) {
     );
 }
 
-function VkbdButtonSet({clickHandler}) {
-    const buttons = buttonDefs.map(def => {
-        const btn = { ...baseButton, ...def };
-        btn.text = btn.text || btn.value;
+function VkbdButtonSet({buttonDefs, clickHandler}) {
+    const buttons = buttonDefs.map(btn => {
         return (
             <VkbdButton key={btn.value} btn={btn} clickHandler={clickHandler} />
         );
@@ -245,12 +336,6 @@ function VkbdButtonSet({clickHandler}) {
 }
 
 function VkbdModePanel({inputMode, clickHandler}) {
-    const currentOffset = {
-        digit: 0,
-        outer: 160,
-        inner: 320,
-        color: 480,
-    }[inputMode];
     const digitClass = inputMode === 'digit' ? 'active' : '';
     const outerClass = inputMode === 'outer' ? 'active' : '';
     const innerClass = inputMode === 'inner' ? 'active' : '';
@@ -288,18 +373,46 @@ function VkbdModePanel({inputMode, clickHandler}) {
     );
 }
 
+function keyboardLayout(dimensions) {
+    const layout = {};
+
+    if (dimensions.orientation === 'portrait') {
+        layout.width = 1240;
+        layout.height = 970;
+
+        layout.buttonDefs = portraitPlayButtonDefs.map(def => {
+            const btn = { ...portraitPlayBaseButton, ...def };
+            btn.text = btn.text || btn.value;
+            return btn;
+        });
+    }
+    else {
+        layout.width = 1000;
+        layout.height = 1210;
+
+        layout.buttonDefs = landscapePlayButtonDefs.map(def => {
+            const btn = { ...landscapePlayBaseButton, ...def };
+            btn.text = btn.text || btn.value;
+            return btn;
+        });
+    }
+
+    return layout;
+}
+
 export default function VirtualKeyboard({dimensions, inputMode, clickHandler}) {
+    const layout = keyboardLayout(dimensions);
     return (
         <div className="vkbd">
             <svg version="1.1"
                 style={{width: dimensions.vkbdWidth}}
                 baseProfile="full"
-                viewBox="0 0 1000 1200"
+                viewBox={`0 0 ${layout.width} ${layout.height}`}
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="vkbd-background" width="100%" height="100%" rx="40" />
                 <VkbdModePanel inputMode={inputMode} clickHandler={clickHandler} />
-                <VkbdButtonSet clickHandler={clickHandler} />
+                <VkbdButtonSet buttonDefs={layout.buttonDefs} clickHandler={clickHandler} />
             </svg>
         </div>
     )

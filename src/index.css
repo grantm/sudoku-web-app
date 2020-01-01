@@ -58,3 +58,7 @@ body {
     justify-content: space-evenly;
     align-items: center;
 }
+
+.portrait .ui-elements {
+    flex-flow: column nowrap;
+}

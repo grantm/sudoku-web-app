@@ -215,12 +215,22 @@ function vkbdClickHandler(e, setGrid, inputMode) {
 
 function getDimensions(winSize) {
     const dim = { ...winSize };
-    dim.orientation = dim.width > dim.height ? 'landscape' : 'portrait';
-    dim.gridLength = Math.min(
-        Math.floor(dim.height * 0.80),
-        Math.floor(dim.width * 0.52)
-    );
-    dim.vkbdWidth = Math.floor(dim.gridLength * 0.56);
+    if (dim.width > dim.height) {
+        dim.orientation = 'landscape';
+        dim.gridLength = Math.min(
+            Math.floor(dim.height * 0.80),
+            Math.floor(dim.width * 0.52)
+        );
+        dim.vkbdWidth = Math.floor(dim.gridLength * 0.56);
+    }
+    else {
+        dim.orientation = 'portrait';
+        dim.gridLength = Math.min(
+            Math.floor(dim.height * 0.54),
+            Math.floor(dim.width * 0.95)
+        );
+        dim.vkbdWidth = Math.floor(dim.gridLength * 0.7);
+    }
     return dim;
 }
 
