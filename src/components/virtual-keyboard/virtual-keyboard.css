@@ -1,0 +1,39 @@
+
+body {
+    --vkbd-bg-fill-color: #cccccc;
+    --vkbd-button-fill-color: #ffffff;
+    --vkbd-mode-panel-fill-color: #e6e6e6;
+    --vkbd-active-mode-fill-color: #777777;
+    --vkbd-mode-icon-fill-color: #444444;
+    --vkbd-active-mode-icon-fill-color: #eeeeee;
+}
+
+.vkbd-background {
+    fill: var(--vkbd-bg-fill-color);
+}
+
+.vkbd-button-bg {
+    fill: var(--vkbd-button-fill-color);
+}
+
+.vkbd-mode-panel .background {
+    fill: var(--vkbd-mode-panel-fill-color);
+}
+
+.vkbd-mode-panel .button-bg {
+    fill: var(--vkbd-button-fill-color);
+}
+
+.vkbd-mode-panel .active-mode-bg {
+    fill: var(--vkbd-active-mode-fill-color);
+    transition: all 120ms ease-in-out;
+}
+
+.vkbd .mode-button-icon {
+    fill: var(--vkbd-mode-icon-fill-color);
+    transition: all 50ms ease-in-out;
+}
+
+.vkbd .mode-button-icon.active {
+    fill: var(--vkbd-active-mode-icon-fill-color);
+}

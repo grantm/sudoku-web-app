@@ -31,6 +31,7 @@ export const newSudokuModel = (initialDigits) => {
     const grid = Map({
         initialDigits: '',
         mode,
+        inputMode: 'digit',
         startTime: mode === 'play' ? Date.now() : undefined,
         endTime: undefined,
         undoList: List(),
@@ -353,6 +354,13 @@ export const modelHelpers = {
         grid = modelHelpers.moveFocus(grid, 1, 0, false);
         if (grid.get('focusIndex') % 9 === 0) {
             grid = modelHelpers.moveFocus(grid, 0, 1, false);
+        }
+        return grid;
+    },
+
+    setInputMode: (grid, newMode) => {
+        if (newMode.match(/^(digit|inner|outer|color)$/)) {
+            grid = grid.set('inputMode', newMode);
         }
         return grid;
     },

@@ -1,10 +1,4 @@
-body {
-  margin: 10vh 0 0 0;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 1.2rem;
-}
-
-.sudoku-app {
+:root {
     --status-bar-text-color: #777777;
     --status-bar-bg-color: #e7e7e7;
     --status-bar-border-color: #c7c7c7;
@@ -28,4 +22,39 @@ body {
     --button-text-color: #333333;
     --line-width: 2;
     --line-width-bold: 5;
+}
+
+html {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.2rem;
+}
+
+#root {
+    box-sizing: border-box;
+    padding-top: 7.5vh;
+    height: 100%;
+    width: 100%;
+}
+
+.sudoku-app {
+    width: 100%;
+    height: 100%;
+}
+
+.ui-elements {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    align-items: center;
 }

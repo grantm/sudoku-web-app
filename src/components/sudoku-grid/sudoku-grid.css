@@ -3,12 +3,6 @@
     text-align: center;
 }
 
-.sudoku-grid > svg {
-    width: 80vw;
-    height: 80vh;
-    margin-top: 5vh;
-}
-
 .sudoku-grid .line {
     stroke: var(--line-color);
     stroke-width: var(--line-width);

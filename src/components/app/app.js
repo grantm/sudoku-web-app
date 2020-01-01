@@ -6,6 +6,7 @@ import useWindowSize from '../../lib/use-window-size.js';
 
 import StatusBar from '../status-bar/status-bar';
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
+import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
 
 // Keycode definitions (independent of shift/ctrl/etc)
 const KEYCODE = {
@@ -132,6 +133,59 @@ function docKeyHandler (e, setGrid, solved) {
     // else { console.log('keydown event:', e); }
 }
 
+function vkbdClickHandler(e, setGrid, inputMode) {
+    e.stopPropagation();
+    e.preventDefault();
+    const keyValue = e.target.dataset.keyValue;
+    if ('0' <= keyValue && keyValue <= '9') {
+        if (e.ctrlKey || inputMode === 'inner') {
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', keyValue, 'inner'));
+        }
+        else if (e.shiftKey || inputMode === 'outer') {
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', keyValue, 'outer'));
+        }
+        else if (inputMode === 'color') {
+            // ToDo: implement coloring
+        }
+        else {
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', keyValue));
+        }
+        return;
+    }
+    else if (keyValue === 'delete') {
+        setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));
+        return;
+    }
+    else if (keyValue === 'check') {
+        setGrid((grid) => modelHelpers.gameOverCheck(grid));
+        return;
+    }
+    else if (keyValue === 'undo') {
+        setGrid((grid) => modelHelpers.undoOneAction(grid));
+        return;
+    }
+    else if (keyValue === 'redo') {
+        setGrid((grid) => modelHelpers.redoOneAction(grid));
+        return;
+    }
+    else if (keyValue === 'restart') {
+        // ToDo: implement restart
+        alert('Sorry, this function is not implemented yet');
+        return;
+    }
+    else if (keyValue.match(/^input-mode-(digit|inner|outer|color)$/)) {
+        const newMode = keyValue.substr(11);
+        setGrid((grid) => modelHelpers.setInputMode(grid, newMode));
+        if (newMode === 'color') {
+            alert('Sorry, this function is not implemented yet');
+        }
+        return;
+    }
+    else {
+        console.log('keyValue:', keyValue);
+    }
+}
+
 function getDimensions(winSize) {
     const dim = { ...winSize };
     dim.orientation = dim.width > dim.height ? 'landscape' : 'portrait';
@@ -147,9 +201,11 @@ function App() {
     const [grid, setGrid] = useState(initialGridFromURL);
     const solved = grid.get('solved');
     const mode = grid.get('mode');
+    const inputMode = grid.get('inputMode');
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
+    const vkbdHandler = useCallback(e => vkbdClickHandler(e, setGrid, inputMode), [inputMode]);
 
     useEffect(
         () => {
@@ -179,22 +235,22 @@ function App() {
                 endTime={grid.get('endTime')}
                 initialDigits={grid.get('initialDigits')}
             />
-            <SudokuGrid
-                grid={grid}
-                mouseDownHandler={mouseDownHandler}
-                mouseOverHandler={mouseOverHandler}
-            />
+            <div className="ui-elements">
+                <SudokuGrid
+                    grid={grid}
+                    dimensions={dimensions}
+                    mouseDownHandler={mouseDownHandler}
+                    mouseOverHandler={mouseOverHandler}
+                />
+                <VirtualKeyboard
+                    dimensions={dimensions}
+                    inputMode={inputMode}
+                    clickHandler={vkbdHandler}
+                />
+            </div>
             <div className="buttons">
                 {startButton}
             </div>
-            {
-                // <p>
-                //     Example puzzle links:
-                //     &nbsp;<a href="?s=000001230123008040804007650765000000000000000000000123012300804080400765076500000">Easy</a>
-                //     &nbsp;<a href="?s=000007000051802009200450007000906230000000000069305000800034002300209870000500000">Hard</a>
-                //     &nbsp;<a href="?s=123456789456789123789123456912345678345608912678912345234567891567891234891234567">Nearly done</a>
-                // </p>
-            }
         </div>
     );
 }
