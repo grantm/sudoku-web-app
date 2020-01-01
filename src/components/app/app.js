@@ -259,7 +259,7 @@ function App() {
         [solved]
     );
 
-    const winSize = useWindowSize();
+    const winSize = useWindowSize(400);
     const dimensions = useMemo(() => getDimensions(winSize), [winSize])
 
     const classes = [`sudoku-app mode-${mode} ${dimensions.orientation}`];
