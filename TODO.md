@@ -1,12 +1,14 @@
 ## Things to do:
 (Not necessarily in priority order)
 
+* Colour completed digits on virtual keyboard
 * Pause timer
-* On-screen buttons for mobile/touch input
 * Cell colouring
+* Allow multiple-cell selection on mobile/touch
 * Help text
 * Tests for model
 * Tests for UI
+* Button to go fullscreen
 * UI themes - in particular a dark mode
 * Allow pasting in a digit string in 'enter' mode
 * Allow copy to digit string
@@ -23,3 +25,6 @@
 * Input mode for setting initial digits
 * Timer
 * Highlight matching digits & pencil marks
+* On-screen buttons for mobile/touch input
+* Adapt screen layout for portrait vs landscape
+* Implement restart

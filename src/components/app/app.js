@@ -7,6 +7,7 @@ import useWindowSize from '../../lib/use-window-size.js';
 import StatusBar from '../status-bar/status-bar';
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
+import ModalContainer from '../modal/modal-container';
 
 // Keycode definitions (independent of shift/ctrl/etc)
 const KEYCODE = {
@@ -196,8 +197,7 @@ function vkbdClickHandler(e, setGrid, inputMode) {
         return;
     }
     else if (keyValue === 'restart') {
-        // ToDo: implement restart
-        alert('Sorry, this function is not implemented yet');
+        setGrid((grid) => modelHelpers.confirmRestart(grid));
         return;
     }
     else if (keyValue.match(/^input-mode-(digit|inner|outer|color)$/)) {
@@ -211,6 +211,10 @@ function vkbdClickHandler(e, setGrid, inputMode) {
     else {
         console.log('keyValue:', keyValue);
     }
+}
+
+function dispatchModalAction(action, setGrid) {
+    setGrid((grid) => modelHelpers.applyModalAction(grid, action));
 }
 
 function getDimensions(winSize) {
@@ -244,6 +248,7 @@ function App() {
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
     const vkbdHandler = useCallback(e => vkbdClickHandler(e, setGrid, inputMode), [inputMode]);
+    const modalHandler = useCallback(a => dispatchModalAction(a, setGrid), [setGrid]);
 
     useEffect(
         () => {
@@ -271,6 +276,13 @@ function App() {
         ? <a href={'?s=' + modelHelpers.asDigits(grid)}>Start</a>
         : null;
 
+    const modal = (
+        <ModalContainer
+            modalState={grid.get('modalState')}
+            modalHandler={modalHandler}
+        />
+    );
+
     return (
         <div className={classes.join(' ')} onMouseDown={mouseDownHandler}>
             <StatusBar
@@ -294,6 +306,7 @@ function App() {
             <div className="buttons">
                 {startButton}
             </div>
+            {modal}
         </div>
     );
 }

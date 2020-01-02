@@ -1,4 +1,5 @@
 :root {
+    --text-color: #333333;
     --status-bar-text-color: #777777;
     --status-bar-bg-color: #e7e7e7;
     --status-bar-border-color: #c7c7c7;
@@ -6,6 +7,11 @@
     --menu-border-color: #888888;
     --menu-bg-color: #ffffff;
     --menu-hover-bg-color: #e7e7e7;
+    --modal-bg-color: #ffffff;
+    --modal-backdrop-color: #00000088;
+    --modal-heading-underline-color: #888888;
+    --modal-button-bg-color: #e0e0e0;
+    --modal-button-danger-bg-color: #ff9e9e;
     --solved-text-color: #00a000;
     --line-color: #e7e7e7;
     --line-color-bold: #333333;

@@ -41,6 +41,7 @@ export const newSudokuModel = (initialDigits) => {
         cells: List(),
         focusIndex: null,
         matchDigit: 0,
+        modalState: undefined,
     });
     return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits || '']);
 };
@@ -114,6 +115,31 @@ export const modelHelpers = {
         grid = modelHelpers.applyAction(grid, last);
         grid = modelHelpers.highlightErrorCells(grid);
         return grid.set('redoList', redoList);
+    },
+
+    confirmRestart: (grid) => {
+        return grid.set('modalState', { modalType: 'confirm-restart'});
+    },
+
+    applyModalAction: (grid, action) => {
+        grid = grid.set('modalState', undefined);
+        if (action === 'cancel') {
+            return grid;
+        }
+        else if (action === 'restart-confirmed') {
+            return modelHelpers.applyRestart(grid);
+        }
+        return grid;
+    },
+
+    applyRestart: (grid) => {
+        let undoList = grid.get('undoList');
+        if (undoList.size <= 1) {
+            return grid;
+        }
+        undoList = List([undoList.get(0), 'Dummy action'])
+        grid = grid.set('undoList', undoList).set('redoList', List());
+        return modelHelpers.undoOneAction(grid);
     },
 
     gameOverCheck: (grid) => {

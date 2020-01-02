@@ -1,0 +1,66 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: var(--modal-backdrop-color);
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    box-sizing: border-box;
+    max-width: 50%;
+    padding: 1em;
+    color: var(--text-color);
+    background-color: var(--modal-bg-color);
+    border-radius: 0.3em;
+    line-height: 130%;
+}
+
+.modal > h1 {
+    margin-top: 0.2em;
+    line-height: 100%;
+    font-size: 150%;
+    padding-bottom: 0.16em;
+    border-bottom: 2px solid var(--modal-heading-underline-color);
+}
+
+.modal .buttons {
+    margin-top: 1.6em;
+    text-align: right;
+}
+
+.modal button {
+    border: none;
+    color: var(--text-color);
+    background-color: var(--modal-button-bg-color);
+    margin-left: 1em;
+    margin-top: 0.3em;
+    min-width: 5em;
+    padding: 0.4em 0.8em;
+    font-size: 100%;
+    font-weight: bold;
+    border-radius: 0.15em;
+}
+
+.modal button.danger {
+    background-color: var(--modal-button-danger-bg-color);
+}
+
+@media screen and (max-width: 500px) {
+
+    .modal {
+        max-width: 90%;
+    }
+}
