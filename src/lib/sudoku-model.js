@@ -46,11 +46,15 @@ export const newSudokuModel = (initialDigits) => {
     return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits || '']);
 };
 
+function actionsBlocked(grid) {
+    return grid.get('solved') || (grid.get('modalState') !== undefined);
+}
+
 export const modelHelpers = {
     CENTER_CELL: 40,
 
     applyAction: (grid, action) => {
-        if (grid.get('solved')) {
+        if (actionsBlocked(grid)) {
             return grid;
         }
         const [actionName, ...args] = action;
@@ -73,7 +77,7 @@ export const modelHelpers = {
     },
 
     setCellProperties: (grid, cellProps) => {
-        if (grid.get('solved')) {
+        if (actionsBlocked(grid)) {
             return grid;
         }
         let cells = grid.get('cells');
@@ -86,6 +90,9 @@ export const modelHelpers = {
     },
 
     undoOneAction: (grid) => {
+        if (actionsBlocked(grid)) {
+            return grid;
+        }
         let undoList = grid.get('undoList');
         let redoList = grid.get('redoList');
         if (undoList.size <= 1) {
@@ -106,6 +113,9 @@ export const modelHelpers = {
     },
 
     redoOneAction: (grid) => {
+        if (actionsBlocked(grid)) {
+            return grid;
+        }
         let redoList = grid.get('redoList');
         if (redoList.size < 1) {
             return grid;
@@ -207,7 +217,7 @@ export const modelHelpers = {
     },
 
     updateSelectedCells: (grid, opName, ...args) => {
-        if (grid.get('solved')) {
+        if (actionsBlocked(grid)) {
             return grid;
         }
         const mode = grid.get('mode');
@@ -304,7 +314,7 @@ export const modelHelpers = {
     },
 
     applyCellOp: (grid, opName, ...args) => {
-        if (grid.get('solved')) {
+        if (actionsBlocked(grid)) {
             return grid;
         }
         const op = modelHelpers[opName];
@@ -386,6 +396,9 @@ export const modelHelpers = {
     },
 
     setInputMode: (grid, newMode) => {
+        if (actionsBlocked(grid)) {
+            return grid;
+        }
         if (newMode.match(/^(digit|inner|outer|color)$/)) {
             grid = grid.set('inputMode', newMode);
         }
@@ -393,6 +406,9 @@ export const modelHelpers = {
     },
 
     setTempInputMode: (grid, newMode) => {
+        if (actionsBlocked(grid)) {
+            return grid;
+        }
         if (newMode.match(/^(inner|outer)$/)) {
             grid = grid.set('tempInputMode', newMode);
         }
