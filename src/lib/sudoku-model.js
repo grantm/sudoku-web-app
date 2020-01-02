@@ -148,7 +148,7 @@ export const modelHelpers = {
             grid = modelHelpers.applyErrorHighlights(grid, result.isError);
         }
         if (result.errorMessage) {
-            alert(result.errorMessage);
+            grid = grid.set('modalState', { modalType: 'check-result', result });
         }
         return grid;
     },

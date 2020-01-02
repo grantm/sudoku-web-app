@@ -45,6 +45,7 @@ function indexFromCellEvent (e) {
 function cellMouseDownHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if (index === undefined) {
+        // Remember, this is a mouseDown handler, not a click handler
         setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
     }
     else {
