@@ -94,26 +94,28 @@ export const modelHelpers = {
     },
 
     undoOneAction: (grid) => {
-        if (actionsBlocked(grid)) {
-            return grid;
-        }
-        let undoList = grid.get('undoList');
-        let redoList = grid.get('redoList');
-        if (undoList.size <= 1) {
-            return grid;
-        }
-        grid = grid.set('cells', List()).set('inUndo', true);
-        const last = undoList.last();
-        undoList = undoList.pop();
-        redoList = redoList.push(last);
-        undoList.forEach(action => {
-            grid = modelHelpers.applyAction(grid, action)
+        return modelHelpers.retainSelection(grid, (grid) => {
+            if (actionsBlocked(grid)) {
+                return grid;
+            }
+            let undoList = grid.get('undoList');
+            let redoList = grid.get('redoList');
+            if (undoList.size <= 1) {
+                return grid;
+            }
+            grid = grid.set('cells', List()).set('inUndo', true);
+            const last = undoList.last();
+            undoList = undoList.pop();
+            redoList = redoList.push(last);
+            undoList.forEach(action => {
+                grid = modelHelpers.applyAction(grid, action)
+            });
+            grid = grid.set('inUndo', false);
+            grid = modelHelpers.highlightErrorCells(grid);
+            return grid
+                .set('undoList', undoList)
+                .set('redoList', redoList);
         });
-        grid = grid.set('inUndo', false);
-        grid = modelHelpers.highlightErrorCells(grid);
-        return grid
-            .set('undoList', undoList)
-            .set('redoList', redoList);
     },
 
     redoOneAction: (grid) => {
@@ -129,6 +131,22 @@ export const modelHelpers = {
         grid = modelHelpers.applyAction(grid, last);
         grid = modelHelpers.highlightErrorCells(grid);
         return grid.set('redoList', redoList);
+    },
+
+    retainSelection: (grid, operation) => {
+        const isSelected = grid.get('cells').filter(c => c.get('selected')).reduce((s, c) => {
+            s[c.get('index')] = true;
+            return s;
+        }, {});
+
+        grid = operation(grid);
+
+        const newCells = grid.get('cells').map(c => {
+            return (c.get('selected') === (isSelected[c.get('index')] || false))
+                ? c
+                : c.set('selected', true);
+        });
+        return grid.set('cells', newCells);
     },
 
     confirmRestart: (grid) => {
