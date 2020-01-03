@@ -287,7 +287,7 @@ function VkbdButtonIcon({btn}) {
         : null;
 }
 
-function VkbdButton({btn, clickHandler}) {
+function VkbdButton({btn, completed, clickHandler}) {
     const content = btn.icon
         ? <VkbdButtonIcon btn={btn} />
         : (
@@ -302,7 +302,7 @@ function VkbdButton({btn, clickHandler}) {
             </text>
         );
     return (
-        <g className="vkbd-button">
+        <g className={`vkbd-button ${completed ? 'completed' : ''}`}>
             <rect
                 className="vkbd-button-bg"
                 x={btn.left}
@@ -326,10 +326,11 @@ function VkbdButton({btn, clickHandler}) {
     );
 }
 
-function VkbdButtonSet({buttonDefs, clickHandler}) {
+function VkbdButtonSet({buttonDefs, completedDigits, clickHandler}) {
     const buttons = buttonDefs.map(btn => {
+        const completed = completedDigits[btn.value];
         return (
-            <VkbdButton key={btn.value} btn={btn} clickHandler={clickHandler} />
+            <VkbdButton key={btn.value} btn={btn} completed={completed} clickHandler={clickHandler} />
         );
     });
     return buttons;
@@ -400,7 +401,7 @@ function keyboardLayout(dimensions) {
     return layout;
 }
 
-export default function VirtualKeyboard({dimensions, inputMode, clickHandler}) {
+export default function VirtualKeyboard({dimensions, inputMode, completedDigits, clickHandler}) {
     const layout = keyboardLayout(dimensions);
     return (
         <div className="vkbd">
@@ -412,7 +413,11 @@ export default function VirtualKeyboard({dimensions, inputMode, clickHandler}) {
             >
                 <rect className="vkbd-background" width="100%" height="100%" rx="40" />
                 <VkbdModePanel inputMode={inputMode} clickHandler={clickHandler} />
-                <VkbdButtonSet buttonDefs={layout.buttonDefs} clickHandler={clickHandler} />
+                <VkbdButtonSet
+                    buttonDefs={layout.buttonDefs}
+                    completedDigits={completedDigits}
+                    clickHandler={clickHandler}
+                />
             </svg>
         </div>
     )

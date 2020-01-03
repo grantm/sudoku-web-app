@@ -245,6 +245,7 @@ function App() {
     const mode = grid.get('mode');
     const inputMode = grid.get('inputMode');
     const tempInputMode = grid.get('tempInputMode');
+    const completedDigits = grid.get('completedDigits');
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
@@ -301,6 +302,7 @@ function App() {
                 <VirtualKeyboard
                     dimensions={dimensions}
                     inputMode={tempInputMode || inputMode}
+                    completedDigits={completedDigits}
                     clickHandler={vkbdHandler}
                 />
             </div>

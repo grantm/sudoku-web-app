@@ -3,6 +3,7 @@ body {
     --vkbd-bg-fill-color: #cccccc;
     --vkbd-button-fill-color: #ffffff;
     --vkbd-button-text-color: #333333;
+    --vkbd-completed-button-text-color: #4cce4c;
     --vkbd-mode-panel-fill-color: #e6e6e6;
     --vkbd-mode-text-color: #888888;
     --vkbd-active-mode-fill-color: #777777;
@@ -21,6 +22,10 @@ body {
 .vkbd text,
 .vkbd path {
     fill: var(--vkbd-button-text-color);
+}
+
+.vkbd .completed text {
+    fill: var(--vkbd-completed-button-text-color);
 }
 
 .vkbd-mode-panel .background {

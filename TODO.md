@@ -1,7 +1,6 @@
 ## Things to do:
 (Not necessarily in priority order)
 
-* Colour completed digits on virtual keyboard
 * Pause timer
 * Cell colouring
 * Allow multiple-cell selection on mobile/touch
@@ -28,3 +27,4 @@
 * On-screen buttons for mobile/touch input
 * Adapt screen layout for portrait vs landscape
 * Implement restart
+* Colour completed digits on virtual keyboard

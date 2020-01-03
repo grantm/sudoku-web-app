@@ -30,6 +30,7 @@ export const newSudokuModel = (initialDigits) => {
     const mode = initialDigits ? 'play' : 'enter';
     const grid = Map({
         initialDigits: '',
+        solved: false,
         mode,
         inputMode: 'digit',
         tempInputMode: undefined,
@@ -40,6 +41,7 @@ export const newSudokuModel = (initialDigits) => {
         inUndo: false,
         cells: List(),
         focusIndex: null,
+        completedDigits: {},
         matchDigit: 0,
         modalState: undefined,
     });
@@ -71,9 +73,11 @@ export const modelHelpers = {
 
     setInitialDigits: (grid, initialDigits) => {
         const cells = Range(0, 81).map(i => newCell(i, initialDigits[i]));
-        return grid
+        grid = grid
             .set('initialDigits', initialDigits)
             .set('cells', cells);
+        return modelHelpers.highlightErrorCells(grid);
+
     },
 
     setCellProperties: (grid, cellProps) => {
@@ -147,6 +151,12 @@ export const modelHelpers = {
         if (undoList.size <= 1) {
             return grid;
         }
+        if (grid.get('solved')) {
+            grid = grid
+                .set('solved', false)
+                .set('startTime', Date.now())
+                .set('endTime', undefined);
+        }
         undoList = List([undoList.get(0), 'Dummy action'])
         grid = grid.set('undoList', undoList).set('redoList', List());
         return modelHelpers.undoOneAction(grid);
@@ -178,6 +188,7 @@ export const modelHelpers = {
     checkGridForErrors: (grid) => {
         const cells = grid.get('cells');
         let incompleteCount = 0;
+        const digitTally = {};
         const type = ['row', 'column', 'box'];
         const seen = [ {}, {}, {} ];
         const isError = {};
@@ -195,10 +206,17 @@ export const modelHelpers = {
                     }
                     seen[t][key] = index;
                 };
+                if(!isError[index]) {
+                    digitTally[digit] = (digitTally[digit] || 0) + 1;
+                }
             }
         });
         const noErrors = Object.keys(isError).length === 0;
         const result = {};
+        result.completedDigits = Object.keys(digitTally).reduce((c, d) => {
+            c[d] = digitTally[d] === 9;
+            return c;
+        }, {});
         const s = incompleteCount === 1 ? '' : 's';
         if (noErrors) {
             if (incompleteCount === 0) {
@@ -300,6 +318,7 @@ export const modelHelpers = {
 
     highlightErrorCells: (grid) => {
         const result = modelHelpers.checkGridForErrors(grid);
+        grid = grid.set('completedDigits', result.completedDigits);
         if (result.allComplete && !grid.get('endTime')) {
             grid = modelHelpers.setGridSolved(grid);
         }
