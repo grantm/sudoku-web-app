@@ -7,6 +7,7 @@ function twoDigits (n) {
 }
 
 function secondsAsHMS (interval) {
+    interval = Math.max(interval, 0);
     const seconds = interval % 60;
     const minutes = Math.floor(interval / 60) % 60;
     const minSec = `${twoDigits(minutes)}:${twoDigits(seconds)}`;
@@ -85,13 +86,12 @@ function MenuButton ({initialDigits, startTime, endTime}) {
     )
 }
 
-
 function StatusBar ({startTime, endTime, initialDigits}) {
     const timer = startTime
         ? <ElapsedTime startTime={startTime} endTime={endTime} />
         : null;
     const stopPropagation = (e) => e.stopPropagation();
-    
+
     return (
         <div className="status-bar" onMouseDown={stopPropagation}>
             {timer}
