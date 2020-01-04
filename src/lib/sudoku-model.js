@@ -10,19 +10,22 @@ function newCell(index, digit) {
     const row = Math.floor(index / 9) + 1;
     const column = (index % 9) + 1;
     return Map({
+        // Properties set at creation and then never changed
         index,
-        digit,
         row,
         column,
         box: Math.floor((row - 1) / 3) * 3 + Math.floor((column - 1) / 3) + 1,
         location: `R${row}C${column}`,
         isGiven: digit !== '0',
-        isError: false,
         x: 50 + (column - 1) * 100,
         y: 50 + (row - 1) * 100,
-        selected: false,
+        // Properties that might change and get serialised for undo/redo
+        digit,
         outerPencils: Set(),
         innerPencils: Set(),
+        // Transient properties that might change but are not preserved by undo
+        isSelected: false,
+        isError: false,
     });
 }
 
@@ -134,7 +137,7 @@ export const modelHelpers = {
     },
 
     retainSelection: (grid, operation) => {
-        const isSelected = grid.get('cells').filter(c => c.get('selected')).reduce((s, c) => {
+        const isSelected = grid.get('cells').filter(c => c.get('isSelected')).reduce((s, c) => {
             s[c.get('index')] = true;
             return s;
         }, {});
@@ -142,9 +145,9 @@ export const modelHelpers = {
         grid = operation(grid);
 
         const newCells = grid.get('cells').map(c => {
-            return (c.get('selected') === (isSelected[c.get('index')] || false))
+            return (c.get('isSelected') === (isSelected[c.get('index')] || false))
                 ? c
-                : c.set('selected', true);
+                : c.set('isSelected', true);
         });
         return grid.set('cells', newCells);
     },
@@ -274,7 +277,7 @@ export const modelHelpers = {
             }
             else if (opName === 'setDigit') {
                 const cells = grid.get('cells');
-                if (cells.count(c => c.get('selected')) === 1) {
+                if (cells.count(c => c.get('isSelected')) === 1) {
                     const digit = cells.get(grid.get('focusIndex')).get('digit');
                     grid = grid.set('matchDigit', digit);
                 }
@@ -288,7 +291,7 @@ export const modelHelpers = {
 
     setDigitAsAction: (grid, opName, newDigit) => {
         const cellUpdates = grid.get('cells')
-            .filter(c => !c.get('isGiven') && c.get('selected') && c.get('digit') !== newDigit)
+            .filter(c => !c.get('isGiven') && c.get('isSelected') && c.get('digit') !== newDigit)
             .map(c => {
                 return [
                     c.get('index'),
@@ -305,7 +308,7 @@ export const modelHelpers = {
 
     clearCellAsAction: (grid) => {
         const cellUpdates = grid.get('cells')
-            .filter(c => !c.get('isGiven') && c.get('selected'))
+            .filter(c => !c.get('isGiven') && c.get('isSelected'))
             .map(c => {
                 return [
                     c.get('index'),
@@ -323,7 +326,7 @@ export const modelHelpers = {
     togglePencilMarkAsAction: (grid, opName, digit, target) => {
         const setKey = target === 'outer' ? 'outerPencils' : 'innerPencils';
         const cellUpdates = grid.get('cells')
-            .filter(c => c.get('digit') === '0' && c.get('selected'))
+            .filter(c => c.get('digit') === '0' && c.get('isSelected'))
             .map(c => {
                 let pencilMarks = c.get(setKey);
                 pencilMarks = pencilMarks.includes(digit)
@@ -379,24 +382,24 @@ export const modelHelpers = {
 
     setSelection: (c, index) => {
         if (c.get('index') === index) {
-            return c.set('selected', true);
+            return c.set('isSelected', true);
         }
-        else if (c.get('selected')) {
-            return c.set('selected', false);
+        else if (c.get('isSelected')) {
+            return c.set('isSelected', false);
         }
         return c;
     },
 
     extendSelection: (c, index) => {
-        if (c.get('index') === index && !c.get('selected')) {
-            return c.set('selected', true);
+        if (c.get('index') === index && !c.get('isSelected')) {
+            return c.set('isSelected', true);
         }
         return c;
     },
 
     clearSelection: (c) => {
-        if (c.get('selected') || c.get('isError')) {
-            return c.set('selected', false);
+        if (c.get('isSelected') || c.get('isError')) {
+            return c.set('isSelected', false);
         }
         return c;
     },
@@ -422,7 +425,7 @@ export const modelHelpers = {
         if (focusCell && focusCell.get('isError')) {
             return grid;
         }
-        if (cells.filter(c => c.get('selected')).count() !== 1) {
+        if (cells.filter(c => c.get('isSelected')).count() !== 1) {
             return grid;
         }
         grid = modelHelpers.moveFocus(grid, 1, 0, false);

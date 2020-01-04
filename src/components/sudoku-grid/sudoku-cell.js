@@ -23,7 +23,7 @@ function CellBackground({cell, matchDigit}) {
     if (cell.get('isError')) {
         classes.push('error');
     }
-    if (cell.get('selected')) {
+    if (cell.get('isSelected')) {
         classes.push('selected');
     }
     if (matchDigit !== '0') {
