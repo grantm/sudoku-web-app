@@ -1,16 +1,4 @@
 
-body {
-    --vkbd-bg-fill-color: #cccccc;
-    --vkbd-button-fill-color: #ffffff;
-    --vkbd-button-text-color: #333333;
-    --vkbd-completed-button-text-color: #4cce4c;
-    --vkbd-mode-panel-fill-color: #e6e6e6;
-    --vkbd-mode-text-color: #888888;
-    --vkbd-active-mode-fill-color: #777777;
-    --vkbd-mode-icon-fill-color: #333333;
-    --vkbd-active-mode-icon-fill-color: #eeeeee;
-}
-
 .vkbd-background {
     fill: var(--vkbd-bg-fill-color);
 }
