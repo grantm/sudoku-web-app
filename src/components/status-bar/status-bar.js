@@ -80,6 +80,12 @@ function MenuButton ({initialDigits, startTime, endTime}) {
             <button onClick={toggleHandler}>{'\u2261'}</button>
             <ul>
                 <li><a href={emailURL}>Share this puzzle via email</a></li>
+                <li>
+                    <a href={`https://www.sudokuwiki.org/sudoku.htm?bd=${initialDigits}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >Open in Sudokuwiki.org solver</a>
+                </li>
                 <li><a href="./">Enter a new puzzle</a></li>
             </ul>
         </div>
