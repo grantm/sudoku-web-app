@@ -62,6 +62,7 @@ export const modelHelpers = {
         if (actionsBlocked(grid)) {
             return grid;
         }
+        const snapshot = modelHelpers.toSnapshotString(grid);
         const [actionName, ...args] = action;
         const f = modelHelpers[actionName];
         if (!f) {
@@ -70,7 +71,7 @@ export const modelHelpers = {
         }
         grid = f(grid, ...args);
         return grid
-            .update('undoList', list => list.push(action))
+            .update('undoList', list => list.push(snapshot))
             .set('redoList', List());
     },
 
@@ -80,7 +81,6 @@ export const modelHelpers = {
             .set('initialDigits', initialDigits)
             .set('cells', cells);
         return modelHelpers.highlightErrorCells(grid);
-
     },
 
     setCellProperties: (grid, cellProps) => {
@@ -98,42 +98,116 @@ export const modelHelpers = {
 
     undoOneAction: (grid) => {
         return modelHelpers.retainSelection(grid, (grid) => {
-            if (actionsBlocked(grid)) {
+            const undoList = grid.get('undoList');
+            if (actionsBlocked(grid) || undoList.size < 1) {
                 return grid;
             }
-            let undoList = grid.get('undoList');
-            let redoList = grid.get('redoList');
-            if (undoList.size <= 1) {
-                return grid;
-            }
-            grid = grid.set('cells', List()).set('inUndo', true);
-            const last = undoList.last();
-            undoList = undoList.pop();
-            redoList = redoList.push(last);
-            undoList.forEach(action => {
-                grid = modelHelpers.applyAction(grid, action)
-            });
-            grid = grid.set('inUndo', false);
-            grid = modelHelpers.highlightErrorCells(grid);
-            return grid
-                .set('undoList', undoList)
-                .set('redoList', redoList);
+            const beforeUndo = modelHelpers.toSnapshotString(grid);
+            const snapshot = undoList.last();
+            grid = modelHelpers.restoreSnapshot(grid, snapshot)
+                .set('undoList', undoList.pop())
+                .update('redoList', list => list.push(beforeUndo));
+            return modelHelpers.highlightErrorCells(grid);
         });
     },
 
     redoOneAction: (grid) => {
-        if (actionsBlocked(grid)) {
-            return grid;
+        return modelHelpers.retainSelection(grid, (grid) => {
+            const redoList = grid.get('redoList');
+            if (actionsBlocked(grid) || redoList.size < 1) {
+                return grid;
+            }
+            const beforeRedo = modelHelpers.toSnapshotString(grid);
+            const snapshot = redoList.last();
+            grid = modelHelpers.restoreSnapshot(grid, snapshot)
+                .set('redoList', redoList.pop())
+                .update('undoList', list => list.push(beforeRedo));
+            return modelHelpers.highlightErrorCells(grid);
+        });
+    },
+
+    toSnapshotString: (grid) => {
+        const cells = grid.get('cells');
+        const snapshot = cells.filter(c => !c.get('isGiven')).map(c => {
+            const index = c.get('index');
+            const digit = c.get('digit');
+            const iPad = index < 10 ? '0' : '';
+            let cs = '';
+            if (digit !== '0') {
+                cs = cs + 'D' + digit;
+            }
+            else {
+                const inner = c.get('innerPencils').toArray().sort().join('');
+                const outer = c.get('outerPencils').toArray().sort().join('');
+                cs = cs +
+                    (outer === '' ? '' : ('T' + outer)) +
+                    (inner === '' ? '' : ('N' + inner));
+            }
+            return cs === '' ? '' : `[${iPad}${index}${cs}]`;
+        }).join('');
+        return snapshot;
+    },
+
+    parseSnapshotString: (snapshot) => {
+        const parsed = {};
+        let i = 0;
+        const length = snapshot.length;
+        let props, index, state;
+        while(i < length) {
+            const char = snapshot[i];
+            if (char === '[') {
+                index = parseInt(snapshot.substr(i + 1, 2), 10);
+                props = {
+                    digit: '0',
+                    innerPencils: [],
+                    outerPencils: [],
+                };
+                state = null;
+                i = i + 2;
+            }
+            else if (char === ']') {
+                parsed[index] = props;
+            }
+            else if (char === 'D') {
+                props.digit = snapshot[i+1];
+                i++;
+            }
+            else if (char === 'T' || char === 'N') {
+                state = char;
+            }
+            else if ('0' <= char && char <= '9') {
+                if (state === 'T') {
+                    props.outerPencils.push(snapshot[i]);
+                }
+                else if (state === 'N') {
+                    props.innerPencils.push(snapshot[i]);
+                }
+            }
+            // else ignore any other character
+            i++;
         }
-        let redoList = grid.get('redoList');
-        if (redoList.size < 1) {
-            return grid;
-        }
-        const last = redoList.last();
-        redoList = redoList.pop();
-        grid = modelHelpers.applyAction(grid, last);
-        grid = modelHelpers.highlightErrorCells(grid);
-        return grid.set('redoList', redoList);
+        return parsed;
+    },
+
+    restoreSnapshot: (grid, snapshot) => {
+        const parsed = modelHelpers.parseSnapshotString(snapshot);
+        const empty = {
+            digit: '0',
+            outerPencils: [],
+            innerPencils: [],
+        };
+        const newCells = grid.get('cells').map(c => {
+            if (!c.get('isGiven')) {
+                const index = c.get('index');
+                const props = parsed[index] || empty;
+                c = c
+                    .set('digit', props.digit)
+                    .set('outerPencils', Set(props.outerPencils))
+                    .set('innerPencils', Set(props.innerPencils));
+            }
+            return c;
+        });
+        return grid.set('cells', newCells);
     },
 
     retainSelection: (grid, operation) => {
@@ -178,9 +252,10 @@ export const modelHelpers = {
                 .set('startTime', Date.now())
                 .set('endTime', undefined);
         }
-        undoList = List([undoList.get(0), 'Dummy action'])
-        grid = grid.set('undoList', undoList).set('redoList', List());
-        return modelHelpers.undoOneAction(grid);
+        const emptySnapshot = '';
+        return modelHelpers.restoreSnapshot(grid, emptySnapshot)
+            .set('undoList', List())
+            .set('redoList', List());
     },
 
     gameOverCheck: (grid) => {
