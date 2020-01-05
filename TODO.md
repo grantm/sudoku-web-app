@@ -2,7 +2,6 @@
 (Not necessarily in priority order)
 
 * Pause timer
-* Cell colouring
 * Allow multiple-cell selection on mobile/touch
 * Help text
 * Tests for model
@@ -28,3 +27,4 @@
 * Adapt screen layout for portrait vs landscape
 * Implement restart
 * Colour completed digits on virtual keyboard
+* Cell colouring

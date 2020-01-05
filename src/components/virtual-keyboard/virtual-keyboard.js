@@ -287,12 +287,26 @@ function VkbdButtonIcon({btn}) {
         : null;
 }
 
-function VkbdButton({btn, completed, clickHandler}) {
-    const content = btn.icon
-        ? <VkbdButtonIcon btn={btn} />
-        : (
+function VkbdButton({btn, inputMode, completed, clickHandler}) {
+    let content;
+    if (btn.icon) {
+        content = <VkbdButtonIcon btn={btn} />;
+    }
+    else if (inputMode === 'color' && btn.value.match(/^[1-9]$/)) {
+        content = (
+            <rect
+                className={`vkbd-button-swatch color-code-${btn.value}`}
+                x={btn.left + 30}
+                y={btn.top + 30}
+                width={btn.width - 60}
+                height={btn.height - 60}
+                rx="5"
+            />
+        );
+    }
+    else {
+        content = (
             <text
-                className="digit"
                 x={btn.left + btn.textX}
                 y={btn.top + btn.textY}
                 fontSize={btn.fontSize}
@@ -301,6 +315,7 @@ function VkbdButton({btn, completed, clickHandler}) {
             {btn.text}
             </text>
         );
+    }
     return (
         <g className={`vkbd-button ${completed ? 'completed' : ''}`}>
             <rect
@@ -326,11 +341,17 @@ function VkbdButton({btn, completed, clickHandler}) {
     );
 }
 
-function VkbdButtonSet({buttonDefs, completedDigits, clickHandler}) {
+function VkbdButtonSet({buttonDefs, inputMode, completedDigits, clickHandler}) {
     const buttons = buttonDefs.map(btn => {
         const completed = completedDigits[btn.value];
         return (
-            <VkbdButton key={btn.value} btn={btn} completed={completed} clickHandler={clickHandler} />
+            <VkbdButton
+                key={btn.value}
+                btn={btn}
+                inputMode={inputMode}
+                completed={completed}
+                clickHandler={clickHandler}
+            />
         );
     });
     return buttons;
@@ -415,6 +436,7 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
                 <VkbdModePanel inputMode={inputMode} clickHandler={clickHandler} />
                 <VkbdButtonSet
                     buttonDefs={layout.buttonDefs}
+                    inputMode={inputMode}
                     completedDigits={completedDigits}
                     clickHandler={clickHandler}
                 />

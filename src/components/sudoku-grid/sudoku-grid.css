@@ -13,31 +13,46 @@
     stroke-width: var(--line-width-bold);
 }
 
-.cell-bg {
+.cell-bg,
+.cell-bg-overlay {
     fill: transparent;
 }
 
-.cell-bg.selected {
+.cell-bg.color-code-1 { fill: var(--cell-bg-1-fill-color); }
+.cell-bg.color-code-2 { fill: var(--cell-bg-2-fill-color); }
+.cell-bg.color-code-3 { fill: var(--cell-bg-3-fill-color); }
+.cell-bg.color-code-4 { fill: var(--cell-bg-4-fill-color); }
+.cell-bg.color-code-5 { fill: var(--cell-bg-5-fill-color); }
+.cell-bg.color-code-6 { fill: var(--cell-bg-6-fill-color); }
+.cell-bg.color-code-7 { fill: var(--cell-bg-7-fill-color); }
+.cell-bg.color-code-8 { fill: var(--cell-bg-8-fill-color); }
+.cell-bg.color-code-9 { fill: var(--cell-bg-9-fill-color); }
+
+.selected .cell-bg-overlay {
     fill: var(--selected-fill-color);
 }
 
-.cell-bg.matched {
+.matched .cell-bg-overlay {
     fill: var(--matched-fill-color);
 }
 
-.cell-bg.selected.matched {
+.selected.matched .cell-bg-overlay {
     fill: var(--selected-matched-fill-color);
 }
 
-.cell-bg.error.selected {
+.error.selected .cell-bg-overlay {
     fill: var(--error-selected-fill-color);
 }
 
-.cell-bg.error {
+.error .cell-bg-overlay {
     fill: var(--error-fill-color);
 }
 
-.solved .cell-bg {
+.cell.error text.digit {
+    fill: var(--error-text-color);
+}
+
+.solved .cell-bg-overlay {
     fill: var(--solved-fill-color);
 }
 

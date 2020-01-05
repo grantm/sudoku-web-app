@@ -16,6 +16,16 @@
     fill: var(--vkbd-completed-button-text-color);
 }
 
+.vkbd-button-swatch.color-code-1 { fill: var(--cell-bg-1-fill-color); }
+.vkbd-button-swatch.color-code-2 { fill: var(--cell-bg-2-fill-color); }
+.vkbd-button-swatch.color-code-3 { fill: var(--cell-bg-3-fill-color); }
+.vkbd-button-swatch.color-code-4 { fill: var(--cell-bg-4-fill-color); }
+.vkbd-button-swatch.color-code-5 { fill: var(--cell-bg-5-fill-color); }
+.vkbd-button-swatch.color-code-6 { fill: var(--cell-bg-6-fill-color); }
+.vkbd-button-swatch.color-code-7 { fill: var(--cell-bg-7-fill-color); }
+.vkbd-button-swatch.color-code-8 { fill: var(--cell-bg-8-fill-color); }
+.vkbd-button-swatch.color-code-9 { fill: var(--cell-bg-9-fill-color); }
+
 .vkbd-mode-panel .background {
     fill: var(--vkbd-mode-panel-fill-color);
 }

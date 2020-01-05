@@ -18,29 +18,22 @@ function hasPencilledDigit(cell, d) {
 }
 
 function CellBackground({cell, matchDigit}) {
-    const digit = cell.get('digit')
-    const classes = [ 'cell-bg' ];
-    if (cell.get('isError')) {
-        classes.push('error');
-    }
-    if (cell.get('isSelected')) {
-        classes.push('selected');
-    }
-    if (matchDigit !== '0') {
-        if (digit === matchDigit || hasPencilledDigit(cell, matchDigit)) {
-            classes.push('matched');
-        }
-    }
-    return (
+    return <>
         <rect
-            className={classes.join(' ')}
+            className={`cell-bg color-code-${cell.get('colorCode')}`}
             x={cell.get('x')}
             y={cell.get('y')}
-            data-cell-index={cell.get('index')}
             width="100"
             height="100"
         />
-    )
+        <rect
+            className="cell-bg-overlay"
+            x={cell.get('x')}
+            y={cell.get('y')}
+            width="100"
+            height="100"
+        />
+    </>
 }
 
 function CellDigit({cell}) {
@@ -125,6 +118,18 @@ function SudokuCell({cell, matchDigit, mouseDownHandler, mouseOverHandler}) {
     const classes = [ 'cell' ];
     if (cell.get('isGiven')) {
         classes.push('given');
+    }
+    if (cell.get('isSelected')) {
+        classes.push('selected');
+    }
+    if (cell.get('isError')) {
+        classes.push('error');
+    }
+    const digit = cell.get('digit')
+    if (matchDigit !== '0') {
+        if (digit === matchDigit || hasPencilledDigit(cell, matchDigit)) {
+            classes.push('matched');
+        }
     }
     return (
         <g className={classes.join(' ')}>

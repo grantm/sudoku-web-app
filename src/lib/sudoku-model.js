@@ -23,6 +23,7 @@ function newCell(index, digit) {
         digit,
         outerPencils: Set(),
         innerPencils: Set(),
+        colorCode: '1',
         // Transient properties that might change but are not preserved by undo
         isSelected: false,
         isError: false,
@@ -132,6 +133,7 @@ export const modelHelpers = {
             const index = c.get('index');
             const digit = c.get('digit');
             const iPad = index < 10 ? '0' : '';
+            const colorCode = c.get('colorCode');
             let cs = '';
             if (digit !== '0') {
                 cs = cs + 'D' + digit;
@@ -142,6 +144,9 @@ export const modelHelpers = {
                 cs = cs +
                     (outer === '' ? '' : ('T' + outer)) +
                     (inner === '' ? '' : ('N' + inner));
+            }
+            if (colorCode !== '1') {
+                cs = cs + 'C' + colorCode;
             }
             return cs === '' ? '' : `[${iPad}${index}${cs}]`;
         }).join('');
@@ -161,6 +166,7 @@ export const modelHelpers = {
                     digit: '0',
                     innerPencils: [],
                     outerPencils: [],
+                    colorCode: 1,
                 };
                 state = null;
                 i = i + 2;
@@ -170,6 +176,10 @@ export const modelHelpers = {
             }
             else if (char === 'D') {
                 props.digit = snapshot[i+1];
+                i++;
+            }
+            else if (char === 'C') {
+                props.colorCode = snapshot[i+1];
                 i++;
             }
             else if (char === 'T' || char === 'N') {
@@ -202,6 +212,7 @@ export const modelHelpers = {
                 const props = parsed[index] || empty;
                 c = c
                     .set('digit', props.digit)
+                    .set('colorCode', props.colorCode)
                     .set('outerPencils', Set(props.outerPencils))
                     .set('innerPencils', Set(props.innerPencils));
             }
@@ -408,6 +419,15 @@ export const modelHelpers = {
                     ? pencilMarks.delete(digit)
                     : pencilMarks.add(digit);
                 return [ c.get('index'), Map({[setKey]: pencilMarks}) ];
+            });
+        return [ 'setCellProperties', cellUpdates ];
+    },
+
+    setCellColorAsAction: (grid, opName, newColorCode) => {
+        const cellUpdates = grid.get('cells')
+            .filter(c => c.get('isSelected'))
+            .map(c => {
+                return [ c.get('index'), Map({colorCode: newColorCode}) ];
             });
         return [ 'setCellProperties', cellUpdates ];
     },

@@ -90,7 +90,7 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', digit, 'outer'));
         }
         else if (e.shiftKey || inputMode === 'color') {
-            // ToDo: implement
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', digit));
         }
         else {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', digit));
@@ -177,7 +177,7 @@ function vkbdClickHandler(e, setGrid, inputMode) {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', keyValue, 'outer'));
         }
         else if (inputMode === 'color') {
-            // ToDo: implement coloring
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', keyValue));
         }
         else {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', keyValue));
@@ -207,9 +207,6 @@ function vkbdClickHandler(e, setGrid, inputMode) {
     else if (keyValue.match(/^input-mode-(digit|inner|outer|color)$/)) {
         const newMode = keyValue.substr(11);
         setGrid((grid) => modelHelpers.setInputMode(grid, newMode));
-        if (newMode === 'color') {
-            alert('Sorry, this function is not implemented yet');
-        }
         return;
     }
     else {
