@@ -275,7 +275,11 @@ function App() {
     }
 
     const startButton = mode === 'enter'
-        ? <a href={'?s=' + modelHelpers.asDigits(grid)}>Start</a>
+        ? (
+            <div className="buttons">
+                <a href={'?s=' + modelHelpers.asDigits(grid)}>Start</a>
+            </div>
+        )
         : null;
 
     const modal = (
@@ -299,15 +303,15 @@ function App() {
                     mouseDownHandler={mouseDownHandler}
                     mouseOverHandler={mouseOverHandler}
                 />
-                <VirtualKeyboard
-                    dimensions={dimensions}
-                    inputMode={tempInputMode || inputMode}
-                    completedDigits={completedDigits}
-                    clickHandler={vkbdHandler}
-                />
-            </div>
-            <div className="buttons">
-                {startButton}
+                <div>
+                    <VirtualKeyboard
+                        dimensions={dimensions}
+                        inputMode={tempInputMode || inputMode}
+                        completedDigits={completedDigits}
+                        clickHandler={vkbdHandler}
+                    />
+                    {startButton}
+                </div>
             </div>
             {modal}
         </div>

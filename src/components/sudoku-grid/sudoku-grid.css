@@ -87,3 +87,8 @@ text.inner-pencil,
     background-color: var(--button-bg-color);
     border-radius: 0.1em;
 }
+
+.portrait .buttons a {
+    font-size: 1rem;
+    margin: 0.2em;
+}
