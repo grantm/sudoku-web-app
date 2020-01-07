@@ -42,14 +42,13 @@ export const newSudokuModel = (initialDigits) => {
         endTime: undefined,
         undoList: List(),
         redoList: List(),
-        inUndo: false,
         cells: List(),
         focusIndex: null,
         completedDigits: {},
         matchDigit: 0,
         modalState: undefined,
     });
-    return modelHelpers.applyAction(grid, ['setInitialDigits', initialDigits || '']);
+    return modelHelpers.setInitialDigits(grid, initialDigits || '');
 };
 
 function actionsBlocked(grid) {
@@ -58,23 +57,6 @@ function actionsBlocked(grid) {
 
 export const modelHelpers = {
     CENTER_CELL: 40,
-
-    applyAction: (grid, action) => {
-        if (actionsBlocked(grid)) {
-            return grid;
-        }
-        const snapshot = modelHelpers.toSnapshotString(grid);
-        const [actionName, ...args] = action;
-        const f = modelHelpers[actionName];
-        if (!f) {
-            console.log(`No helper to apply action: '${actionName}'`);
-            return grid;
-        }
-        grid = f(grid, ...args);
-        return grid
-            .update('undoList', list => list.push(snapshot))
-            .set('redoList', List());
-    },
 
     setInitialDigits: (grid, initialDigits) => {
         const cells = Range(0, 81).map(i => newCell(i, initialDigits[i]));
@@ -346,90 +328,84 @@ export const modelHelpers = {
             return grid;
         }
         const mode = grid.get('mode');
-        if (mode === 'enter' && opName === 'togglePencilMark') {
-            opName = 'setDigit';
-        }
-        const op = modelHelpers[opName + 'AsAction'];
+        const op = modelHelpers[opName + 'AsCellOp'];
         if (!op) {
             console.log(`Unknown cell update operation: '${opName}'`);
             return grid;
         }
-        const action = op(grid, opName, ...args);
-        grid = modelHelpers.applyAction(grid, action);
-        if (!grid.get('inUndo')) {
-            grid = modelHelpers.highlightErrorCells(grid);
-            if (mode === 'enter' && opName === 'setDigit') {
-                grid = modelHelpers.autoAdvanceFocus(grid);
-            }
-            else if (opName === 'setDigit') {
-                const cells = grid.get('cells');
-                if (cells.count(c => c.get('isSelected')) === 1) {
-                    const digit = cells.get(grid.get('focusIndex')).get('digit');
-                    grid = grid.set('matchDigit', digit);
+        const snapshotBefore = modelHelpers.toSnapshotString(grid);
+        const newCells = grid.get('cells')
+            .map(c => {
+                if (c.get('isGiven') || !c.get('isSelected')) {
+                    return c;
                 }
-            }
-            else if (opName === 'clearCell') {
-                grid = grid.set('matchDigit', 0);
+                c = op(c, ...args);
+                return c;
+            });
+        grid = grid.set('cells', newCells);
+        const snapshotAfter = modelHelpers.toSnapshotString(grid);
+        if (mode === 'play' && snapshotAfter === snapshotBefore) {
+            return grid;
+        }
+        grid = modelHelpers.highlightErrorCells(grid);
+        if (mode === 'enter' && opName === 'setDigit') {
+            grid = modelHelpers.autoAdvanceFocus(grid);
+        }
+        else if (opName === 'setDigit') {
+            const cells = grid.get('cells');
+            if (cells.count(c => c.get('isSelected')) === 1) {
+                const digit = cells.get(grid.get('focusIndex')).get('digit');
+                grid = grid.set('matchDigit', digit);
             }
         }
-        return grid;
+        else if (opName === 'clearCell') {
+            grid = grid.set('matchDigit', 0);
+        }
+        return grid
+            .update('undoList', list => list.push(snapshotBefore))
+            .set('redoList', List());
     },
 
-    setDigitAsAction: (grid, opName, newDigit) => {
-        const cellUpdates = grid.get('cells')
-            .filter(c => !c.get('isGiven') && c.get('isSelected') && c.get('digit') !== newDigit)
-            .map(c => {
-                return [
-                    c.get('index'),
-                    Map({
-                        'digit': newDigit,
-                        'outerPencils': Set(),
-                        'innerPencils': Set(),
-                        'isError': false,
-                    })
-                ]
-            });
-        return [ 'setCellProperties', cellUpdates ];
+    setDigitAsCellOp: (c, newDigit) => {
+        if (c.get('digit') === newDigit) {
+            return c;
+        }
+        return c.merge({
+            'digit': newDigit,
+            'outerPencils': Set(),
+            'innerPencils': Set(),
+            'isError': false,
+        });
     },
 
-    clearCellAsAction: (grid) => {
-        const cellUpdates = grid.get('cells')
-            .filter(c => !c.get('isGiven') && c.get('isSelected'))
-            .map(c => {
-                return [
-                    c.get('index'),
-                    Map({
-                        'digit': '0',
-                        'outerPencils': Set(),
-                        'innerPencils': Set(),
-                        'isError': false,
-                    })
-                ]
-            });
-        return [ 'setCellProperties', cellUpdates ];
+    clearCellAsCellOp: (c) => {
+        return c.merge({
+            'digit': '0',
+            'outerPencils': Set(),
+            'innerPencils': Set(),
+            'colorCode': 1,
+            'isError': false,
+        });
     },
 
-    togglePencilMarkAsAction: (grid, opName, digit, target) => {
-        const setKey = target === 'outer' ? 'outerPencils' : 'innerPencils';
-        const cellUpdates = grid.get('cells')
-            .filter(c => c.get('digit') === '0' && c.get('isSelected'))
-            .map(c => {
-                let pencilMarks = c.get(setKey);
-                pencilMarks = pencilMarks.includes(digit)
-                    ? pencilMarks.delete(digit)
-                    : pencilMarks.add(digit);
-                return [ c.get('index'), Map({[setKey]: pencilMarks}) ];
-            });
-        return [ 'setCellProperties', cellUpdates ];
+    toggleInnerPencilMarkAsCellOp: (c, digit) => {
+        let pencilMarks = c.get('innerPencils');
+        pencilMarks = pencilMarks.includes(digit)
+            ? pencilMarks.delete(digit)
+            : pencilMarks.add(digit);
+        return c.set('innerPencils', pencilMarks);
     },
 
-    setCellColorAsAction: (grid, opName, newColorCode) => {
-        const cellUpdates = grid.get('cells')
-            .filter(c => c.get('isSelected'))
-            .map(c => {
-                return [ c.get('index'), Map({colorCode: newColorCode}) ];
-            });
-        return [ 'setCellProperties', cellUpdates ];
+    toggleOuterPencilMarkAsCellOp: (c, digit) => {
+        let pencilMarks = c.get('outerPencils');
+        pencilMarks = pencilMarks.includes(digit)
+            ? pencilMarks.delete(digit)
+            : pencilMarks.add(digit);
+        return c.set('outerPencils', pencilMarks);
+    },
+
+    setCellColorAsCellOp: (c, newColorCode) => {
+        return c.set('colorCode', newColorCode);
     },
 
     highlightErrorCells: (grid) => {
@@ -443,12 +419,12 @@ export const modelHelpers = {
     },
 
     setGridSolved: (grid) => {
-        return modelHelpers.applyCellOp(grid, 'clearSelection')
+        return modelHelpers.applySelectionOp(grid, 'clearSelection')
             .set('solved', true)
             .set('endTime', Date.now());
     },
 
-    applyCellOp: (grid, opName, ...args) => {
+    applySelectionOp: (grid, opName, ...args) => {
         if (actionsBlocked(grid)) {
             return grid;
         }
@@ -510,7 +486,7 @@ export const modelHelpers = {
             focusIndex = newRow * 9 + newCol;
         }
         const operation = isExtend ? 'extendSelection' : 'setSelection';
-        return modelHelpers.applyCellOp(grid, operation, focusIndex);
+        return modelHelpers.applySelectionOp(grid, operation, focusIndex);
     },
 
     autoAdvanceFocus: (grid) => {

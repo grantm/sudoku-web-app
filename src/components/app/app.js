@@ -46,14 +46,14 @@ function cellMouseDownHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if (index === undefined) {
         // Remember, this is a mouseDown handler, not a click handler
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
     }
     else {
         if (e.ctrlKey || e.shiftKey) {
-            setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
+            setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
         }
         else {
-            setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', index));
+            setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', index));
         }
     }
     e.preventDefault();
@@ -62,7 +62,7 @@ function cellMouseDownHandler (e, setGrid) {
 function cellMouseOverHandler (e, setGrid) {
     const index = indexFromCellEvent(e);
     if ((e.buttons & 1) === 1) {
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'extendSelection', index));
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
         e.preventDefault();
     }
 }
@@ -84,10 +84,10 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
     }
     if (digit !== undefined) {
         if (e.ctrlKey || inputMode === 'inner') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', digit, 'inner'));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit));
         }
         else if (e.shiftKey || inputMode === 'outer') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', digit, 'outer'));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', digit));
         }
         else if (e.shiftKey || inputMode === 'color') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', digit));
@@ -103,7 +103,7 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
         return;
     }
     else if (e.key === "Escape") {
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'clearSelection'));
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
         return;
     }
     else if (e.key === "z" && e.ctrlKey) {
@@ -139,7 +139,7 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
         return;
     }
     else if (e.key === "Home") {
-        setGrid((grid) => modelHelpers.applyCellOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
         return;
     }
     else if (e.key === "Control") {
@@ -171,10 +171,10 @@ function vkbdClickHandler(e, setGrid, inputMode) {
     const keyValue = e.target.dataset.keyValue;
     if ('0' <= keyValue && keyValue <= '9') {
         if (e.ctrlKey || inputMode === 'inner') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', keyValue, 'inner'));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', keyValue));
         }
         else if (e.shiftKey || inputMode === 'outer') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'togglePencilMark', keyValue, 'outer'));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', keyValue));
         }
         else if (inputMode === 'color') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', keyValue));
