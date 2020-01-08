@@ -62,10 +62,10 @@ export const modelHelpers = {
 
     setInitialDigits: (grid, initialDigits) => {
         const cells = Range(0, 81).map(i => newCell(i, initialDigits[i]));
-        grid = grid
-            .set('initialDigits', initialDigits)
-            .set('cells', cells);
-        return modelHelpers.highlightErrorCells(grid);
+        return modelHelpers.highlightErrorCells(grid.merge({
+            'initialDigits': initialDigits,
+            'cells': cells,
+        }));
     },
 
     undoOneAction: (grid) => {
@@ -231,10 +231,11 @@ export const modelHelpers = {
             return grid;
         }
         if (grid.get('solved')) {
-            grid = grid
-                .set('solved', false)
-                .set('startTime', Date.now())
-                .set('endTime', undefined);
+            grid = grid.merge({
+                'solved': false,
+                'startTime': Date.now(),
+                'endTime': undefined,
+            })
         }
         const emptySnapshot = '';
         return modelHelpers.restoreSnapshot(grid, emptySnapshot)
