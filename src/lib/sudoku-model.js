@@ -24,6 +24,8 @@ function newCell(index, digit) {
         outerPencils: Set(),
         innerPencils: Set(),
         colorCode: '1',
+        // Cache for serialised version of above properties
+        snapshot: '',
         // Transient properties that might change but are not preserved by undo
         isSelected: false,
         isError: false,
@@ -66,19 +68,6 @@ export const modelHelpers = {
         return modelHelpers.highlightErrorCells(grid);
     },
 
-    setCellProperties: (grid, cellProps) => {
-        if (actionsBlocked(grid)) {
-            return grid;
-        }
-        let cells = grid.get('cells');
-        cellProps.forEach(cellUpdate => {
-            const [index, propUpdates] = cellUpdate;
-            const c = cells.get(index).merge(propUpdates);
-            cells = cells.map(cell => cell.get('index') === index ? c : cell);
-        });
-        return grid.set('cells', cells);
-    },
-
     undoOneAction: (grid) => {
         return modelHelpers.retainSelection(grid, (grid) => {
             const undoList = grid.get('undoList');
@@ -109,75 +98,73 @@ export const modelHelpers = {
         });
     },
 
+    updateSnapshotCache: (c) => {
+        const digit = c.get('digit');
+        const colorCode = c.get('colorCode');
+        let cs = '';
+        if (digit !== '0') {
+            cs = cs + 'D' + digit;
+        }
+        else {
+            const inner = c.get('innerPencils').toArray().sort().join('');
+            const outer = c.get('outerPencils').toArray().sort().join('');
+            cs = cs +
+                (outer === '' ? '' : ('T' + outer)) +
+                (inner === '' ? '' : ('N' + inner));
+        }
+        if (colorCode !== '1') {
+            cs = cs + 'C' + colorCode;
+        }
+        return c.set('snapshot', cs);
+    },
+
     toSnapshotString: (grid) => {
         const cells = grid.get('cells');
-        const snapshot = cells.filter(c => !c.get('isGiven')).map(c => {
+        const snapshot = cells.filter(c => {
+            return c.get('snapshot') !== '';
+        }).map(c => {
             const index = c.get('index');
-            const digit = c.get('digit');
-            const iPad = index < 10 ? '0' : '';
-            const colorCode = c.get('colorCode');
-            let cs = '';
-            if (digit !== '0') {
-                cs = cs + 'D' + digit;
-            }
-            else {
-                const inner = c.get('innerPencils').toArray().sort().join('');
-                const outer = c.get('outerPencils').toArray().sort().join('');
-                cs = cs +
-                    (outer === '' ? '' : ('T' + outer)) +
-                    (inner === '' ? '' : ('N' + inner));
-            }
-            if (colorCode !== '1') {
-                cs = cs + 'C' + colorCode;
-            }
-            return cs === '' ? '' : `[${iPad}${index}${cs}]`;
-        }).join('');
+            return (index < 10 ? '0' : '') + index + c.get('snapshot');
+        }).toArray().join(',');
         return snapshot;
     },
 
     parseSnapshotString: (snapshot) => {
         const parsed = {};
-        let i = 0;
-        const length = snapshot.length;
-        let props, index, state;
-        while(i < length) {
-            const char = snapshot[i];
-            if (char === '[') {
-                index = parseInt(snapshot.substr(i + 1, 2), 10);
-                props = {
-                    digit: '0',
-                    innerPencils: [],
-                    outerPencils: [],
-                    colorCode: 1,
-                };
-                state = null;
-                i = i + 2;
-            }
-            else if (char === ']') {
-                parsed[index] = props;
-            }
-            else if (char === 'D') {
-                props.digit = snapshot[i+1];
-                i++;
-            }
-            else if (char === 'C') {
-                props.colorCode = snapshot[i+1];
-                i++;
-            }
-            else if (char === 'T' || char === 'N') {
-                state = char;
-            }
-            else if ('0' <= char && char <= '9') {
-                if (state === 'T') {
-                    props.outerPencils.push(snapshot[i]);
+        snapshot.split(',').forEach(csn => {
+            const props = {
+                digit: '0',
+                innerPencils: [],
+                outerPencils: [],
+                colorCode: '1',
+            };
+            const index = parseInt(csn.substr(0, 2), 10);
+            let state = null;
+            for(let i = 2; i < csn.length; i++) {
+                const char = csn[i];
+                if (char === 'D') {
+                    props.digit = csn[i+1];
+                    i++;
                 }
-                else if (state === 'N') {
-                    props.innerPencils.push(snapshot[i]);
+                else if (char === 'C') {
+                    props.colorCode = csn[i+1];
+                    i++;
                 }
+                else if (char === 'T' || char === 'N') {
+                    state = char;
+                }
+                else if ('0' <= char && char <= '9') {
+                    if (state === 'T') {
+                        props.outerPencils.push(csn[i]);
+                    }
+                    else if (state === 'N') {
+                        props.innerPencils.push(csn[i]);
+                    }
+                }
+                // else ignore any other character
             }
-            // else ignore any other character
-            i++;
-        }
+            parsed[index] = props;
+        });
         return parsed;
     },
 
@@ -185,6 +172,7 @@ export const modelHelpers = {
         const parsed = modelHelpers.parseSnapshotString(snapshot);
         const empty = {
             digit: '0',
+            colorCode: '1',
             outerPencils: [],
             innerPencils: [],
         };
@@ -192,11 +180,14 @@ export const modelHelpers = {
             if (!c.get('isGiven')) {
                 const index = c.get('index');
                 const props = parsed[index] || empty;
-                c = c
-                    .set('digit', props.digit)
-                    .set('colorCode', props.colorCode)
-                    .set('outerPencils', Set(props.outerPencils))
-                    .set('innerPencils', Set(props.innerPencils));
+                c = modelHelpers.updateSnapshotCache(
+                    c.merge({
+                        'digit': props.digit,
+                        'colorCode': props.colorCode,
+                        'outerPencils': Set(props.outerPencils),
+                        'innerPencils': Set(props.innerPencils),
+                    })
+                );
             }
             return c;
         });
@@ -340,7 +331,7 @@ export const modelHelpers = {
                     return c;
                 }
                 c = op(c, ...args);
-                return c;
+                return modelHelpers.updateSnapshotCache(c);
             });
         grid = grid.set('cells', newCells);
         const snapshotAfter = modelHelpers.toSnapshotString(grid);
@@ -383,7 +374,7 @@ export const modelHelpers = {
             'digit': '0',
             'outerPencils': Set(),
             'innerPencils': Set(),
-            'colorCode': 1,
+            'colorCode': '1',
             'isError': false,
         });
     },
