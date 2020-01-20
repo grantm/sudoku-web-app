@@ -381,6 +381,9 @@ export const modelHelpers = {
     },
 
     toggleInnerPencilMarkAsCellOp: (c, digit) => {
+        if (c.get('digit') !== '0') {
+            return c;
+        }
         let pencilMarks = c.get('innerPencils');
         pencilMarks = pencilMarks.includes(digit)
             ? pencilMarks.delete(digit)
@@ -389,6 +392,9 @@ export const modelHelpers = {
     },
 
     toggleOuterPencilMarkAsCellOp: (c, digit) => {
+        if (c.get('digit') !== '0') {
+            return c;
+        }
         let pencilMarks = c.get('outerPencils');
         pencilMarks = pencilMarks.includes(digit)
             ? pencilMarks.delete(digit)
