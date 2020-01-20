@@ -343,12 +343,13 @@ export const modelHelpers = {
         if (mode === 'enter' && opName === 'setDigit') {
             grid = modelHelpers.autoAdvanceFocus(grid);
         }
-        else if (opName === 'setDigit') {
-            const cells = grid.get('cells');
-            if (cells.count(c => c.get('isSelected')) === 1) {
-                const digit = cells.get(grid.get('focusIndex')).get('digit');
-                grid = grid.set('matchDigit', digit);
-            }
+        else if (
+            opName === 'setDigit'
+            || opName === 'toggleInnerPencilMark'
+            || opName === 'toggleOuterPencilMark'
+        ) {
+            const newDigit = args[0];
+            grid = grid.set('matchDigit', newDigit);
         }
         else if (opName === 'clearCell') {
             grid = grid.set('matchDigit', 0);
