@@ -362,6 +362,12 @@ function VkbdModePanel({inputMode, clickHandler}) {
     const outerClass = inputMode === 'outer' ? 'active' : '';
     const innerClass = inputMode === 'inner' ? 'active' : '';
     const colorClass = inputMode === 'color' ? 'active' : '';
+    const activeModeX = {
+        digit: 310,
+        outer: 470,
+        inner: 630,
+        color: 790,
+    }[inputMode];
     return (
         <g className={`vkbd-mode-panel input-mode-${inputMode}`}>
             <rect className="background" x="40" y="40" width="920" height="180" rx="20" />
@@ -378,7 +384,9 @@ function VkbdModePanel({inputMode, clickHandler}) {
             <rect className="button-bg" x="480" y="65" width="130" height="130" rx="15" />
             <rect className="button-bg" x="640" y="65" width="130" height="130" rx="15" />
             <rect className="button-bg" x="800" y="65" width="130" height="130" rx="15" />
-            <rect className="active-mode-bg" width="150" height="150" rx="15" />
+            <rect className="active-mode-bg"
+                x={activeModeX} y="55" width="150" height="150" rx="15"
+            />
             <VkbdButtonIcon btn={{icon: 'mode-digit', left: 320, top: 65, activeClass: digitClass}} />
             <VkbdButtonIcon btn={{icon: 'mode-outer', left: 480, top: 65, activeClass: outerClass}} />
             <VkbdButtonIcon btn={{icon: 'mode-inner', left: 640, top: 65, activeClass: innerClass}} />

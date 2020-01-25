@@ -40,14 +40,8 @@
 
 .vkbd-mode-panel .active-mode-bg {
     fill: var(--vkbd-active-mode-fill-color);
-    x: 310px;
-    y: 55px;
     transition: all 120ms ease-in-out;
 }
-
-.vkbd-mode-panel.input-mode-outer .active-mode-bg { x: 470px; }
-.vkbd-mode-panel.input-mode-inner .active-mode-bg { x: 630px; }
-.vkbd-mode-panel.input-mode-color .active-mode-bg { x: 790px; }
 
 .vkbd .mode-button-icon {
     fill: var(--vkbd-mode-icon-fill-color);
