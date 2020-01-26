@@ -235,6 +235,10 @@ export const modelHelpers = {
                 'solved': false,
                 'startTime': Date.now(),
                 'endTime': undefined,
+                'focusIndex': null,
+                'matchDigit': 0,
+                'completedDigits': {},
+                'inputMode': 'digit',
             })
         }
         const emptySnapshot = '';
