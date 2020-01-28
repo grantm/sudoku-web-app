@@ -5,7 +5,7 @@ import './sudoku-grid.css';
 import SudokuCell from './sudoku-cell';
 import GridLines from './grid-lines.js';
 
-function SudokuGrid({grid, dimensions, mouseDownHandler, mouseOverHandler}) {
+function SudokuGrid({grid, dimensions, isPaused, mouseDownHandler, mouseOverHandler}) {
     const matchDigit = grid.get('matchDigit');
     const cellContents = grid.get('cells').map((c) => {
         return (
@@ -13,6 +13,7 @@ function SudokuGrid({grid, dimensions, mouseDownHandler, mouseOverHandler}) {
                 key={c.get('location')}
                 cell={c}
                 matchDigit={matchDigit}
+                isPaused={isPaused}
                 mouseDownHandler={mouseDownHandler}
                 mouseOverHandler={mouseOverHandler}
             />

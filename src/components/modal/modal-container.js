@@ -2,6 +2,7 @@ import React from 'react';
 
 import ModalConfirmRestart from './modal-confirm-restart.js';
 import ModalCheckResult from './modal-check-result.js';
+import ModalPaused from './modal-paused.js';
 
 import "./modal.css";
 
@@ -23,6 +24,9 @@ export default function ModalContainer({modalState, modalHandler}) {
     }
     else if (modalState.modalType === 'check-result') {
         content = <ModalCheckResult modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === 'paused') {
+        content = <ModalPaused modalState={modalState} modalHandler={modalHandler} />;
     }
     else {
         console.log('<Modal />: Unhandled modalState:', modalState);

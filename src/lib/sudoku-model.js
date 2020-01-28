@@ -42,6 +42,7 @@ export const newSudokuModel = (initialDigits) => {
         tempInputMode: undefined,
         startTime: mode === 'play' ? Date.now() : undefined,
         endTime: undefined,
+        pausedAt: undefined,
         undoList: List(),
         redoList: List(),
         cells: List(),
@@ -221,6 +222,9 @@ export const modelHelpers = {
         }
         else if (action === 'restart-confirmed') {
             return modelHelpers.applyRestart(grid);
+        }
+        else if (action === 'resume-timer') {
+            return modelHelpers.resumeTimer(grid);
         }
         return grid;
     },
@@ -419,6 +423,21 @@ export const modelHelpers = {
         }
         grid = modelHelpers.applyErrorHighlights(grid, result.isError || {});
         return grid;
+    },
+
+    pauseTimer: (grid) => {
+        return grid.merge({
+            pausedAt: Date.now(),
+            modalState: { modalType: 'paused'},
+        });
+    },
+
+    resumeTimer: (grid) => {
+        const elapsed = grid.get('pausedAt') - grid.get('startTime');
+        return grid.merge({
+            pausedAt: undefined,
+            startTime: Date.now() - elapsed,
+        });
     },
 
     setGridSolved: (grid) => {

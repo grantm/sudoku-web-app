@@ -13,9 +13,41 @@
     border-bottom: 1px solid var(--status-bar-border-color);
 }
 
+.elapsed-time {
+    display: inline-block;
+    min-width: 2.8em;
+}
+
 .solved .elapsed-time {
     color: var(--solved-text-color);
     font-weight: bold;
+}
+
+#pause-btn {
+    border: none;
+    padding: 0.5vh;
+    margin: 0;
+    vertical-align: top;
+    background-color: transparent;
+    opacity: 0.5;
+}
+
+#pause-btn i {
+    display: inline-block;
+    margin: 0.2vh;
+    width: 0.8vh;
+    height: 3vh;
+    border-left: 1vh solid #999;
+    border-right: 1vh solid #999;
+}
+
+#pause-btn:hover {
+    background-color: var(--menu-button-hover-color);
+    opacity: 1;
+}
+
+.solved #pause-btn {
+    display: none;
 }
 
 .menu .overlay {
@@ -26,7 +58,6 @@
     right: 0;
     background-color: transparent;
 }
-
 
 .menu button {
     position: absolute;

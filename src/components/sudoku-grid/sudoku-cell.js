@@ -36,8 +36,9 @@ function CellBackground({cell, matchDigit}) {
     </>
 }
 
-function CellDigit({cell}) {
-    if (cell.get('digit') === '0') {
+function CellDigit({cell, isPaused}) {
+    const digit = isPaused ? '?' : cell.get('digit');
+    if (digit === '0') {
         return null;
     }
     return (
@@ -48,7 +49,7 @@ function CellDigit({cell}) {
             fontSize="65"
             textAnchor="middle"
         >
-            {cell.get('digit')}
+            {digit}
         </text>
     );
 }
@@ -114,7 +115,7 @@ function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
 }
 
 
-function SudokuCell({cell, matchDigit, mouseDownHandler, mouseOverHandler}) {
+function SudokuCell({cell, matchDigit, isPaused, mouseDownHandler, mouseOverHandler}) {
     const classes = [ 'cell' ];
     if (cell.get('isGiven')) {
         classes.push('given');
@@ -134,7 +135,7 @@ function SudokuCell({cell, matchDigit, mouseDownHandler, mouseOverHandler}) {
     return (
         <g className={classes.join(' ')}>
             <CellBackground cell={cell} matchDigit={matchDigit} />
-            <CellDigit cell={cell} />
+            <CellDigit cell={cell} isPaused={isPaused} />
             <CellOuterPencilMarks cell={cell} />
             <CellInnerPencilMarks cell={cell} />
             <CellCover

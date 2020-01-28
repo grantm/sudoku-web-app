@@ -16,6 +16,7 @@
     --line-color: #e7e7e7;
     --line-color-bold: #333333;
     --given-digit-color: #333333;
+    --paused-digit-color: #00000033;
     --digit-color: #4444dd;
     --pencil-mark-color: #4444dd;
     --error-fill-color: #ff111133;

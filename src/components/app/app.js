@@ -218,6 +218,10 @@ function dispatchModalAction(action, setGrid) {
     setGrid((grid) => modelHelpers.applyModalAction(grid, action));
 }
 
+function pauseTimer(setGrid) {
+    setGrid((grid) => modelHelpers.pauseTimer(grid));
+}
+
 function getDimensions(winSize) {
     const dim = { ...winSize };
     if (dim.width > dim.height) {
@@ -241,6 +245,7 @@ function getDimensions(winSize) {
 
 function App() {
     const [grid, setGrid] = useState(initialGridFromURL);
+    const pausedAt = grid.get('pausedAt');
     const solved = grid.get('solved');
     const mode = grid.get('mode');
     const inputMode = grid.get('inputMode');
@@ -250,7 +255,8 @@ function App() {
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
     const vkbdHandler = useCallback(e => vkbdClickHandler(e, setGrid, inputMode), [inputMode]);
-    const modalHandler = useCallback(a => dispatchModalAction(a, setGrid), [setGrid]);
+    const modalHandler = useCallback(a => dispatchModalAction(a, setGrid), []);
+    const pauseHandler = useCallback(() => pauseTimer(setGrid), []);
 
     useEffect(
         () => {
@@ -273,6 +279,9 @@ function App() {
     if (solved) {
         classes.push('solved');
     }
+    if (pausedAt) {
+        classes.push('paused');
+    }
 
     const startButton = mode === 'enter'
         ? (
@@ -294,12 +303,15 @@ function App() {
             <StatusBar
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}
+                pausedAt={pausedAt}
+                pauseHandler={pauseHandler}
                 initialDigits={grid.get('initialDigits')}
             />
             <div className="ui-elements">
                 <SudokuGrid
                     grid={grid}
                     dimensions={dimensions}
+                    isPaused={!!pausedAt}
                     mouseDownHandler={mouseDownHandler}
                     mouseOverHandler={mouseOverHandler}
                 />

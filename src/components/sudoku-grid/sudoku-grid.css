@@ -63,7 +63,10 @@
 
 .cell.given text.digit {
     fill: var(--given-digit-color);
-    font-family: Arial, Helvetica, sans-serif;
+}
+
+.paused .cell text.digit {
+    fill: var(--paused-digit-color);
 }
 
 text.inner-pencil,
