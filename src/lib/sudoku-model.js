@@ -138,8 +138,10 @@ export const modelHelpers = {
                 innerPencils: [],
                 outerPencils: [],
                 colorCode: '1',
+                snapshot: '',
             };
             const index = parseInt(csn.substr(0, 2), 10);
+            props.snapshot = csn.substr(2);
             let state = null;
             for(let i = 2; i < csn.length; i++) {
                 const char = csn[i];
@@ -176,19 +178,27 @@ export const modelHelpers = {
             colorCode: '1',
             outerPencils: [],
             innerPencils: [],
+            snapshot: '',
         };
         const newCells = grid.get('cells').map(c => {
-            if (!c.get('isGiven')) {
-                const index = c.get('index');
-                const props = parsed[index] || empty;
-                c = modelHelpers.updateSnapshotCache(
-                    c.merge({
-                        'digit': props.digit,
-                        'colorCode': props.colorCode,
-                        'outerPencils': Set(props.outerPencils),
-                        'innerPencils': Set(props.innerPencils),
-                    })
-                );
+            const index = c.get('index');
+            const props = parsed[index] || empty;
+            if (c.get('isGiven')) {
+                if (c.get('colorCode') !== props.colorCode) {
+                    c = c.merge({
+                        colorCode: props.colorCode,
+                        snapshot: props.snapshot,
+                    });
+                }
+            }
+            else {
+                c = c.merge({
+                    digit: props.digit,
+                    colorCode: props.colorCode,
+                    outerPencils: Set(props.outerPencils),
+                    innerPencils: Set(props.innerPencils),
+                    snapshot: props.snapshot,
+                });
             }
             return c;
         });
@@ -336,11 +346,13 @@ export const modelHelpers = {
         const snapshotBefore = modelHelpers.toSnapshotString(grid);
         const newCells = grid.get('cells')
             .map(c => {
-                if (c.get('isGiven') || !c.get('isSelected')) {
+                const canUpdate = (opName === 'setCellColor' || !c.get('isGiven'));
+                if (canUpdate && c.get('isSelected')) {
+                    return modelHelpers.updateSnapshotCache( op(c, ...args) );
+                }
+                else {
                     return c;
                 }
-                c = op(c, ...args);
-                return modelHelpers.updateSnapshotCache(c);
             });
         grid = grid.set('cells', newCells);
         const snapshotAfter = modelHelpers.toSnapshotString(grid);
