@@ -31,7 +31,12 @@ const inputModeFromHotKey = {
 function initialGridFromURL () {
     const params = new URLSearchParams(window.location.search);
     const digits = params.get("s");
-    return newSudokuModel(digits);
+    const grid = newSudokuModel({
+        initialDigits: digits,
+        storeCurrentSnapshot: sn => document.body.dataset.currentSnapshot = sn,
+    });
+    document.body.dataset.initialDigits = grid.get('initialDigits');
+    return grid;
 }
 
 function indexFromCellEvent (e) {

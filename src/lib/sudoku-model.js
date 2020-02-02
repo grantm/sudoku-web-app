@@ -32,7 +32,7 @@ function newCell(index, digit) {
     });
 }
 
-export const newSudokuModel = (initialDigits) => {
+export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
     const mode = initialDigits ? 'play' : 'enter';
     const grid = Map({
         initialDigits: '',
@@ -45,6 +45,8 @@ export const newSudokuModel = (initialDigits) => {
         pausedAt: undefined,
         undoList: List(),
         redoList: List(),
+        currentSnapshot: '',
+        storeCurrentSnapshot: storeCurrentSnapshot,
         cells: List(),
         focusIndex: null,
         completedDigits: {},
@@ -69,13 +71,24 @@ export const modelHelpers = {
         }));
     },
 
+    setCurrentSnapshot: (grid, newSnapshot) => {
+        if (grid.get('currentSnapshot') !== newSnapshot) {
+            grid = grid.set('currentSnapshot', newSnapshot);
+            const watcher = grid.get('storeCurrentSnapshot');
+            if (watcher) {
+                watcher(newSnapshot);
+            }
+        }
+        return grid;
+    },
+
     undoOneAction: (grid) => {
         return modelHelpers.retainSelection(grid, (grid) => {
             const undoList = grid.get('undoList');
             if (actionsBlocked(grid) || undoList.size < 1) {
                 return grid;
             }
-            const beforeUndo = modelHelpers.toSnapshotString(grid);
+            const beforeUndo = grid.get('currentSnapshot');
             const snapshot = undoList.last();
             grid = modelHelpers.restoreSnapshot(grid, snapshot)
                 .set('undoList', undoList.pop())
@@ -90,7 +103,7 @@ export const modelHelpers = {
             if (actionsBlocked(grid) || redoList.size < 1) {
                 return grid;
             }
-            const beforeRedo = modelHelpers.toSnapshotString(grid);
+            const beforeRedo = grid.get('currentSnapshot');
             const snapshot = redoList.last();
             grid = modelHelpers.restoreSnapshot(grid, snapshot)
                 .set('redoList', redoList.pop())
@@ -202,7 +215,8 @@ export const modelHelpers = {
             }
             return c;
         });
-        return grid.set('cells', newCells);
+        grid = grid.set('cells', newCells);
+        return modelHelpers.setCurrentSnapshot(grid, snapshot);
     },
 
     retainSelection: (grid, operation) => {
@@ -257,8 +271,10 @@ export const modelHelpers = {
         }
         const emptySnapshot = '';
         return modelHelpers.restoreSnapshot(grid, emptySnapshot)
-            .set('undoList', List())
-            .set('redoList', List());
+            .merge({
+                'undoList': List(),
+                'redoList': List(),
+            });
     },
 
     gameOverCheck: (grid) => {
@@ -343,7 +359,7 @@ export const modelHelpers = {
             console.log(`Unknown cell update operation: '${opName}'`);
             return grid;
         }
-        const snapshotBefore = modelHelpers.toSnapshotString(grid);
+        const snapshotBefore = grid.get('currentSnapshot');
         const newCells = grid.get('cells')
             .map(c => {
                 const canUpdate = (opName === 'setCellColor' || !c.get('isGiven'));
@@ -374,9 +390,10 @@ export const modelHelpers = {
         else if (opName === 'clearCell') {
             grid = grid.set('matchDigit', 0);
         }
-        return grid
+        grid = grid
             .update('undoList', list => list.push(snapshotBefore))
             .set('redoList', List());
+        return modelHelpers.setCurrentSnapshot(grid, snapshotAfter);
     },
 
     setDigitAsCellOp: (c, newDigit) => {
