@@ -1,8 +1,11 @@
 ## Things to do:
 (Not necessarily in priority order)
 
-* Pause timer
+* Implement touch event handling
 * Allow multiple-cell selection on mobile/touch
+* Validation of digit string in URL (81 digits + no conflicts)
+* Menu option to clear all pencilmarks
+* Menu option to share with pencilmarks
 * Help text
 * Tests for model
 * Tests for UI
@@ -28,3 +31,4 @@
 * Implement restart
 * Colour completed digits on virtual keyboard
 * Cell colouring
+* Pause timer
