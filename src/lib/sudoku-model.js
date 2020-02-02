@@ -469,6 +469,21 @@ export const modelHelpers = {
         });
     },
 
+    clearPencilmarks: (grid) => {
+        const cells = grid.get('cells');
+        const clearSnapshot = cells.filter(c => !c.get('isGiven') && c.get('digit') !== '0')
+            .map(c => {
+                const index = c.get('index');
+                return (index < 10 ? '0' : '') + index + 'D' + c.get('digit');
+            })
+            .join('');
+        const snapshotBefore = grid.get('currentSnapshot');
+        grid = modelHelpers.restoreSnapshot(grid, clearSnapshot)
+            .update('undoList', list => list.push(snapshotBefore))
+            .set('redoList', List());
+        return modelHelpers.setCurrentSnapshot(grid, clearSnapshot);
+    },
+
     setGridSolved: (grid) => {
         return modelHelpers.applySelectionOp(grid, 'clearSelection')
             .set('solved', true)

@@ -58,7 +58,7 @@ function emailShareURL (initialDigits, startTime, endTime) {
     return `mailto:?${params.toString()}`.replace(/[+]/g, '%20');
 }
 
-function MenuButton ({initialDigits, startTime, endTime}) {
+function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
     const [hidden, setHidden] = useState(true);
     const classes = ['menu'];
     if (hidden) {
@@ -67,7 +67,16 @@ function MenuButton ({initialDigits, startTime, endTime}) {
 
     const toggleHandler = useCallback(
         () => setHidden(h => !h),
-        [setHidden]
+        []
+    );
+
+    const clearPencilmarksHandler = useCallback(
+        e => {
+            e.preventDefault();
+            menuHandler('clear-pencilmarks');
+            setHidden(true);
+        },
+        []
     );
 
     const emailURL = emailShareURL(initialDigits, startTime, endTime);
@@ -81,6 +90,10 @@ function MenuButton ({initialDigits, startTime, endTime}) {
             { overlay }
             <button onClick={toggleHandler}>{'\u2261'}</button>
             <ul>
+                <li>
+                    <a href="./" onClick={clearPencilmarksHandler}
+                    >Clear all pencilmarks</a>
+                </li>
                 <li><a href={emailURL}>Share this puzzle via email</a></li>
                 <li>
                     <a href={`https://www.sudokuwiki.org/sudoku.htm?bd=${initialDigits}`}
@@ -106,7 +119,7 @@ function TimerWithPause({startTime, endTime, pausedAt, pauseHandler}) {
     </>;
 }
 
-function StatusBar ({startTime, endTime, pausedAt, pauseHandler, initialDigits}) {
+function StatusBar ({startTime, endTime, pausedAt, menuHandler, pauseHandler, initialDigits}) {
     return (
         <div className="status-bar" onMouseDown={stopPropagation}>
             <TimerWithPause
@@ -119,6 +132,7 @@ function StatusBar ({startTime, endTime, pausedAt, pauseHandler, initialDigits})
                 initialDigits={initialDigits}
                 startTime={startTime}
                 endTime={endTime}
+                menuHandler={menuHandler}
             />
         </div>
     );

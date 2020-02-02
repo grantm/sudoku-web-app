@@ -223,6 +223,12 @@ function dispatchModalAction(action, setGrid) {
     setGrid((grid) => modelHelpers.applyModalAction(grid, action));
 }
 
+function dispatchMenuAction(action, setGrid) {
+    if (action === 'clear-pencilmarks') {
+        setGrid((grid) => modelHelpers.clearPencilmarks(grid));
+    }
+}
+
 function pauseTimer(setGrid) {
     setGrid((grid) => modelHelpers.pauseTimer(grid));
 }
@@ -261,6 +267,7 @@ function App() {
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
     const vkbdHandler = useCallback(e => vkbdClickHandler(e, setGrid, inputMode), [inputMode]);
     const modalHandler = useCallback(a => dispatchModalAction(a, setGrid), []);
+    const menuHandler = useCallback(a => dispatchMenuAction(a, setGrid), []);
     const pauseHandler = useCallback(() => pauseTimer(setGrid), []);
 
     useEffect(
@@ -309,6 +316,7 @@ function App() {
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}
                 pausedAt={pausedAt}
+                menuHandler={menuHandler}
                 pauseHandler={pauseHandler}
                 initialDigits={grid.get('initialDigits')}
             />
