@@ -76,7 +76,7 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
             menuHandler('clear-pencilmarks');
             setHidden(true);
         },
-        []
+        [menuHandler]
     );
 
     const emailURL = emailShareURL(initialDigits, startTime, endTime);
