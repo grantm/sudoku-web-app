@@ -50,7 +50,7 @@ export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
         cells: List(),
         focusIndex: null,
         completedDigits: {},
-        matchDigit: 0,
+        matchDigit: '0',
         modalState: undefined,
     });
     return modelHelpers.setInitialDigits(grid, initialDigits || '');
@@ -116,7 +116,7 @@ export const modelHelpers = {
         const digit = c.get('digit');
         const colorCode = c.get('colorCode');
         let cs = '';
-        if (digit !== '0') {
+        if (digit !== '0' && !c.get('isGiven')) {
             cs = cs + 'D' + digit;
         }
         else {
@@ -362,7 +362,7 @@ export const modelHelpers = {
         const snapshotBefore = grid.get('currentSnapshot');
         const newCells = grid.get('cells')
             .map(c => {
-                const canUpdate = (opName === 'setCellColor' || !c.get('isGiven'));
+                const canUpdate = (!c.get('isGiven') || opName === 'setCellColor' || opName === 'clearCell');
                 if (canUpdate && c.get('isSelected')) {
                     return modelHelpers.updateSnapshotCache( op(c, ...args) );
                 }
@@ -388,7 +388,7 @@ export const modelHelpers = {
             grid = grid.set('matchDigit', newDigit);
         }
         else if (opName === 'clearCell') {
-            grid = grid.set('matchDigit', 0);
+            grid = grid.set('matchDigit', '0');
         }
         grid = grid
             .update('undoList', list => list.push(snapshotBefore))
@@ -409,12 +409,14 @@ export const modelHelpers = {
     },
 
     clearCellAsCellOp: (c) => {
-        return c.merge({
-            'digit': '0',
-            'outerPencils': Set(),
-            'innerPencils': Set(),
-            'colorCode': '1',
-            'isError': false,
+        return c.get('isGiven')
+        ? c.set('colorCode', '1')
+        : c.merge({
+            digit: '0',
+            outerPencils: Set(),
+            innerPencils: Set(),
+            colorCode: '1',
+            isError: false,
         });
     },
 
