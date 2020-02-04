@@ -478,7 +478,7 @@ export const modelHelpers = {
                 const index = c.get('index');
                 return (index < 10 ? '0' : '') + index + 'D' + c.get('digit');
             })
-            .join('');
+            .join(',');
         const snapshotBefore = grid.get('currentSnapshot');
         grid = modelHelpers.restoreSnapshot(grid, clearSnapshot)
             .update('undoList', list => list.push(snapshotBefore))
