@@ -19,6 +19,8 @@ const KEYCODE = {
     A: 65,
     S: 83,
     D: 68,
+    Y: 89,
+    Z: 90,
 };
 
 const inputModeFromHotKey = {
@@ -111,11 +113,11 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
         return;
     }
-    else if (e.key === "z" && e.ctrlKey) {
+    else if (e.keyCode === KEYCODE.Z && e.ctrlKey) {
         setGrid((grid) => modelHelpers.undoOneAction(grid));
         return;
     }
-    else if (e.key === "y" && e.ctrlKey) {
+    else if (e.keyCode === KEYCODE.Y && e.ctrlKey) {
         setGrid((grid) => modelHelpers.redoOneAction(grid));
         return;
     }
