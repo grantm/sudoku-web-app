@@ -398,7 +398,8 @@ function VkbdModePanel({inputMode, clickHandler}) {
             <rect x="640" y="65" width="130" height="130" fill="transparent"
                 data-key-value="input-mode-inner" onClick={clickHandler} onMouseDown={stopPropagation} />
             <rect x="800" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-color" onClick={clickHandler} onMouseDown={stopPropagation} />
+                data-key-value="input-mode-color" onClick={clickHandler}
+                onDoubleClick={clickHandler} onMouseDown={stopPropagation} />
         </g>
     );
 }

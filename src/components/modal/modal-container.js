@@ -1,8 +1,9 @@
 import React from 'react';
 
-import ModalConfirmRestart from './modal-confirm-restart.js';
-import ModalCheckResult from './modal-check-result.js';
-import ModalPaused from './modal-paused.js';
+import ModalConfirmRestart from './modal-confirm-restart';
+import ModalConfirmClearColorHighlights from './modal-confirm-clear-color-highlights'
+import ModalCheckResult from './modal-check-result';
+import ModalPaused from './modal-paused';
 
 import "./modal.css";
 
@@ -21,6 +22,9 @@ export default function ModalContainer({modalState, modalHandler}) {
     }
     if (modalState.modalType === 'confirm-restart') {
         content = <ModalConfirmRestart modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === 'confirm-clear-color-highlights') {
+        content = <ModalConfirmClearColorHighlights modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === 'check-result') {
         content = <ModalCheckResult modalState={modalState} modalHandler={modalHandler} />;

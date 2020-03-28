@@ -239,6 +239,14 @@ export const modelHelpers = {
         return grid.set('modalState', { modalType: 'confirm-restart'});
     },
 
+    confirmClearColorHighlights: (grid) => {
+        const coloredCount = grid.get('cells').count(c => c.get('colorCode') !== '1')
+        if (coloredCount > 0) {
+            return grid.set('modalState', { modalType: 'confirm-clear-color-highlights'});
+        }
+        return grid;
+    },
+
     applyModalAction: (grid, action) => {
         grid = grid.set('modalState', undefined);
         if (action === 'cancel') {
@@ -246,6 +254,9 @@ export const modelHelpers = {
         }
         else if (action === 'restart-confirmed') {
             return modelHelpers.applyRestart(grid);
+        }
+        else if (action === 'clear-color-highlights-confirmed') {
+            return modelHelpers.applyClearColorHighlights(grid);
         }
         else if (action === 'resume-timer') {
             return modelHelpers.resumeTimer(grid);
@@ -275,6 +286,11 @@ export const modelHelpers = {
                 'undoList': List(),
                 'redoList': List(),
             });
+    },
+
+    applyClearColorHighlights: (grid) => {
+        console.log('Clearing colour highlights')
+        return grid;
     },
 
     gameOverCheck: (grid) => {

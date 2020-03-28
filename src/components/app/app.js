@@ -176,6 +176,12 @@ function vkbdClickHandler(e, setGrid, inputMode) {
     e.stopPropagation();
     e.preventDefault();
     const keyValue = e.target.dataset.keyValue;
+    if (e.type === 'dblclick') {
+        if (keyValue === 'input-mode-color') {
+            setGrid((grid) => modelHelpers.confirmClearColorHighlights(grid));
+        }
+        return;
+    }
     if ('0' <= keyValue && keyValue <= '9') {
         if (e.ctrlKey || inputMode === 'inner') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', keyValue));
