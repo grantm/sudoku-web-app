@@ -287,7 +287,7 @@ function VkbdButtonIcon({btn}) {
         : null;
 }
 
-function VkbdButton({btn, inputMode, completed, clickHandler}) {
+function VkbdButton({btn, inputMode, completed, clickHandler, toolTipText}) {
     let content;
     if (btn.icon) {
         content = <VkbdButtonIcon btn={btn} />;
@@ -316,6 +316,9 @@ function VkbdButton({btn, inputMode, completed, clickHandler}) {
             </text>
         );
     }
+    const toolTip = toolTipText[btn.value]
+        ? <title>{toolTipText[btn.value]}</title>
+        : null;
     return (
         <g className={`vkbd-button ${completed ? 'completed' : ''}`}>
             <rect
@@ -336,12 +339,12 @@ function VkbdButton({btn, inputMode, completed, clickHandler}) {
                 data-key-value={btn.value}
                 onMouseDown={stopPropagation}
                 onClick={clickHandler}
-            />
+            >{toolTip}</rect>
         </g>
     );
 }
 
-function VkbdButtonSet({buttonDefs, inputMode, completedDigits, clickHandler}) {
+function VkbdButtonSet({buttonDefs, inputMode, completedDigits, clickHandler, toolTipText}) {
     const buttons = buttonDefs.map(btn => {
         const completed = completedDigits[btn.value];
         return (
@@ -351,13 +354,14 @@ function VkbdButtonSet({buttonDefs, inputMode, completedDigits, clickHandler}) {
                 inputMode={inputMode}
                 completed={completed}
                 clickHandler={clickHandler}
+                toolTipText={toolTipText}
             />
         );
     });
     return buttons;
 }
 
-function VkbdModePanel({inputMode, clickHandler}) {
+function VkbdModePanel({inputMode, clickHandler, toolTipText}) {
     const digitClass = inputMode === 'digit' ? 'active' : '';
     const outerClass = inputMode === 'outer' ? 'active' : '';
     const innerClass = inputMode === 'inner' ? 'active' : '';
@@ -392,14 +396,18 @@ function VkbdModePanel({inputMode, clickHandler}) {
             <VkbdButtonIcon btn={{icon: 'mode-inner', left: 640, top: 65, activeClass: innerClass}} />
             <VkbdButtonIcon btn={{icon: 'mode-color', left: 800, top: 65, activeClass: colorClass}} />
             <rect x="320" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-digit" onClick={clickHandler} onMouseDown={stopPropagation} />
+                data-key-value="input-mode-digit" onClick={clickHandler} onMouseDown={stopPropagation}
+            ><title>{toolTipText.digit}</title></rect>
             <rect x="480" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-outer" onClick={clickHandler} onMouseDown={stopPropagation} />
+                data-key-value="input-mode-outer" onClick={clickHandler} onMouseDown={stopPropagation}
+            ><title>{toolTipText.outer}</title></rect>
             <rect x="640" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-inner" onClick={clickHandler} onMouseDown={stopPropagation} />
+                data-key-value="input-mode-inner" onClick={clickHandler} onMouseDown={stopPropagation}
+            ><title>{toolTipText.inner}</title></rect>
             <rect x="800" y="65" width="130" height="130" fill="transparent"
                 data-key-value="input-mode-color" onClick={clickHandler}
-                onDoubleClick={clickHandler} onMouseDown={stopPropagation} />
+                onDoubleClick={clickHandler} onMouseDown={stopPropagation}
+            ><title>{toolTipText.color}</title></rect>
         </g>
     );
 }
@@ -433,6 +441,17 @@ function keyboardLayout(dimensions) {
 
 export default function VirtualKeyboard({dimensions, inputMode, completedDigits, clickHandler}) {
     const layout = keyboardLayout(dimensions);
+    const toolTipText = {
+        digit: 'Enter a digit',
+        outer: 'Add an "outer" pencil-mark - Shift+Digit',
+        inner: 'Add an "inner" pencil-mark - Ctrl+Digit',
+        color: 'Colour cell background, double-click to clear',
+        undo: 'Undo last change - Ctrl+Z',
+        redo: 'Redo last change - Ctrl+Y',
+        restart: 'Restart the puzzle',
+        delete: 'Delete digits, pencil-marks & color highlights',
+        check: 'Check grid for errors',
+    };
     return (
         <div className="vkbd">
             <svg version="1.1"
@@ -442,12 +461,17 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="vkbd-background" width="100%" height="100%" rx="40" />
-                <VkbdModePanel inputMode={inputMode} clickHandler={clickHandler} />
+                <VkbdModePanel
+                    inputMode={inputMode}
+                    clickHandler={clickHandler}
+                    toolTipText={toolTipText}
+                />
                 <VkbdButtonSet
                     buttonDefs={layout.buttonDefs}
                     inputMode={inputMode}
                     completedDigits={completedDigits}
                     clickHandler={clickHandler}
+                    toolTipText={toolTipText}
                 />
             </svg>
         </div>
