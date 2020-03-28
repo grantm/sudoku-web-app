@@ -289,8 +289,12 @@ export const modelHelpers = {
     },
 
     applyClearColorHighlights: (grid) => {
-        console.log('Clearing colour highlights')
-        return grid;
+        const cells = grid.get('cells').map(c => {
+            return c.get('colorCode') === '1'
+                ? c
+                : c.set('colorCode', 1);
+        });
+        return grid.set('cells', cells);
     },
 
     gameOverCheck: (grid) => {
