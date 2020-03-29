@@ -265,19 +265,11 @@ export const modelHelpers = {
     },
 
     applyRestart: (grid) => {
-        let undoList = grid.get('undoList');
-        if (undoList.size <= 1) {
-            return grid;
-        }
         if (grid.get('solved')) {
             grid = grid.merge({
                 'solved': false,
                 'startTime': Date.now(),
                 'endTime': undefined,
-                'focusIndex': null,
-                'matchDigit': 0,
-                'completedDigits': {},
-                'inputMode': 'digit',
             })
         }
         const emptySnapshot = '';
@@ -285,6 +277,10 @@ export const modelHelpers = {
             .merge({
                 'undoList': List(),
                 'redoList': List(),
+                'focusIndex': null,
+                'matchDigit': '0',
+                'completedDigits': {},
+                'inputMode': 'digit',
             });
     },
 
