@@ -64,7 +64,7 @@ export const modelHelpers = {
     CENTER_CELL: 40,
 
     setInitialDigits: (grid, initialDigits) => {
-        const cells = Range(0, 81).map(i => newCell(i, initialDigits[i]));
+        const cells = Range(0, 81).toList().map(i => newCell(i, initialDigits[i]));
         return modelHelpers.highlightErrorCells(grid.merge({
             'initialDigits': initialDigits,
             'cells': cells,
@@ -576,7 +576,7 @@ export const modelHelpers = {
     autoAdvanceFocus: (grid) => {
         const cells = grid.get('cells')
         const focusIndex = grid.get('focusIndex');
-        const focusCell = cells.toList().get(focusIndex);
+        const focusCell = cells.get(focusIndex);
         if (focusCell && focusCell.get('isError')) {
             return grid;
         }
