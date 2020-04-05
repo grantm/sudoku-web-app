@@ -50,6 +50,7 @@ function indexFromCellEvent (e) {
 }
 
 function cellMouseDownHandler (e, setGrid) {
+    e.stopPropagation();
     const index = indexFromCellEvent(e);
     if (index === undefined) {
         // Remember, this is a mouseDown handler, not a click handler
@@ -67,6 +68,7 @@ function cellMouseDownHandler (e, setGrid) {
 }
 
 function cellMouseOverHandler (e, setGrid) {
+    e.stopPropagation();
     const index = indexFromCellEvent(e);
     if ((e.buttons & 1) === 1) {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
