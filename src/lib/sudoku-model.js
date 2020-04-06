@@ -581,7 +581,7 @@ export const modelHelpers = {
         if (focusCell && focusCell.get('isError')) {
             return grid;
         }
-        if (cells.filter(c => c.get('isSelected')).count() !== 1) {
+        if (cells.filter(c => c.get('isSelected')).size !== 1) {
             return grid;
         }
         grid = modelHelpers.moveFocus(grid, 1, 0, false);
