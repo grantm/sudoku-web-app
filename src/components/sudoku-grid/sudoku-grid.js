@@ -7,7 +7,7 @@ import GridLines from './grid-lines.js';
 
 function SudokuGrid({grid, dimensions, isPaused, mouseDownHandler, mouseOverHandler}) {
     const matchDigit = grid.get('matchDigit');
-    const cellContents = grid.get('cells').map((c) => {
+    const cellContents = grid.get('cells').toArray().map((c) => {
         return (
             <SudokuCell
                 key={c.get('location')}

@@ -1,4 +1,5 @@
-import { List, Map, Range, Set } from 'immutable';
+// import { List, Map, Range, Set } from 'immutable';
+import { List, Map, Range, Set } from './not-mutable';
 
 function newCell(index, digit) {
     digit = digit || '0';
