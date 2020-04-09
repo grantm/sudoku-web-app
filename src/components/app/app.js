@@ -58,7 +58,7 @@ function cellMouseDownHandler (e, setGrid) {
     }
     else {
         if (e.ctrlKey || e.shiftKey) {
-            setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
+            setGrid((grid) => modelHelpers.applySelectionOp(grid, 'toggleExtendSelection', index));
         }
         else {
             setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', index));
@@ -149,6 +149,10 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
     }
     else if (e.key === "Home") {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
+        return;
+    }
+    else if (e.key === " ") {
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'toggleExtendSelection', grid.get('focusIndex')));
         return;
     }
     else if (e.key === "Control") {

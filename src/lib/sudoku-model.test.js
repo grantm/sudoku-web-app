@@ -21,6 +21,10 @@ function digitsFromGrid(grid) {
     return grid.get('cells').map(c => c.get('digit')).join('');
 }
 
+function selectedCells(grid) {
+    return grid.get('cells').filter(c => c.get('isSelected')).map(c => c.get('index')).join(',');
+}
+
 function pencilDigits (set) {
     return set.toArray().join('');
 }
@@ -232,6 +236,25 @@ test('move input focus', () => {
     expect(grid.get('focusIndex')).toBe(40)
 
     expect(grid.get('currentSnapshot')).toBe('');
+});
+
+test('extend selection', () => {
+    let grid = newSudokuModel({initialDigits});
+    expect(selectedCells(grid)).toBe('');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 40);
+    expect(selectedCells(grid)).toBe('40');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 31);
+    expect(selectedCells(grid)).toBe('31');
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 40);
+    expect(selectedCells(grid)).toBe('31,40');
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 39);
+    expect(selectedCells(grid)).toBe('31,39,40');
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 41);
+    expect(selectedCells(grid)).toBe('31,39,40,41');
+    grid = modelHelpers.applySelectionOp(grid, 'toggleExtendSelection', 40);
+    expect(selectedCells(grid)).toBe('31,39,41');
+    grid = modelHelpers.applySelectionOp(grid, 'toggleExtendSelection', 49);
+    expect(selectedCells(grid)).toBe('31,39,41,49');
 });
 
 test('input mode', () => {

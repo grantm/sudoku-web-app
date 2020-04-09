@@ -553,6 +553,13 @@ export const modelHelpers = {
         return c;
     },
 
+    toggleExtendSelection: (c, index) => {
+        if (c.get('index') === index) {
+            return c.set('isSelected', !c.get('isSelected'));
+        }
+        return c;
+    },
+
     clearSelection: (c) => {
         if (c.get('isSelected') || c.get('isError')) {
             return c.set('isSelected', false);
