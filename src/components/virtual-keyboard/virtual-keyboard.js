@@ -397,6 +397,7 @@ function VkbdButton({btn, inputMode, completed, toolTipText}) {
                 height={btn.height}
                 fill="transparent"
                 data-key-value={btn.value}
+                data-want-double-click="true"
                 onMouseDown={stopPropagation}
             >{toolTip}</rect>
         </g>
