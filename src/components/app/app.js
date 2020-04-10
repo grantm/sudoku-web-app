@@ -76,6 +76,17 @@ function cellMouseOverHandler (e, setGrid) {
     }
 }
 
+function cellTouchHandler (e, setGrid) {
+    const eventType = e.type;
+    const index = e.cellIndex;
+    if (eventType === 'cellTouched') {
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', index));
+    }
+    else if (eventType === 'cellSwipedTo') {
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
+    }
+}
+
 function docKeyPressHandler (e, setGrid, solved, inputMode) {
     if (solved) {
         return;
@@ -178,10 +189,8 @@ function docKeyReleaseHandler(e, setGrid) {
     // else { console.log('keyup event:', e); }
 }
 
-function vkbdClickHandler(e, setGrid, inputMode) {
-    e.stopPropagation();
-    e.preventDefault();
-    const keyValue = e.target.dataset.keyValue;
+function vkbdKeyPressHandler(e, setGrid, inputMode) {
+    const keyValue = e.keyValue;
     if (e.type === 'dblclick') {
         if (keyValue === 'input-mode-color') {
             setGrid((grid) => modelHelpers.confirmClearColorHighlights(grid));
@@ -279,7 +288,8 @@ function App() {
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
-    const vkbdHandler = useCallback(e => vkbdClickHandler(e, setGrid, inputMode), [inputMode]);
+    const touchHandler = useCallback(e => cellTouchHandler(e, setGrid), []);
+    const vkbdKeyHandler = useCallback(e => vkbdKeyPressHandler(e, setGrid, inputMode), [inputMode]);
     const modalHandler = useCallback(a => dispatchModalAction(a, setGrid), []);
     const menuHandler = useCallback(a => dispatchMenuAction(a, setGrid), []);
     const pauseHandler = useCallback(() => pauseTimer(setGrid), []);
@@ -341,13 +351,14 @@ function App() {
                     isPaused={!!pausedAt}
                     mouseDownHandler={mouseDownHandler}
                     mouseOverHandler={mouseOverHandler}
+                    touchHandler={touchHandler}
                 />
                 <div>
                     <VirtualKeyboard
                         dimensions={dimensions}
                         inputMode={tempInputMode || inputMode}
                         completedDigits={completedDigits}
-                        clickHandler={vkbdHandler}
+                        keyPressHandler={vkbdKeyHandler}
                     />
                     {startButton}
                 </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import "./virtual-keyboard.css";
 
@@ -279,6 +279,66 @@ const buttonIcons = {
 };
 
 const stopPropagation = (e) => e.stopPropagation();
+const DOUBLE_CLICK_TIME = 1000;
+let seenTouchEvent = false;
+
+function keyValueFromTouchEvent (e) {
+    const t = (e.touches || {})[0];
+    if (t) {
+        const keyValue = t.target.dataset.keyValue
+        return [keyValue, t.target.dataset.wantDoubleClick];
+    }
+    return [];
+}
+
+function useButtonTouch (keyPressHandler) {
+    const [lastPress, setLastPress] = useState(undefined);
+    return (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        seenTouchEvent = true;
+        const eventType = e.type;
+        if (eventType === 'touchstart') {
+            const [keyValue, wantDoubleClick] = keyValueFromTouchEvent(e);
+            const now = Date.now();
+            if (keyValue !== undefined) {
+                if (lastPress && wantDoubleClick && lastPress.keyValue === keyValue) {
+                    if ((now - lastPress.eventTime) < DOUBLE_CLICK_TIME) {
+                        setTimeout(() => {
+                            keyPressHandler({type: 'dblclick', keyValue, source: 'touch'});
+                        }, 200);
+                    }
+                }
+                else {
+                    keyPressHandler({type: 'click', keyValue, source: 'touch'});
+                }
+                setLastPress({ keyValue, eventTime: now });
+            }
+        }
+    };
+}
+
+function useButtonClick (keyPressHandler) {
+    return (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (seenTouchEvent) {
+            return;
+        }
+        const eventType = e.type;
+        var keyValue = e.target.dataset.keyValue
+        if (keyValue === undefined) {
+            return;
+        }
+        if (eventType === 'dblclick') {
+            if (!e.target.dataset.wantDoubleClick) {
+                return;
+            }
+        }
+        keyPressHandler({type: e.type, keyValue, source: 'click'});
+    };
+}
+
 
 function VkbdButtonIcon({btn}) {
     const name = btn.icon;
@@ -287,7 +347,7 @@ function VkbdButtonIcon({btn}) {
         : null;
 }
 
-function VkbdButton({btn, inputMode, completed, clickHandler, toolTipText}) {
+function VkbdButton({btn, inputMode, completed, toolTipText}) {
     let content;
     if (btn.icon) {
         content = <VkbdButtonIcon btn={btn} />;
@@ -338,13 +398,12 @@ function VkbdButton({btn, inputMode, completed, clickHandler, toolTipText}) {
                 fill="transparent"
                 data-key-value={btn.value}
                 onMouseDown={stopPropagation}
-                onClick={clickHandler}
             >{toolTip}</rect>
         </g>
     );
 }
 
-function VkbdButtonSet({buttonDefs, inputMode, completedDigits, clickHandler, toolTipText}) {
+function VkbdButtonSet({buttonDefs, inputMode, completedDigits, toolTipText}) {
     const buttons = buttonDefs.map(btn => {
         const completed = completedDigits[btn.value];
         return (
@@ -353,7 +412,6 @@ function VkbdButtonSet({buttonDefs, inputMode, completedDigits, clickHandler, to
                 btn={btn}
                 inputMode={inputMode}
                 completed={completed}
-                clickHandler={clickHandler}
                 toolTipText={toolTipText}
             />
         );
@@ -361,7 +419,7 @@ function VkbdButtonSet({buttonDefs, inputMode, completedDigits, clickHandler, to
     return buttons;
 }
 
-function VkbdModePanel({inputMode, clickHandler, toolTipText}) {
+function VkbdModePanel({inputMode, toolTipText}) {
     const digitClass = inputMode === 'digit' ? 'active' : '';
     const outerClass = inputMode === 'outer' ? 'active' : '';
     const innerClass = inputMode === 'inner' ? 'active' : '';
@@ -396,17 +454,16 @@ function VkbdModePanel({inputMode, clickHandler, toolTipText}) {
             <VkbdButtonIcon btn={{icon: 'mode-inner', left: 640, top: 65, activeClass: innerClass}} />
             <VkbdButtonIcon btn={{icon: 'mode-color', left: 800, top: 65, activeClass: colorClass}} />
             <rect x="320" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-digit" onClick={clickHandler} onMouseDown={stopPropagation}
+                data-key-value="input-mode-digit"
             ><title>{toolTipText.digit}</title></rect>
             <rect x="480" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-outer" onClick={clickHandler} onMouseDown={stopPropagation}
+                data-key-value="input-mode-outer"
             ><title>{toolTipText.outer}</title></rect>
             <rect x="640" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-inner" onClick={clickHandler} onMouseDown={stopPropagation}
+                data-key-value="input-mode-inner"
             ><title>{toolTipText.inner}</title></rect>
             <rect x="800" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-color" onClick={clickHandler}
-                onDoubleClick={clickHandler} onMouseDown={stopPropagation}
+                data-key-value="input-mode-color" data-want-double-click="true"
             ><title>{toolTipText.color}</title></rect>
         </g>
     );
@@ -439,7 +496,9 @@ function keyboardLayout(dimensions) {
     return layout;
 }
 
-export default function VirtualKeyboard({dimensions, inputMode, completedDigits, clickHandler}) {
+export default function VirtualKeyboard({dimensions, inputMode, completedDigits, keyPressHandler}) {
+    const rawTouchHandler = useButtonTouch(keyPressHandler);
+    const rawClickHandler = useButtonClick(keyPressHandler);
     const layout = keyboardLayout(dimensions);
     const toolTipText = {
         digit: 'Enter a digit',
@@ -453,7 +512,12 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
         check: 'Check grid for errors',
     };
     return (
-        <div className="vkbd">
+        <div className="vkbd"
+            onTouchStart={rawTouchHandler}
+            onClick={rawClickHandler}
+            onDoubleClick={rawClickHandler}
+            onMouseDown={stopPropagation}
+        >
             <svg version="1.1"
                 style={{width: dimensions.vkbdWidth}}
                 baseProfile="full"
@@ -463,14 +527,12 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
                 <rect className="vkbd-background" width="100%" height="100%" rx="40" />
                 <VkbdModePanel
                     inputMode={inputMode}
-                    clickHandler={clickHandler}
                     toolTipText={toolTipText}
                 />
                 <VkbdButtonSet
                     buttonDefs={layout.buttonDefs}
                     inputMode={inputMode}
                     completedDigits={completedDigits}
-                    clickHandler={clickHandler}
                     toolTipText={toolTipText}
                 />
             </svg>

@@ -1,18 +1,23 @@
 ## Things to do:
 (Not necessarily in priority order)
 
-* Implement touch event handling
-* Allow multiple-cell selection on mobile/touch
+* Auto clean pencilmarks
 * Validation of digit string in URL (81 digits + no conflicts)
-* Menu option to clear all pencilmarks
 * Menu option to share with pencilmarks
 * Help text
 * Tests for model
 * Tests for UI
 * Button to go fullscreen
+* Double-tap digit to switch to digit mode
 * UI themes - in particular a dark mode
 * Allow pasting in a digit string in 'enter' mode
 * Allow copy to digit string
+* Options dialog to enable/disable:
+  * Timer
+  * Highlight matching digits
+  * Auto clean pencilmarks
+* Function to check for unique solutions (new mode)
+* Fix: Clear colours, undo, redo
 
 ## Things done
 * Render cell layout and text using SVG+CSS
@@ -32,3 +37,6 @@
 * Colour completed digits on virtual keyboard
 * Cell colouring
 * Pause timer
+* Menu option to clear all pencilmarks
+* Implement touch event handling
+* Allow multiple-cell selection on mobile/touch
