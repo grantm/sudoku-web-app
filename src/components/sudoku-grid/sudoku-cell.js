@@ -44,7 +44,7 @@ function CellDigit({cell}) {
     return (
         <text
             className="digit"
-            x={cell.get('column') * 100}
+            x={cell.get('col') * 100}
             y={cell.get('row') * 100 + 25}
             fontSize="65"
             textAnchor="middle"
@@ -120,7 +120,7 @@ function PausedSudokuCell({cell}) {
         <g className="cell">
             <text
                 className="digit"
-                x={cell.get('column') * 100}
+                x={cell.get('col') * 100}
                 y={cell.get('row') * 100 + 25}
                 fontSize="65"
                 textAnchor="middle"

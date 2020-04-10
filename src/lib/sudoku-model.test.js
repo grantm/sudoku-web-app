@@ -1,5 +1,6 @@
 import { newSudokuModel, modelHelpers } from './sudoku-model.js';
-import { List } from 'immutable';
+// import { List } from 'immutable';
+import { List } from './not-mutable';
 
 const initialDigits =
     '000008000' +
@@ -117,8 +118,8 @@ test('initialise grid cells', () => {
     const propNames = mapPropNames(c0);
     expect(propNames).toStrictEqual([
         "box",
+        "col",
         "colorCode",
-        "column",
         "digit",
         "index",
         "innerPencils",
@@ -134,7 +135,7 @@ test('initialise grid cells', () => {
     ]);
     expect(c0.get('box')).toBe(1);
     expect(c0.get('colorCode')).toBe('1');
-    expect(c0.get('column')).toBe(1);
+    expect(c0.get('col')).toBe(1);
     expect(c0.get('digit')).toBe('0');
     expect(c0.get('index')).toBe(0);
     expect(c0.get('innerPencils').toArray()).toStrictEqual([]);
@@ -173,15 +174,15 @@ test('initialise grid cells', () => {
     expect(cells.get(67).get('row')).toBe(8);
     expect(cells.get(76).get('row')).toBe(9);
 
-    expect(cells.get(36).get('column')).toBe(1);
-    expect(cells.get(37).get('column')).toBe(2);
-    expect(cells.get(38).get('column')).toBe(3);
-    expect(cells.get(39).get('column')).toBe(4);
-    expect(cells.get(40).get('column')).toBe(5);
-    expect(cells.get(41).get('column')).toBe(6);
-    expect(cells.get(42).get('column')).toBe(7);
-    expect(cells.get(43).get('column')).toBe(8);
-    expect(cells.get(44).get('column')).toBe(9);
+    expect(cells.get(36).get('col')).toBe(1);
+    expect(cells.get(37).get('col')).toBe(2);
+    expect(cells.get(38).get('col')).toBe(3);
+    expect(cells.get(39).get('col')).toBe(4);
+    expect(cells.get(40).get('col')).toBe(5);
+    expect(cells.get(41).get('col')).toBe(6);
+    expect(cells.get(42).get('col')).toBe(7);
+    expect(cells.get(43).get('col')).toBe(8);
+    expect(cells.get(44).get('col')).toBe(9);
 
     expect(cells.get(8).get('location')).toBe('R1C9');
     expect(cells.get(16).get('location')).toBe('R2C8');
@@ -531,4 +532,27 @@ test('set pencilmarks', () => {
     expect(grid.get('currentSnapshot')).toBe('00D7,03N1,04T13N1,06T2,07T2,74D7');
     grid = modelHelpers.undoOneAction(grid);
     expect(grid.get('currentSnapshot')).toBe('00D7,04T13,06T2,07T2,74D7');
+});
+
+test('autoclean pencilmarks', () => {
+    let grid = newSudokuModel({initialDigits});
+    expect(digitsFromGrid(grid)).toBe(initialDigits + '');
+    let startingSnapshot = '03N39,04N39,31N17,49N17,54T3,57N35,71T3,72T34,74T4,80T3';
+    expect(grid.get('currentSnapshot')).toBe('');
+    grid = modelHelpers.restoreSnapshot(grid, startingSnapshot)
+    expect(grid.get('currentSnapshot')).toBe(startingSnapshot);
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 76);
+    grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '3');
+    expect(digitsFromGrid(grid)).toBe(
+        '000008000' +
+        '000007000' +
+        '123456789' +
+        '000005000' +
+        '000004000' +
+        '000003000' +
+        '000002000' +
+        '000001000' +
+        '000039000'
+    );
+    expect(grid.get('currentSnapshot')).toBe('03N39,04N9,31N17,49N17,54T3,57N5,71T3,72T4,74T4,76D3');
 });

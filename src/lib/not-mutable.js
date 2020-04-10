@@ -327,6 +327,13 @@ class NMRange {
     toList() {
         return List(this.toArray());
     }
+
+    forEach(f) {
+        const r = this[_nm_range];
+        for (let i = r.start; i < r.end; i = i + r.step) {
+            f(i);
+        }
+    }
 }
 
 const emptyRange = new NMRange();

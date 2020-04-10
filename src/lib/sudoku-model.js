@@ -1,6 +1,27 @@
 // import { List, Map, Range, Set } from 'immutable';
 import { List, Map, Range, Set } from './not-mutable';
 
+const cellSets = initCellSets();
+
+function initCellSets() {
+    const row = {}, col = {}, box = {};
+    Range(1, 10).forEach((i) => {
+        row[i] = [];
+        col[i] = [];
+        box[i] = [];
+    });
+    Range(0, 81).forEach((i) => {
+        const r = Math.floor(i / 9) + 1;
+        const c = (i % 9) + 1;
+        const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
+        row[r].push(i);
+        col[c].push(i);
+        box[b].push(i);
+    });
+    return {row, col, box};
+}
+
+
 function newCell(index, digit) {
     digit = digit || '0';
     if (!digit.match(/^[0-9]$/)) {
@@ -9,16 +30,16 @@ function newCell(index, digit) {
         );
     }
     const row = Math.floor(index / 9) + 1;
-    const column = (index % 9) + 1;
+    const col = (index % 9) + 1;
     return Map({
         // Properties set at creation and then never changed
         index,
         row,
-        column,
-        box: Math.floor((row - 1) / 3) * 3 + Math.floor((column - 1) / 3) + 1,
-        location: `R${row}C${column}`,
+        col,
+        box: Math.floor((row - 1) / 3) * 3 + Math.floor((col - 1) / 3) + 1,
+        location: `R${row}C${col}`,
         isGiven: digit !== '0',
-        x: 50 + (column - 1) * 100,
+        x: 50 + (col - 1) * 100,
         y: 50 + (row - 1) * 100,
         // Properties that might change and get serialised for undo/redo
         digit,
@@ -321,7 +342,7 @@ export const modelHelpers = {
         const cells = grid.get('cells');
         let incompleteCount = 0;
         const digitTally = {};
-        const type = ['row', 'column', 'box'];
+        const type = ['row', 'col', 'box'];
         const seen = [ {}, {}, {} ];
         const isError = {};
         cells.forEach((c, index) => {
@@ -377,7 +398,7 @@ export const modelHelpers = {
             return grid;
         }
         const snapshotBefore = grid.get('currentSnapshot');
-        const newCells = grid.get('cells')
+        let newCells = grid.get('cells')
             .map(c => {
                 const canUpdate = (!c.get('isGiven') || opName === 'setCellColor' || opName === 'clearCell');
                 if (canUpdate && c.get('isSelected')) {
@@ -387,6 +408,9 @@ export const modelHelpers = {
                     return c;
                 }
             });
+        if (opName === 'setDigit') {
+            newCells = modelHelpers.autoCleanPencilMarks(newCells, args[0]);
+        }
         grid = grid.set('cells', newCells);
         const snapshotAfter = modelHelpers.toSnapshotString(grid);
         if (mode === 'play' && snapshotAfter === snapshotBefore) {
@@ -461,6 +485,35 @@ export const modelHelpers = {
 
     setCellColorAsCellOp: (c, newColorCode) => {
         return c.set('colorCode', newColorCode);
+    },
+
+    autoCleanPencilMarks: (cells, newDigit) => {
+        let isEliminated = {};
+        cells.forEach(c => {
+            if (c.get('isSelected') && !c.get('isGiven')) {
+                [
+                    cellSets.row[c.get('row')],
+                    cellSets.col[c.get('col')],
+                    cellSets.box[c.get('box')],
+                ].flat().forEach(i => isEliminated[i] = true);
+            }
+        });
+        return cells.map(c => {
+            const i = c.get('index');
+            if (c.get('digit') === '0' && isEliminated[i]) {
+                const inner = c.get('innerPencils');
+                const outer = c.get('outerPencils');
+                if (inner.includes(newDigit) || outer.includes(newDigit)) {
+                    return modelHelpers.updateSnapshotCache(
+                        c.merge({
+                            innerPencils: inner.delete(newDigit),
+                            outerPencils: outer.delete(newDigit),
+                        })
+                    );
+                }
+            }
+            return c;
+        });
     },
 
     highlightErrorCells: (grid) => {

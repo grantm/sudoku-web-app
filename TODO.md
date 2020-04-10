@@ -1,7 +1,6 @@
 ## Things to do:
 (Not necessarily in priority order)
 
-* Auto clean pencilmarks
 * Validation of digit string in URL (81 digits + no conflicts)
 * Menu option to share with pencilmarks
 * Help text
@@ -40,3 +39,4 @@
 * Menu option to clear all pencilmarks
 * Implement touch event handling
 * Allow multiple-cell selection on mobile/touch
+* Auto clean pencilmarks
