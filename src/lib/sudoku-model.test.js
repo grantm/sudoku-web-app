@@ -536,7 +536,7 @@ test('set pencilmarks', () => {
 
 test('autoclean pencilmarks', () => {
     let grid = newSudokuModel({initialDigits});
-    expect(digitsFromGrid(grid)).toBe(initialDigits + '');
+    expect(digitsFromGrid(grid)).toBe(initialDigits);
     let startingSnapshot = '03N39,04N39,31N17,49N17,54T3,57N35,71T3,72T34,74T4,80T3';
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.restoreSnapshot(grid, startingSnapshot)
@@ -555,4 +555,45 @@ test('autoclean pencilmarks', () => {
         '000039000'
     );
     expect(grid.get('currentSnapshot')).toBe('03N39,04N9,31N17,49N17,54T3,57N5,71T3,72T4,74T4,76D3');
+});
+
+test('clear all colours', () => {
+    let grid = newSudokuModel({initialDigits});
+    expect(digitsFromGrid(grid)).toBe(initialDigits);
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 4);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 5);
+    grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '2');
+    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2');
+    expect(grid.get('undoList').size).toBe(1);
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 12);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 13);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 14);
+    grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '4');
+    expect(grid.get('undoList').size).toBe(2);
+    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 21);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 22);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 23);
+    grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '5');
+    expect(grid.get('undoList').size).toBe(3);
+    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4,21C5,22C5,23C5');
+    grid = modelHelpers.applyModalAction(grid, 'clear-color-highlights-confirmed');
+    expect(grid.get('undoList').size).toBe(4);
+    expect(grid.get('cells').get(4).get('colorCode')).toBe('1');
+    expect(grid.get('currentSnapshot')).toBe('');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 6);
+    grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '7');
+    expect(grid.get('undoList').size).toBe(5);
+    expect(grid.get('currentSnapshot')).toBe('06D7');
+    grid = modelHelpers.undoOneAction(grid);
+    expect(grid.get('currentSnapshot')).toBe('');
+    grid = modelHelpers.undoOneAction(grid);
+    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4,21C5,22C5,23C5');
+    grid = modelHelpers.undoOneAction(grid);
+    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4');
+    grid = modelHelpers.undoOneAction(grid);
+    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2');
+    grid = modelHelpers.undoOneAction(grid);
+    expect(grid.get('currentSnapshot')).toBe('');
 });

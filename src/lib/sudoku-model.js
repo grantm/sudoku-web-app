@@ -306,13 +306,29 @@ export const modelHelpers = {
             });
     },
 
+    trackSnapshotsForUndo: (grid, f) => {
+        const snapshotBefore = grid.get('currentSnapshot');
+        grid = f(grid);
+        const snapshotAfter = modelHelpers.toSnapshotString(grid);
+        if (snapshotBefore !== snapshotAfter) {
+            grid = grid
+                .update('undoList', list => list.push(snapshotBefore))
+                .set('redoList', List());
+            grid = modelHelpers.setCurrentSnapshot(grid, snapshotAfter);
+        }
+        return grid;
+    },
+
     applyClearColorHighlights: (grid) => {
-        const cells = grid.get('cells').map(c => {
-            return c.get('colorCode') === '1'
-                ? c
-                : c.set('colorCode', 1);
+        return modelHelpers.trackSnapshotsForUndo(grid, grid => {
+            const cells = grid.get('cells').map(c => {
+                if (c.get('colorCode') !== '1') {
+                    c = modelHelpers.updateSnapshotCache( c.set('colorCode', '1') );
+                }
+                return c;
+            });
+            return grid.set('cells', cells);
         });
-        return grid.set('cells', cells);
     },
 
     gameOverCheck: (grid) => {
@@ -542,18 +558,16 @@ export const modelHelpers = {
     },
 
     clearPencilmarks: (grid) => {
-        const cells = grid.get('cells');
-        const clearSnapshot = cells.filter(c => !c.get('isGiven') && c.get('digit') !== '0')
-            .map(c => {
-                const index = c.get('index');
-                return (index < 10 ? '0' : '') + index + 'D' + c.get('digit');
-            })
-            .join(',');
-        const snapshotBefore = grid.get('currentSnapshot');
-        grid = modelHelpers.restoreSnapshot(grid, clearSnapshot)
-            .update('undoList', list => list.push(snapshotBefore))
-            .set('redoList', List());
-        return modelHelpers.setCurrentSnapshot(grid, clearSnapshot);
+        return modelHelpers.trackSnapshotsForUndo(grid, grid => {
+            const cells = grid.get('cells');
+            const clearSnapshot = cells.filter(c => !c.get('isGiven') && c.get('digit') !== '0')
+                .map(c => {
+                    const index = c.get('index');
+                    return (index < 10 ? '0' : '') + index + 'D' + c.get('digit');
+                })
+                .join(',');
+            return modelHelpers.restoreSnapshot(grid, clearSnapshot);
+        });
     },
 
     setGridSolved: (grid) => {
