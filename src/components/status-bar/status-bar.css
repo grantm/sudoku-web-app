@@ -6,10 +6,10 @@
     left: 0;
     top: 0;
     width: 100%;
-    font-size: 4vh;
+    font-size: 3.6vh;
     padding: 0;
     color: var(--status-bar-text-color);
-    background-color: var(--status-bar-bg-color);
+    background: var(--status-bar-bg-color);
     border-bottom: 1px solid var(--status-bar-border-color);
 }
 
@@ -19,14 +19,16 @@
     position: absolute;
     background-color: transparent;
     margin: 0;
-    padding: 0;
+    padding: 0.5vh;
     border: none;
     border-radius: 0.2em;
+    opacity: 0.6;
 }
 
 .status-bar button:hover,
 .status-bar button:focus {
-    background-color: var(--menu-button-hover-color);
+    background-color: var(--status-bar-button-hover-color);
+    opacity: 1;
 }
 
 .status-bar button .stroke {
@@ -42,7 +44,8 @@
 .elapsed-time {
     display: inline-block;
     min-width: 2.8em;
-    margin: 1.4vh 0 0 2vh;
+    margin: 1.8vh 0.4vh 0 2vh;
+    opacity: 0.6;
 }
 
 .solved .elapsed-time {
@@ -52,10 +55,6 @@
 
 #pause-btn {
     margin-top: 0.8vh;
-}
-
-#pause-btn:hover {
-    background-color: var(--menu-button-hover-color);
 }
 
 .solved #pause-btn {

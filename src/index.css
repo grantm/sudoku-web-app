@@ -2,9 +2,9 @@
     --background-color: #ffffff;
     --text-color: #333333;
     --status-bar-text-color: #777777;
-    --status-bar-bg-color: #e7e7e7;
+    --status-bar-bg-color: linear-gradient(#efefef, #e6e6e6);
     --status-bar-border-color: #c7c7c7;
-    --menu-button-hover-color: #dddddd;
+    --status-bar-button-hover-color: #d7d7d7;
     --menu-border-color: #888888;
     --menu-bg-color: #ffffff;
     --menu-hover-bg-color: #e7e7e7;
