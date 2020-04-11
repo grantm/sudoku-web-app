@@ -7,15 +7,42 @@
     top: 0;
     width: 100%;
     font-size: 4vh;
-    padding: 0.4em 0.6em;
+    padding: 0;
     color: var(--status-bar-text-color);
     background-color: var(--status-bar-bg-color);
     border-bottom: 1px solid var(--status-bar-border-color);
 }
 
+.status-bar button {
+    width: 6vh;
+    height: 6vh;
+    position: absolute;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0.2em;
+}
+
+.status-bar button:hover,
+.status-bar button:focus {
+    background-color: var(--menu-button-hover-color);
+}
+
+.status-bar button .stroke {
+    fill: var(--status-bar-text-color);
+}
+
+#timer {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .elapsed-time {
     display: inline-block;
     min-width: 2.8em;
+    margin: 1.4vh 0 0 2vh;
 }
 
 .solved .elapsed-time {
@@ -24,26 +51,11 @@
 }
 
 #pause-btn {
-    border: none;
-    padding: 0.5vh;
-    margin: 0;
-    vertical-align: top;
-    background-color: transparent;
-    opacity: 0.5;
-}
-
-#pause-btn i {
-    display: inline-block;
-    margin: 0.2vh;
-    width: 0.8vh;
-    height: 3vh;
-    border-left: 1vh solid #999;
-    border-right: 1vh solid #999;
+    margin-top: 0.8vh;
 }
 
 #pause-btn:hover {
     background-color: var(--menu-button-hover-color);
-    opacity: 1;
 }
 
 .solved #pause-btn {
@@ -60,19 +72,8 @@
 }
 
 .menu button {
-    position: absolute;
-    right: 10px;
-    top: 0;
-    width: 1.6em;
-    padding: 0;
-    margin: 0;
-    border: none;
-    font-size: 6vh;
-    background-color: transparent;
-}
-
-.menu button:hover {
-    background-color: var(--menu-button-hover-color);
+    right: 2vh;
+    top: 0.8vh;
 }
 
 .menu.hidden ul {
@@ -105,4 +106,9 @@
 
 .menu a:hover {
     background-color: var(--menu-hover-bg-color);
+}
+
+#fullscreen-button {
+    right: 12vh;
+    top: 0.8vh;
 }

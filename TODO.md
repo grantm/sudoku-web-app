@@ -6,9 +6,8 @@
 * Help text
 * Tests for model
 * Tests for UI
-* Button to go fullscreen
-* Double-tap digit to switch to digit mode
 * UI themes - in particular a dark mode
+* Fun visual effects when puzzle is solved
 * Allow pasting in a digit string in 'enter' mode
 * Allow copy to digit string
 * Options dialog to enable/disable:
@@ -17,6 +16,7 @@
   * Auto clean pencilmarks
 * Function to check for unique solutions (new mode)
 * Fix: Clear colours, undo, redo
+* Review/playback mode with slider and step buttons
 
 ## Things done
 * Render cell layout and text using SVG+CSS
@@ -40,3 +40,5 @@
 * Implement touch event handling
 * Allow multiple-cell selection on mobile/touch
 * Auto clean pencilmarks
+* Double-tap digit to switch to digit mode
+* Button to go fullscreen

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+import FullscreenButton from '../fullscreen-button/fullscreen-button';
+
 import './status-bar.css';
 
 const stopPropagation = (e) => e.stopPropagation();
@@ -58,6 +60,33 @@ function emailShareURL (initialDigits, startTime, endTime) {
     return `mailto:?${params.toString()}`.replace(/[+]/g, '%20');
 }
 
+function MenuIcon () {
+    return (
+        <svg version="1.1"
+            baseProfile="full"
+            viewBox="0 0 48 48"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <rect className="stroke" x="12" y="12" width="24" height="4" />
+            <rect className="stroke" x="12" y="22" width="24" height="4" />
+            <rect className="stroke" x="12" y="32" width="24" height="4" />
+        </svg>
+    )
+}
+
+function PauseIcon () {
+    return (
+        <svg version="1.1"
+            baseProfile="full"
+            viewBox="0 0 48 48"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <rect className="stroke" x="15" y="12" width="6" height="24" />
+            <rect className="stroke" x="27" y="12" width="6" height="24" />
+        </svg>
+    )
+}
+
 function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
     const [hidden, setHidden] = useState(true);
     const classes = ['menu'];
@@ -88,7 +117,7 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
     return (
         <div className={classes.join(' ')}>
             { overlay }
-            <button onClick={toggleHandler}>{'\u2261'}</button>
+            <button type="button" title="Menu" onClick={toggleHandler}><MenuIcon /></button>
             <ul>
                 <li>
                     <a href="./" onClick={clearPencilmarksHandler}
@@ -111,12 +140,12 @@ function TimerWithPause({startTime, endTime, pausedAt, pauseHandler}) {
     if (!startTime) {
         return null;
     }
-    return <>
+    return <div id="timer">
         <ElapsedTime startTime={startTime} endTime={endTime} pausedAt={pausedAt} />
-        <button id="pause-btn" title="Pause" onClick={pauseHandler}>
-            <i className="icon-pause"></i>
+        <button id="pause-btn" title="Pause timer" onClick={pauseHandler}>
+            <PauseIcon />
         </button>
-    </>;
+    </div>;
 }
 
 function StatusBar ({startTime, endTime, pausedAt, menuHandler, pauseHandler, initialDigits}) {
@@ -128,6 +157,7 @@ function StatusBar ({startTime, endTime, pausedAt, menuHandler, pauseHandler, in
                 pausedAt={pausedAt}
                 pauseHandler={pauseHandler}
             />
+            <FullscreenButton />
             <MenuButton
                 initialDigits={initialDigits}
                 startTime={startTime}
