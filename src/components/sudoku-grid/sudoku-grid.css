@@ -13,6 +13,8 @@
     stroke-width: var(--line-width-bold);
 }
 
+.grid-bg { fill: var(--background-color); }
+
 .cell-bg,
 .cell-bg-overlay {
     fill: transparent;
@@ -61,8 +63,16 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.solved .cell text.digit {
+    fill: var(--solved-digit-color);
+}
+
 .cell.given text.digit {
     fill: var(--given-digit-color);
+}
+
+.solved .cell.given text.digit {
+    fill: var(--solved-given-digit-color);
 }
 
 .paused .cell text.digit {

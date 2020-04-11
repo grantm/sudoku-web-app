@@ -89,6 +89,8 @@ function PauseIcon () {
 
 function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
     const [hidden, setHidden] = useState(true);
+    const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+
     const classes = ['menu'];
     if (hidden) {
         classes.push('hidden')
@@ -98,6 +100,21 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         () => setHidden(h => !h),
         []
     );
+
+    const darkModeHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (darkModeEnabled) {
+            window.document.body.classList.remove('dark');
+        }
+        else {
+            window.document.body.classList.add('dark');
+        }
+        setDarkModeEnabled(!darkModeEnabled);
+    };
+    const darkModeOptionText = darkModeEnabled
+        ? 'Turn off dark mode'
+        : 'Turn on dark mode';
 
     const clearPencilmarksHandler = useCallback(
         e => {
@@ -118,7 +135,11 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         <div className={classes.join(' ')}>
             { overlay }
             <button type="button" title="Menu" onClick={toggleHandler}><MenuIcon /></button>
-            <ul>
+            <ul onMouseUp={() => setHidden(true)}>
+                <li>
+                    <a href="./" onClick={darkModeHandler}
+                    >{darkModeOptionText}</a>
+                </li>
                 <li>
                     <a href="./" onClick={clearPencilmarksHandler}
                     >Clear all pencilmarks</a>

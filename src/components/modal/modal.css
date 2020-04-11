@@ -22,10 +22,11 @@
     box-sizing: border-box;
     max-width: 50%;
     padding: 1em;
-    color: var(--text-color);
+    color: var(--modal-text-color);
     background-color: var(--modal-bg-color);
     border-radius: 0.3em;
     line-height: 130%;
+    box-shadow: var(--modal-box-shadow);
 }
 
 .modal > h1 {
@@ -43,7 +44,7 @@
 
 .modal button {
     border: none;
-    color: var(--text-color);
+    color: var(--modal-button-text-color);
     background-color: var(--modal-button-bg-color);
     margin-left: 1em;
     margin-top: 0.3em;
@@ -55,6 +56,7 @@
 }
 
 .modal button.danger {
+    color: var(--modal-button-danger-text-color);
     background-color: var(--modal-button-danger-bg-color);
 }
 

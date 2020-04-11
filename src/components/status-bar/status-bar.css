@@ -9,7 +9,7 @@
     font-size: 3.6vh;
     padding: 0;
     color: var(--status-bar-text-color);
-    background: var(--status-bar-bg-color);
+    background: var(--status-bar-bg);
     border-bottom: 1px solid var(--status-bar-border-color);
 }
 
@@ -87,7 +87,7 @@
     margin: 0;
     border: 1px solid var(--menu-border-color);
     background-color: var(--menu-bg-color);
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--menu-box-shadow);
 }
 
 .menu li {
@@ -97,13 +97,17 @@
     font-size: 1.2rem;
 }
 
-.menu a {
+.menu a,
+.menu a:visited {
     display: block;
     padding: 0.4em 0.8em;
     text-decoration: none;
+    color: var(--menu-text-color);
 }
 
-.menu a:hover {
+.menu a:hover,
+.menu a:focus {
+    color: var(--menu-hover-text-color);
     background-color: var(--menu-hover-bg-color);
 }
 
