@@ -19,6 +19,7 @@ const KEYCODE = {
     A: 65,
     S: 83,
     D: 68,
+    F: 70,
     Y: 89,
     Z: 90,
 };
@@ -152,6 +153,15 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
     else if (e.key === "ArrowDown" || e.keyCode === KEYCODE.S) {
         setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, shiftOrCtrl));
         e.preventDefault();
+        return;
+    }
+    else if (e.keyCode === KEYCODE.F) {
+        if (window.document.fullscreen) {
+            window.document.exitFullscreen();
+        }
+        else {
+            window.document.body.requestFullscreen();
+        }
         return;
     }
     else if (e.key === "Enter") {
