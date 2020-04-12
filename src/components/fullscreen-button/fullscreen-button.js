@@ -42,20 +42,21 @@ function FullscreenButton () {
     const [fsEnabled, setFsEnabled] = useState(window.document.fullscreen);
     const content = fsEnabled ? <ExitFullscreenIcon /> : <EnterFullscreenIcon />;
     const title = fsEnabled ? 'Exit full screen' : 'Full screen';
-    const clickHandler = () => {
+    const clickHandler = (e) => {
+        e.currentTarget.blur();
         return window.document.fullscreen
             ? window.document.exitFullscreen()
             : window.document.body.requestFullscreen();
     };
-    const resizeHandler = (e) => { setFsEnabled(window.document.fullscreen); };
     useEffect(
         () => {
+            const resizeHandler = (e) => { setFsEnabled(window.document.fullscreen); };
             window.addEventListener('fullscreenchange', resizeHandler);
             return () => {
                 window.removeEventListener('fullscreenchange', resizeHandler);
             }
         },
-        [resizeHandler]
+        [setFsEnabled]
     );
     return (
         <button id="fullscreen-button" type="button" title={title} onClick={clickHandler}>
