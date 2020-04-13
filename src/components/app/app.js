@@ -205,9 +205,9 @@ function vkbdKeyPressHandler(e, setGrid, inputMode) {
         if (keyValue === 'input-mode-color') {
             setGrid((grid) => modelHelpers.confirmClearColorHighlights(grid));
         }
-        else if ('0' <= keyValue && keyValue <= '9') {
+        else if ('1' <= keyValue && keyValue <= '9') {
             // dblclick overrides input mode and forces setDigit
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', keyValue));
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', keyValue, {replaceUndo: true}));
         }
         return;
     }

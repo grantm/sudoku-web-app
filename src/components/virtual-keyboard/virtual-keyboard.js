@@ -306,7 +306,7 @@ function useButtonTouch (keyPressHandler) {
                     if ((now - lastPress.eventTime) < DOUBLE_CLICK_TIME) {
                         setTimeout(() => {
                             keyPressHandler({type: 'dblclick', keyValue, source: 'touch'});
-                        }, 200);
+                        }, 100);
                         setLastPress(undefined);
                         return;
                     }
@@ -349,6 +349,8 @@ function VkbdButtonIcon({btn}) {
 
 function VkbdButton({btn, inputMode, completed, toolTipText}) {
     let content;
+    const isDigit = ('1' <= btn.text && btn.text <= '9');
+    const wantDoubleClick = (btn.wantDoubleClick || isDigit) ? 'true' : null;
     if (btn.icon) {
         content = <VkbdButtonIcon btn={btn} />;
     }
@@ -397,7 +399,7 @@ function VkbdButton({btn, inputMode, completed, toolTipText}) {
                 height={btn.height}
                 fill="transparent"
                 data-key-value={btn.value}
-                data-want-double-click="true"
+                data-want-double-click={wantDoubleClick}
                 onMouseDown={stopPropagation}
             >{toolTip}</rect>
         </g>

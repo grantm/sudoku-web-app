@@ -413,6 +413,9 @@ export const modelHelpers = {
             console.log(`Unknown cell update operation: '${opName}'`);
             return grid;
         }
+        if (opName === 'setDigit' && args[1] && args[1].replaceUndo) {
+            grid = modelHelpers.undoOneAction(grid);
+        }
         const snapshotBefore = grid.get('currentSnapshot');
         let newCells = grid.get('cells')
             .map(c => {
