@@ -300,18 +300,18 @@ function useButtonTouch (keyPressHandler) {
         const eventType = e.type;
         if (eventType === 'touchstart') {
             const [keyValue, wantDoubleClick] = keyValueFromTouchEvent(e);
-            const now = Date.now();
             if (keyValue !== undefined) {
+                const now = Date.now();
                 if (lastPress && wantDoubleClick && lastPress.keyValue === keyValue) {
                     if ((now - lastPress.eventTime) < DOUBLE_CLICK_TIME) {
                         setTimeout(() => {
                             keyPressHandler({type: 'dblclick', keyValue, source: 'touch'});
                         }, 200);
+                        setLastPress(undefined);
+                        return;
                     }
                 }
-                else {
-                    keyPressHandler({type: 'click', keyValue, source: 'touch'});
-                }
+                keyPressHandler({type: 'click', keyValue, source: 'touch'});
                 setLastPress({ keyValue, eventTime: now });
             }
         }
