@@ -151,7 +151,13 @@ function SudokuCell({cell, matchDigit, isPaused, mouseDownHandler, mouseOverHand
         }
     }
     return (
-        <g className={classes.join(' ')}>
+        <g className={classes.join(' ')}
+            data-cell-index={cell.get('index')}
+            data-row={cell.get('row')}
+            data-col={cell.get('col')}
+            data-box={cell.get('box')}
+            data-ring={cell.get('ring')}
+        >
             <CellBackground cell={cell} matchDigit={matchDigit} />
             <CellDigit cell={cell} />
             <CellOuterPencilMarks cell={cell} />

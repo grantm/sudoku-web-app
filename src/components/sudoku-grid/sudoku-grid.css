@@ -105,3 +105,18 @@ text.inner-pencil,
     font-size: 1rem;
     margin: 0.2em;
 }
+
+.solved .cell[data-ring="5"] .cell-bg-overlay { animation: 900ms linear 0ms 1 running rainbow; }
+.solved .cell[data-ring="4"] .cell-bg-overlay { animation: 900ms linear 100ms 1 running rainbow; }
+.solved .cell[data-ring="3"] .cell-bg-overlay { animation: 900ms linear 200ms 1 running rainbow; }
+.solved .cell[data-ring="2"] .cell-bg-overlay { animation: 900ms linear 300ms 1 running rainbow; }
+.solved .cell[data-ring="1"] .cell-bg-overlay { animation: 900ms linear 400ms 1 running rainbow; }
+
+@keyframes rainbow {
+    from { fill: #8bb3ff; }
+    20%  { fill: #f1dbff; }
+    40%  { fill: #ffb5da; }
+    60%  { fill: #ff9b5b; }
+    70%  { fill: #ffff9a; }
+    to   { fill: var(--solved-fill-color); }
+}
