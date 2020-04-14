@@ -1,5 +1,6 @@
 import React from 'react';
 
+import ModalInvalidInitialDigits from './modal-invalid-initial-digits';
 import ModalConfirmRestart from './modal-confirm-restart';
 import ModalConfirmClearColorHighlights from './modal-confirm-clear-color-highlights'
 import ModalCheckResult from './modal-check-result';
@@ -20,7 +21,10 @@ export default function ModalContainer({modalState, modalHandler}) {
     if (!modalState) {
         return null;
     }
-    if (modalState.modalType === 'confirm-restart') {
+    if (modalState.modalType === 'invalid-initial-digits') {
+        content = <ModalInvalidInitialDigits modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === 'confirm-restart') {
         content = <ModalConfirmRestart modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === 'confirm-clear-color-highlights') {

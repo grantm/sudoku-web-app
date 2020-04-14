@@ -1,12 +1,10 @@
 ## Things to do:
 (Not necessarily in priority order)
 
-* Validation of digit string in URL (81 digits + no conflicts)
 * Menu option to share with pencilmarks
 * Help text
 * Tests for model
 * Tests for UI
-* Fun visual effects when puzzle is solved
 * Allow pasting in a digit string in 'enter' mode
 * Allow copy to digit string
 * Options dialog to enable/disable:
@@ -42,3 +40,6 @@
 * Double-tap digit to switch to digit mode
 * Button to go fullscreen
 * Dark mode theme
+* Fun visual effect when puzzle is solved
+* Block starting if grid has errors
+* Validation of digit string in URL (81 digits + no conflicts)

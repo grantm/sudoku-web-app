@@ -40,6 +40,7 @@ test('initialise grid', () => {
         "currentSnapshot",
         "endTime",
         "focusIndex",
+        "hasErrors",
         "initialDigits",
         "inputMode",
         "matchDigit",
@@ -73,7 +74,7 @@ test('initialise grid', () => {
     expect(grid.get('inputMode')).toBe('digit');
     expect(grid.get('matchDigit')).toBe('0');
     expect(grid.get('modalState')).toBe(undefined);
-    expect(grid.get('mode')).toBe('play');
+    expect(grid.get('mode')).toBe('solve');
     expect(grid.get('pausedAt')).toBe(undefined);
     expect(grid.get('redoList').size).toBe(0);
     expect(grid.get('solved')).toBe(false);

@@ -59,14 +59,15 @@ function newCell(index, digit) {
 }
 
 export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
-    const mode = initialDigits ? 'play' : 'enter';
+    initialDigits = initialDigits || '';
+    const initialError = modelHelpers.initialErrorCheck(initialDigits);
+    const mode = initialError ? 'enter' : 'solve';
     const grid = Map({
-        initialDigits: '',
         solved: false,
         mode,
         inputMode: 'digit',
         tempInputMode: undefined,
-        startTime: mode === 'play' ? Date.now() : undefined,
+        startTime: mode === 'solve' ? Date.now() : undefined,
         endTime: undefined,
         pausedAt: undefined,
         undoList: List(),
@@ -74,12 +75,15 @@ export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
         currentSnapshot: '',
         storeCurrentSnapshot: storeCurrentSnapshot,
         cells: List(),
+        hasErrors: false,
         focusIndex: null,
         completedDigits: {},
         matchDigit: '0',
         modalState: undefined,
     });
-    return modelHelpers.setInitialDigits(grid, initialDigits || '');
+    return initialError
+        ? modelHelpers.setInitialDigits(grid, initialDigits, initialError)
+        : modelHelpers.setGivenDigits(grid, initialDigits);
 };
 
 function actionsBlocked(grid) {
@@ -89,11 +93,52 @@ function actionsBlocked(grid) {
 export const modelHelpers = {
     CENTER_CELL: 40,
 
-    setInitialDigits: (grid, initialDigits) => {
+    initialErrorCheck: (initialDigits) => {
+        if (initialDigits === undefined || initialDigits === null || initialDigits === '') {
+            return { noStartingDigits: true };
+        }
+        if (!initialDigits.match(/^[0-9]{81}$/)) {
+            console.log(initialDigits);
+            return { insufficientDigits: true };
+        }
+        const result = modelHelpers.checkDigits(initialDigits);
+        if (result.hasErrors) {
+            return { hasErrors: true };
+        }
+        return;
+    },
+
+    setGivenDigits: (grid, initialDigits) => {
         const cells = Range(0, 81).toList().map(i => newCell(i, initialDigits[i]));
         return modelHelpers.highlightErrorCells(grid.merge({
-            'initialDigits': initialDigits,
-            'cells': cells,
+            initialDigits,
+            cells,
+        }));
+    },
+
+    setInitialDigits: (grid, initialDigits, initialError) => {
+        const cells = initialError.noStartingDigits
+            ? Range(0, 81).toList().map(i => newCell(i, '0'))
+            : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i]));
+        let modalState = undefined;
+        if (initialError.insufficientDigits) {
+            modalState = {
+                modalType: 'invalid-initial-digits',
+                insufficientDigits: true,
+                initialDigits: initialDigits,
+            };
+        }
+        if (initialError.hasErrors) {
+            modalState = {
+                modalType: 'invalid-initial-digits',
+                hasErrors: true,
+                initialDigits: initialDigits,
+            };
+        }
+        return modelHelpers.highlightErrorCells(grid.merge({
+            initialDigits,
+            modalState,
+            cells,
         }));
     },
 
@@ -322,10 +367,14 @@ export const modelHelpers = {
         return grid;
     },
 
-    applyModalAction: (grid, action) => {
+    applyModalAction: (grid, args) => {
+        const action = args.action || args;
         grid = grid.set('modalState', undefined);
         if (action === 'cancel') {
             return grid;
+        }
+        else if (action === 'retry-initial-digits') {
+            return modelHelpers.retryInitialDigits(grid, args);
         }
         else if (action === 'restart-confirmed') {
             return modelHelpers.applyRestart(grid);
@@ -339,6 +388,12 @@ export const modelHelpers = {
         return grid;
     },
 
+    retryInitialDigits: (grid, args) => {
+        const digits = args.digits;
+        window.location.search = `s=${digits}`;
+        return grid;
+    },
+
     applyRestart: (grid) => {
         if (grid.get('solved')) {
             grid = grid.merge({
@@ -348,7 +403,7 @@ export const modelHelpers = {
             })
         }
         const emptySnapshot = '';
-        return modelHelpers.restoreSnapshot(grid, emptySnapshot)
+        grid = modelHelpers.restoreSnapshot(grid, emptySnapshot)
             .merge({
                 'undoList': List(),
                 'redoList': List(),
@@ -357,6 +412,7 @@ export const modelHelpers = {
                 'completedDigits': {},
                 'inputMode': 'digit',
             });
+        return modelHelpers.highlightErrorCells(grid);
     },
 
     trackSnapshotsForUndo: (grid, f) => {
@@ -409,7 +465,7 @@ export const modelHelpers = {
             const index = c.get('index');
             const ok = (
                 c.get('isGiven')
-                || c.get('errorMessage') === errorAtIndex[index]
+                || (c.get('errorMessage') === errorAtIndex[index])
             );
             return ok ? c : c.set('errorMessage', errorAtIndex[index]);
         });
@@ -445,7 +501,7 @@ export const modelHelpers = {
         }
         grid = grid.set('cells', newCells);
         const snapshotAfter = modelHelpers.toSnapshotString(grid);
-        if (mode === 'play' && snapshotAfter === snapshotBefore) {
+        if (mode === 'solve' && snapshotAfter === snapshotBefore) {
             return grid;
         }
         grid = modelHelpers.highlightErrorCells(grid);
@@ -553,10 +609,10 @@ export const modelHelpers = {
         const result = modelHelpers.checkDigits(digits);
         grid = grid.set('completedDigits', result.completedDigits);
         if (result.isSolved && !grid.get('endTime')) {
-            grid = modelHelpers.setGridSolved(grid);
+            return modelHelpers.setGridSolved(grid);
         }
         grid = modelHelpers.applyErrorHighlights(grid, result.errorAtIndex);
-        return grid;
+        return grid.set('hasErrors', !!result.hasErrors);
     },
 
     pauseTimer: (grid) => {
