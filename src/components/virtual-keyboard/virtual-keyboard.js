@@ -279,7 +279,7 @@ const buttonIcons = {
 };
 
 const stopPropagation = (e) => e.stopPropagation();
-const DOUBLE_CLICK_TIME = 1000;
+const DOUBLE_CLICK_TIME = 550;
 let seenTouchEvent = false;
 
 function keyValueFromTouchEvent (e) {
