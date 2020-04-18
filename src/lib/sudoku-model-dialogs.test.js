@@ -17,7 +17,7 @@ function digitsFromGrid(grid) {
 }
 
 function errorCells(grid) {
-    return grid.get('cells').filter(c => c.get('isError')).map(c => c.get('index')).join(',');
+    return grid.get('cells').filter(c => c.get('errorMessage') !== undefined).map(c => c.get('index')).join(',');
 }
 
 function truthyKeys(obj) {

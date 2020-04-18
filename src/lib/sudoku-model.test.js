@@ -121,9 +121,9 @@ test('initialise grid cells', () => {
         "col",
         "colorCode",
         "digit",
+        "errorMessage",
         "index",
         "innerPencils",
-        "isError",
         "isGiven",
         "isSelected",
         "location",
@@ -140,7 +140,7 @@ test('initialise grid cells', () => {
     expect(c0.get('digit')).toBe('0');
     expect(c0.get('index')).toBe(0);
     expect(c0.get('innerPencils').toArray()).toStrictEqual([]);
-    expect(c0.get('isError')).toBe(false);
+    expect(c0.get('errorMessage')).toBe(undefined);
     expect(c0.get('isGiven')).toBe(false);
     expect(c0.get('isSelected')).toBe(false);
     expect(c0.get('location')).toBe('R1C1');
@@ -312,7 +312,7 @@ test('set one digit', () => {
     let c2 = grid.get('cells').get(2);
     expect(c2.get('digit')).toBe('9');
     expect(c2.get('snapshot')).toBe('D9');
-    expect(c2.get('isError')).toBe(false);
+    expect(c2.get('errorMessage')).toBe(undefined);
     expect(c2.get('isGiven')).toBe(false);
     expect(c2.get('isSelected')).toBe(true);
 
@@ -388,14 +388,14 @@ test('set multiple digits', () => {
     let c47 = grid.get('cells').get(47);
     expect(c47.get('digit')).toBe('2');
     expect(c47.get('snapshot')).toBe('D2');
-    expect(c47.get('isError')).toBe(false);
+    expect(c47.get('errorMessage')).toBe(undefined);
     expect(c47.get('isGiven')).toBe(false);
     expect(c47.get('isSelected')).toBe(true);
 
     let c57 = grid.get('cells').get(57);
     expect(c57.get('digit')).toBe('2');
     expect(c57.get('snapshot')).toBe('D2');
-    expect(c57.get('isError')).toBe(true);
+    expect(c57.get('errorMessage')).toBe('Digit 2 in row 7');
     expect(c57.get('isGiven')).toBe(false);
     expect(c57.get('isSelected')).toBe(true);
 
@@ -608,4 +608,125 @@ test('clear all colours', () => {
     expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2');
     grid = modelHelpers.undoOneAction(grid);
     expect(grid.get('currentSnapshot')).toBe('');
+});
+
+test('check digits', () => {
+    let result = modelHelpers.checkDigits(
+        '000000000' +
+        '000000000' +
+        '000000000' +
+        '000000000' +
+        '000000000' +
+        '000000000' +
+        '000000000' +
+        '000000000' +
+        '000000000'
+    );
+    expect(result).toStrictEqual({
+        isSolved: false,
+        incompleteCount: 81,
+        completedDigits: {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "6": false,
+            "7": false,
+            "8": false,
+            "9": false,
+        },
+    });
+
+    result = modelHelpers.checkDigits(
+        '000000000' +
+        '000000000' +
+        '000000000' +
+        '000500000' +
+        '000000000' +
+        '000005000' +
+        '000000000' +
+        '000000000' +
+        '000000000'
+    );
+    expect(result).toStrictEqual({
+        isSolved: false,
+        hasErrors: true,
+        errorAtIndex: {
+            30: "Digit 5 in box 5",
+            50: "Digit 5 in box 5",
+        },
+        completedDigits: {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "6": false,
+            "7": false,
+            "8": false,
+            "9": false,
+        },
+    });
+
+    result = modelHelpers.checkDigits(
+        '506500200' +
+        '000006005' +
+        '000000006' +
+        '760005200' +
+        '005060007' +
+        '007000650' +
+        '600000500' +
+        '000650000' +
+        '050000060'
+    );
+    expect(result).toStrictEqual({
+        isSolved: false,
+        hasErrors: true,
+        errorAtIndex: {
+            0: "Digit 5 in row 1",
+            3: "Digit 5 in row 1",
+            6: "Digit 2 in col 7",
+            33: "Digit 2 in col 7",
+            27: "Digit 7 in box 4",
+            47: "Digit 7 in box 4",
+        },
+        completedDigits: {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "6": true,
+            "7": false,
+            "8": false,
+            "9": false,
+        },
+    });
+
+    result = modelHelpers.checkDigits(
+        '123456789' +
+        '456789123' +
+        '789123456' +
+        '234567891' +
+        '567891234' +
+        '891234567' +
+        '345678912' +
+        '678912345' +
+        '912345678'
+    );
+    expect(result).toStrictEqual({
+        isSolved: true,
+        completedDigits: {
+            "1": true,
+            "2": true,
+            "3": true,
+            "4": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "9": true,
+        },
+    });
 });

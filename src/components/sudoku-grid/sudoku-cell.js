@@ -99,6 +99,9 @@ function CellInnerPencilMarks({cell}) {
 }
 
 function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
+    const tooltip = cell.get('errorMessage')
+        ? <title>{cell.get('errorMessage')}</title>
+        : null;
     return (
         <rect
             x={cell.get('x')}
@@ -110,7 +113,7 @@ function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
             onMouseDown={mouseDownHandler}
             onMouseOver={mouseOverHandler}
             pointerEvents="fill"
-        />
+        >{tooltip}</rect>
     )
 }
 
@@ -141,7 +144,7 @@ function SudokuCell({cell, matchDigit, isPaused, mouseDownHandler, mouseOverHand
     if (cell.get('isSelected')) {
         classes.push('selected');
     }
-    if (cell.get('isError')) {
+    if (cell.get('errorMessage') !== undefined) {
         classes.push('error');
     }
     const digit = cell.get('digit')

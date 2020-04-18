@@ -1,10 +1,10 @@
 // import { List, Map, Range, Set } from 'immutable';
 import { List, Map, Range, Set } from './not-mutable';
 
-const cellSets = initCellSets();
+const [cellSets, cellProp] = initCellSets();
 
 function initCellSets() {
-    const row = {}, col = {}, box = {};
+    const row = {}, col = {}, box = {}, cellProp = [];
     Range(1, 10).forEach((i) => {
         row[i] = [];
         col[i] = [];
@@ -14,11 +14,12 @@ function initCellSets() {
         const r = Math.floor(i / 9) + 1;
         const c = (i % 9) + 1;
         const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
+        cellProp[i] = { row: r, col: c, box: b };
         row[r].push(i);
         col[c].push(i);
         box[b].push(i);
     });
-    return {row, col, box};
+    return [ {row, col, box}, cellProp ];
 }
 
 
@@ -53,7 +54,7 @@ function newCell(index, digit) {
         snapshot: '',
         // Transient properties that might change but are not preserved by undo
         isSelected: false,
-        isError: false,
+        errorMessage: undefined,
     });
 }
 
@@ -94,6 +95,55 @@ export const modelHelpers = {
             'initialDigits': initialDigits,
             'cells': cells,
         }));
+    },
+
+    checkDigits: (digits) => {
+        const result = {
+            isSolved: false,
+        };
+        let incompleteCount = 0;
+        const seen = { row: {}, col: {}, box: {} };
+        const digitTally = {};
+        const errorAtIndex = {};
+        for (let i = 0; i < 81; i++) {
+            const d = digits[i] || '0';
+            if (d === '0') {
+                incompleteCount++;
+            }
+            else {
+                const c = cellProp[i];
+                for (const setType of ['row', 'col', 'box']) {
+                    const j = c[setType];
+                    seen[setType][j] = seen[setType][j] || {};
+                    const k = seen[setType][j][d];
+                    if (k === undefined) {
+                        seen[setType][j][d] = i;
+                    }
+                    else {
+                        const error = `Digit ${d} in ${setType} ${j}`;
+                        errorAtIndex[i] = errorAtIndex[i] || error;
+                        errorAtIndex[k] = errorAtIndex[k] || error;
+                    }
+                }
+                digitTally[d] = (digitTally[d] || 0) + (errorAtIndex[i] ? 0 : 1);
+            }
+        }
+        result.completedDigits = "123456789".split('').reduce((c, d) => {
+            c[d] = (digitTally[d] === 9);
+            return c;
+        }, {});
+        const errorCount = Object.keys(errorAtIndex).length;
+        if (errorCount > 0) {
+            result.hasErrors = true;
+            result.errorAtIndex = errorAtIndex;
+        }
+        else if (incompleteCount === 0) {
+            result.isSolved = true;
+        }
+        else {
+            result.incompleteCount = incompleteCount;
+        }
+        return result;
     },
 
     setCurrentSnapshot: (grid, newSnapshot) => {
@@ -335,75 +385,35 @@ export const modelHelpers = {
     },
 
     gameOverCheck: (grid) => {
-        const result = modelHelpers.checkGridForErrors(grid);
-        if (result.isError) {
-            grid = modelHelpers.applyErrorHighlights(grid, result.isError);
+        const digits = grid.get('cells').map(c => c.get('digit')).join('');
+        const result = modelHelpers.checkDigits(digits);
+        if (result.hasErrors) {
+            grid = modelHelpers.applyErrorHighlights(grid, result.errorAtIndex);
+            grid = grid.set('modalState', {
+                modalType: 'check-result',
+                errorMessage: 'Errors found in highlighted cells',
+            });
         }
-        if (result.errorMessage) {
-            grid = grid.set('modalState', { modalType: 'check-result', result });
+        else if (result.incompleteCount) {
+            const s = result.incompleteCount === 1 ? '' : 's';
+            grid = grid.set('modalState', {
+                modalType: 'check-result',
+                errorMessage: `No errors found, but ${result.incompleteCount} cell${s} not yet filled`,
+            });
         }
         return grid;
     },
 
-    applyErrorHighlights: (grid, isError) => {
+    applyErrorHighlights: (grid, errorAtIndex = {}) => {
         const cells = grid.get('cells').map((c) => {
             const index = c.get('index');
             const ok = (
                 c.get('isGiven')
-                || c.get('isError') === (isError[index] || false)
+                || c.get('errorMessage') === errorAtIndex[index]
             );
-            return ok ? c : c.set('isError', isError[index] || false);
+            return ok ? c : c.set('errorMessage', errorAtIndex[index]);
         });
         return grid.set('cells', cells);
-    },
-
-    checkGridForErrors: (grid) => {
-        const cells = grid.get('cells');
-        let incompleteCount = 0;
-        const digitTally = {};
-        const type = ['row', 'col', 'box'];
-        const seen = [ {}, {}, {} ];
-        const isError = {};
-        cells.forEach((c, index) => {
-            const digit = c.get('digit');
-            if (digit === '0') {
-                incompleteCount++;
-            }
-            else {
-                for(let t = 0; t < 3; t++) {
-                    const key = c.get(type[t]) + digit;
-                    if (seen[t][key] !== undefined) {
-                        isError[index] = true;
-                        isError[ seen[t][key] ] = true;
-                    }
-                    seen[t][key] = index;
-                };
-                if(!isError[index]) {
-                    digitTally[digit] = (digitTally[digit] || 0) + 1;
-                }
-            }
-        });
-        const noErrors = Object.keys(isError).length === 0;
-        const result = {};
-        result.completedDigits = Object.keys(digitTally).reduce((c, d) => {
-            c[d] = digitTally[d] === 9;
-            return c;
-        }, {});
-        const s = incompleteCount === 1 ? '' : 's';
-        if (noErrors) {
-            if (incompleteCount === 0) {
-                result.allComplete = true;
-            }
-            else {
-                result.errorMessage =
-                    `No errors found but ${incompleteCount} cell${s} still empty`;
-            }
-        }
-        else {
-            result.isError = isError;
-            result.errorMessage = `Errors found in highlighted cell${s}`;
-        }
-        return result;
     },
 
     updateSelectedCells: (grid, opName, ...args) => {
@@ -467,7 +477,7 @@ export const modelHelpers = {
             'digit': newDigit,
             'outerPencils': Set(),
             'innerPencils': Set(),
-            'isError': false,
+            'errorMessage': undefined,
         });
     },
 
@@ -479,7 +489,7 @@ export const modelHelpers = {
             outerPencils: Set(),
             innerPencils: Set(),
             colorCode: '1',
-            isError: false,
+            errorMessage: undefined,
         });
     },
 
@@ -539,12 +549,13 @@ export const modelHelpers = {
     },
 
     highlightErrorCells: (grid) => {
-        const result = modelHelpers.checkGridForErrors(grid);
+        const digits = grid.get('cells').map(c => c.get('digit')).join('');
+        const result = modelHelpers.checkDigits(digits);
         grid = grid.set('completedDigits', result.completedDigits);
-        if (result.allComplete && !grid.get('endTime')) {
+        if (result.isSolved && !grid.get('endTime')) {
             grid = modelHelpers.setGridSolved(grid);
         }
-        grid = modelHelpers.applyErrorHighlights(grid, result.isError || {});
+        grid = modelHelpers.applyErrorHighlights(grid, result.errorAtIndex);
         return grid;
     },
 
@@ -634,7 +645,7 @@ export const modelHelpers = {
     },
 
     clearSelection: (c) => {
-        if (c.get('isSelected') || c.get('isError')) {
+        if (c.get('isSelected')) {
             return c.set('isSelected', false);
         }
         return c;
@@ -658,7 +669,7 @@ export const modelHelpers = {
         const cells = grid.get('cells')
         const focusIndex = grid.get('focusIndex');
         const focusCell = cells.get(focusIndex);
-        if (focusCell && focusCell.get('isError')) {
+        if (focusCell && focusCell.get('errorMessage') !== undefined) {
             return grid;
         }
         if (cells.filter(c => c.get('isSelected')).size !== 1) {
