@@ -88,8 +88,8 @@ function cellTouchHandler (e, setGrid) {
     }
 }
 
-function docKeyPressHandler (e, setGrid, solved, inputMode) {
-    if (solved) {
+function docKeyPressHandler (e, modalActive, setGrid, solved, inputMode) {
+    if (solved || modalActive) {
         return;
     }
     if (e.altKey) {
@@ -191,7 +191,10 @@ function docKeyPressHandler (e, setGrid, solved, inputMode) {
     // else { console.log('keydown event:', e); }
 }
 
-function docKeyReleaseHandler(e, setGrid) {
+function docKeyReleaseHandler(e, modalActive, setGrid) {
+    if (modalActive) {
+        return;
+    }
     if (e.key === "Control" || e.key === 'Shift') {
         setGrid((grid) => modelHelpers.clearTempInputMode(grid));
         return;
@@ -299,6 +302,8 @@ function App() {
     const inputMode = grid.get('inputMode');
     const tempInputMode = grid.get('tempInputMode');
     const completedDigits = grid.get('completedDigits');
+    const modalState = grid.get('modalState');
+    const modalActive = modalState !== undefined;
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
@@ -310,16 +315,16 @@ function App() {
 
     useEffect(
         () => {
-            const pressHandler = (e) => docKeyPressHandler(e, setGrid, solved, tempInputMode || inputMode);
+            const pressHandler = (e) => docKeyPressHandler(e, modalActive, setGrid, solved, tempInputMode || inputMode);
             document.addEventListener('keydown', pressHandler);
-            const releaseHandler = (e) => docKeyReleaseHandler(e, setGrid);
+            const releaseHandler = (e) => docKeyReleaseHandler(e, modalActive, setGrid);
             document.addEventListener('keyup', releaseHandler);
             return () => {
                 document.removeEventListener('keydown', pressHandler)
                 document.removeEventListener('keyup', releaseHandler)
             };
         },
-        [solved, tempInputMode, inputMode]
+        [solved, tempInputMode, inputMode, modalActive]
     );
 
     const winSize = useWindowSize(400);
@@ -343,7 +348,7 @@ function App() {
 
     const modal = (
         <ModalContainer
-            modalState={grid.get('modalState')}
+            modalState={modalState}
             modalHandler={modalHandler}
         />
     );
