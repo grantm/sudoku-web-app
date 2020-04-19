@@ -7,6 +7,7 @@ export const SETTINGS = {
     highlightMatches: "highlight-matches",
     highlightConflicts: "highlight-conflicts",
     autocleanPencilmarks: "autoclean-pencilmarks",
+    playVictoryAnimation: "play-victory-animation",
 };
 
 const [cellSets, cellProp] = initCellSets();
@@ -108,6 +109,7 @@ export const modelHelpers = {
         [SETTINGS.highlightMatches]: true,
         [SETTINGS.highlightConflicts]: true,
         [SETTINGS.autocleanPencilmarks]: true,
+        [SETTINGS.playVictoryAnimation]: true,
     },
 
     loadSettings: () => {
@@ -121,23 +123,29 @@ export const modelHelpers = {
             // ignore errors
         };
         const settings = Object.assign({}, defaults, savedSettings);
-        modelHelpers.syncDarkMode(settings[SETTINGS.darkMode]);
+        modelHelpers.syncSettingsToDom(settings);
         return settings;
     },
 
     saveSettings: (grid, newSettings) => {
         const newSettingsJSON = JSON.stringify(newSettings)
         window.localStorage.setItem('settings', newSettingsJSON);
-        modelHelpers.syncDarkMode(newSettings[SETTINGS.darkMode]);
+        modelHelpers.syncSettingsToDom(newSettings);
         return grid.set('settings', newSettings);
     },
 
-    syncDarkMode: (darkModeEnabled) => {
-        if (darkModeEnabled) {
+    syncSettingsToDom: (settings) => {
+        if (settings[SETTINGS.darkMode]) {
             window.document.body.classList.add('dark');
         }
         else {
             window.document.body.classList.remove('dark');
+        }
+        if (settings[SETTINGS.playVictoryAnimation]) {
+            window.document.body.classList.add('animate');
+        }
+        else {
+            window.document.body.classList.remove('animate');
         }
     },
 

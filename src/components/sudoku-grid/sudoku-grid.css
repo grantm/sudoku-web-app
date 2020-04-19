@@ -106,11 +106,11 @@ text.inner-pencil,
     margin: 0.2em;
 }
 
-.solved .cell[data-ring="5"] .cell-bg-overlay { animation: 1600ms linear 0ms 1 running rainbow; }
-.solved .cell[data-ring="4"] .cell-bg-overlay { animation: 1600ms linear 100ms 1 running rainbow; }
-.solved .cell[data-ring="3"] .cell-bg-overlay { animation: 1600ms linear 200ms 1 running rainbow; }
-.solved .cell[data-ring="2"] .cell-bg-overlay { animation: 1600ms linear 300ms 1 running rainbow; }
-.solved .cell[data-ring="1"] .cell-bg-overlay { animation: 1600ms linear 400ms 1 running rainbow; }
+.animate .solved .cell[data-ring="5"] .cell-bg-overlay { animation: 1600ms linear 0ms 1 running rainbow; }
+.animate .solved .cell[data-ring="4"] .cell-bg-overlay { animation: 1600ms linear 100ms 1 running rainbow; }
+.animate .solved .cell[data-ring="3"] .cell-bg-overlay { animation: 1600ms linear 200ms 1 running rainbow; }
+.animate .solved .cell[data-ring="2"] .cell-bg-overlay { animation: 1600ms linear 300ms 1 running rainbow; }
+.animate .solved .cell[data-ring="1"] .cell-bg-overlay { animation: 1600ms linear 400ms 1 running rainbow; }
 
 @keyframes rainbow {
     from { fill: #8bb3ff; }

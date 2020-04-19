@@ -1,5 +1,8 @@
 import React, { useState, useCallback } from 'react';
 
+import { SETTINGS } from '../../lib/sudoku-model';
+
+
 function CheckBoxSetting ({name, text, allSettings, setSetting}) {
     const currValue = !!allSettings[name];
     return (
@@ -35,32 +38,38 @@ export default function ModalSettings({modalHandler, modalState}) {
             <h1>Settings</h1>
             <ul className="settings-list">
                 <CheckBoxSetting
-                    name="dark-mode"
+                    name={SETTINGS.darkMode}
                     text="Dark mode"
                     allSettings={allSettings}
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
-                    name="show-timer"
+                    name={SETTINGS.showTimer}
                     text="Show timer"
                     allSettings={allSettings}
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
-                    name="highlight-matches"
+                    name={SETTINGS.HighlightMatches}
                     text="Highlight matching digits"
                     allSettings={allSettings}
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
-                    name="highlight-conflicts"
+                    name={SETTINGS.highlightConflicts}
                     text="Highlight conflicting digits"
                     allSettings={allSettings}
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
-                    name="autoclean-pencilmarks"
+                    name={SETTINGS.autocleanPencilmarks}
                     text="Auto-clean pencil marks"
+                    allSettings={allSettings}
+                    setSetting={setSetting}
+                />
+                <CheckBoxSetting
+                    name={SETTINGS.playVictoryAnimation}
+                    text="Play animation when puzzle solved"
                     allSettings={allSettings}
                     setSetting={setSetting}
                 />
