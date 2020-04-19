@@ -7,10 +7,6 @@
 * Tests for UI
 * Allow pasting in a digit string in 'enter' mode
 * Allow copy to digit string
-* Options dialog to enable/disable:
-  * Timer
-  * Highlight matching digits
-  * Auto clean pencilmarks
 * Function to check for unique solutions (new mode)
 * Review/playback mode with slider and step buttons
 * Allow contributed themes
@@ -43,3 +39,4 @@
 * Fun visual effect when puzzle is solved
 * Block starting if grid has errors
 * Validation of digit string in URL (81 digits + no conflicts)
+* Settings dialog with selections persisted to LocalStorage

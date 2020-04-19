@@ -21,7 +21,9 @@
 .modal {
     box-sizing: border-box;
     max-width: 50%;
-    padding: 1em;
+    max-height: 90%;
+    overflow-y: auto;
+    padding: 1em 1em 0 1em;
     color: var(--modal-text-color);
     background-color: var(--modal-bg-color);
     border-radius: 0.3em;
@@ -40,6 +42,7 @@
 .modal .buttons {
     margin-top: 1.6em;
     text-align: right;
+    padding-bottom: 1em;
 }
 
 .modal button {
