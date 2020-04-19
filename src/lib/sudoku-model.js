@@ -1,6 +1,14 @@
 // import { List, Map, Range, Set } from 'immutable';
 import { List, Map, Range, Set } from './not-mutable';
 
+export const SETTINGS = {
+    darkMode: "dark-mode",
+    showTimer: "show-timer",
+    highlightMatches: "highlight-matches",
+    highlightConflicts: "highlight-conflicts",
+    autocleanPencilmarks: "autoclean-pencilmarks",
+};
+
 const [cellSets, cellProp] = initCellSets();
 
 function initCellSets() {
@@ -62,9 +70,11 @@ export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
     initialDigits = initialDigits || '';
     const initialError = modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
+    const settings = modelHelpers.loadSettings();
     const grid = Map({
         solved: false,
         mode,
+        settings,
         inputMode: 'digit',
         tempInputMode: undefined,
         startTime: mode === 'solve' ? Date.now() : undefined,
@@ -92,6 +102,34 @@ function actionsBlocked(grid) {
 
 export const modelHelpers = {
     CENTER_CELL: 40,
+    DEFAULT_SETTINGS: {
+        [SETTINGS.darkMode]: false,
+        [SETTINGS.showTimer]: true,
+        [SETTINGS.highlightMatches]: true,
+        [SETTINGS.highlightConflicts]: true,
+        [SETTINGS.autocleanPencilmarks]: true,
+    },
+
+    loadSettings: () => {
+        const defaults = modelHelpers.DEFAULT_SETTINGS;
+        const settings = Object.assign({}, defaults);
+        modelHelpers.syncDarkMode(settings[SETTINGS.darkMode]);
+        return defaults;
+    },
+
+    syncDarkMode: (darkModeEnabled) => {
+        if (darkModeEnabled) {
+            window.document.body.classList.add('dark');
+        }
+        else {
+            window.document.body.classList.remove('dark');
+        }
+    },
+
+    getSetting: (grid, settingName) => {
+        const allSettings = grid.get('settings');
+        return allSettings[settingName];
+    },
 
     initialErrorCheck: (initialDigits) => {
         if (initialDigits === undefined || initialDigits === null || initialDigits === '') {
@@ -496,7 +534,7 @@ export const modelHelpers = {
                     return c;
                 }
             });
-        if (opName === 'setDigit') {
+        if (opName === 'setDigit' && modelHelpers.getSetting(grid, SETTINGS.autocleanPencilmarks)) {
             newCells = modelHelpers.autoCleanPencilMarks(newCells, args[0]);
         }
         grid = grid.set('cells', newCells);

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import './app.css';
 
-import { newSudokuModel, modelHelpers } from '../../lib/sudoku-model.js';
+import { newSudokuModel, modelHelpers, SETTINGS } from '../../lib/sudoku-model.js';
 import useWindowSize from '../../lib/use-window-size.js';
 
 import StatusBar from '../status-bar/status-bar';
@@ -296,6 +296,7 @@ function getDimensions(winSize) {
 
 function App() {
     const [grid, setGrid] = useState(initialGridFromURL);
+    const settings = grid.get('settings');
     const pausedAt = grid.get('pausedAt');
     const solved = grid.get('solved');
     const mode = grid.get('mode');
@@ -356,6 +357,7 @@ function App() {
     return (
         <div className={classes.join(' ')} onMouseDown={mouseDownHandler}>
             <StatusBar
+                showTimer={settings[SETTINGS.showTimer]}
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}
                 pausedAt={pausedAt}

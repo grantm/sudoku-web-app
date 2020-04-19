@@ -1,4 +1,4 @@
-import { newSudokuModel, modelHelpers } from './sudoku-model.js';
+import { newSudokuModel, modelHelpers, SETTINGS } from './sudoku-model.js';
 // import { List } from 'immutable';
 import { List } from './not-mutable';
 
@@ -48,6 +48,7 @@ test('initialise grid', () => {
         "mode",
         "pausedAt",
         "redoList",
+        "settings",
         "solved",
         "startTime",
         "storeCurrentSnapshot",
@@ -82,6 +83,12 @@ test('initialise grid', () => {
     expect(grid.get('storeCurrentSnapshot')).toBe(undefined);
     expect(grid.get('tempInputMode')).toBe(undefined);
     expect(grid.get('undoList').size).toBe(0);
+
+    const settings = grid.get('settings')
+    expect(typeof settings).toBe('object');
+    const settingsKeys = Object.keys(settings).sort().join(',');
+    const expectedKeys = Object.values(SETTINGS).sort().join(',');
+    expect(settingsKeys).toBe(expectedKeys);
 });
 
 test('initialise grid cells', () => {

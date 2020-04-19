@@ -10,15 +10,20 @@ import './status-bar.css';
 const stopPropagation = (e) => e.stopPropagation();
 
 
-function StatusBar ({startTime, endTime, pausedAt, menuHandler, pauseHandler, initialDigits}) {
-    return (
-        <div className="status-bar" onMouseDown={stopPropagation}>
+function StatusBar ({showTimer, startTime, endTime, pausedAt, menuHandler, pauseHandler, initialDigits}) {
+    const timer = showTimer
+        ? (
             <TimerWithPause
                 startTime={startTime}
                 endTime={endTime}
                 pausedAt={pausedAt}
                 pauseHandler={pauseHandler}
             />
+        )
+        : null;
+    return (
+        <div className="status-bar" onMouseDown={stopPropagation}>
+            {timer}
             <FullscreenButton />
             <MenuButton
                 initialDigits={initialDigits}
