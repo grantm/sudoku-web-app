@@ -98,8 +98,8 @@ function CellInnerPencilMarks({cell}) {
     );
 }
 
-function CellCover({cell, highlightConflicts, mouseDownHandler, mouseOverHandler}) {
-    const tooltip = (highlightConflicts && cell.get('errorMessage'))
+function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
+    const tooltip = cell.get('errorMessage')
         ? <title>{cell.get('errorMessage')}</title>
         : null;
     return (
@@ -133,7 +133,7 @@ function PausedSudokuCell({cell}) {
 }
 
 
-function SudokuCell({cell, matchDigit, highlightConflicts, isPaused, mouseDownHandler, mouseOverHandler}) {
+function SudokuCell({cell, matchDigit, isPaused, mouseDownHandler, mouseOverHandler}) {
     if (isPaused) {
         return <PausedSudokuCell cell={cell} />
     }
@@ -144,7 +144,7 @@ function SudokuCell({cell, matchDigit, highlightConflicts, isPaused, mouseDownHa
     if (cell.get('isSelected')) {
         classes.push('selected');
     }
-    if (highlightConflicts && cell.get('errorMessage') !== undefined) {
+    if (cell.get('errorMessage') !== undefined) {
         classes.push('error');
     }
     const digit = cell.get('digit')
@@ -167,7 +167,6 @@ function SudokuCell({cell, matchDigit, highlightConflicts, isPaused, mouseDownHa
             <CellInnerPencilMarks cell={cell} />
             <CellCover
                 cell={cell}
-                highlightConflicts={highlightConflicts}
                 mouseDownHandler={mouseDownHandler}
                 mouseOverHandler={mouseOverHandler}
             />

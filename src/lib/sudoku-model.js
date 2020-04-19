@@ -572,7 +572,9 @@ export const modelHelpers = {
         if (mode === 'solve' && snapshotAfter === snapshotBefore) {
             return grid;
         }
-        grid = modelHelpers.highlightErrorCells(grid);
+        if (modelHelpers.getSetting(grid, SETTINGS.highlightConflicts)) {
+            grid = modelHelpers.highlightErrorCells(grid);
+        }
         if (mode === 'enter' && opName === 'setDigit') {
             grid = modelHelpers.autoAdvanceFocus(grid);
         }
