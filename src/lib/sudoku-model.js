@@ -112,9 +112,24 @@ export const modelHelpers = {
 
     loadSettings: () => {
         const defaults = modelHelpers.DEFAULT_SETTINGS;
-        const settings = Object.assign({}, defaults);
+        let savedSettings = {};
+        try {
+            const savedSettingsJSON = window.localStorage.getItem('settings') || '{}';
+            savedSettings = JSON.parse(savedSettingsJSON);
+        }
+        catch {
+            // ignore errors
+        };
+        const settings = Object.assign({}, defaults, savedSettings);
         modelHelpers.syncDarkMode(settings[SETTINGS.darkMode]);
-        return defaults;
+        return settings;
+    },
+
+    saveSettings: (grid, newSettings) => {
+        const newSettingsJSON = JSON.stringify(newSettings)
+        window.localStorage.setItem('settings', newSettingsJSON);
+        modelHelpers.syncDarkMode(newSettings[SETTINGS.darkMode]);
+        return grid.set('settings', newSettings);
     },
 
     syncDarkMode: (darkModeEnabled) => {
@@ -422,7 +437,7 @@ export const modelHelpers = {
             return modelHelpers.retryInitialDigits(grid, args);
         }
         else if (action === 'save-settings') {
-            return modelHelpers.saveSettings(grid, args);
+            return modelHelpers.applyNewSettings(grid, args);
         }
         else if (action === 'restart-confirmed') {
             return modelHelpers.applyRestart(grid);
@@ -442,11 +457,9 @@ export const modelHelpers = {
         return grid;
     },
 
-    saveSettings: (grid, args) => {
+    applyNewSettings: (grid, args) => {
         const {newSettings} = args;
-        grid = grid.set('settings', newSettings);
-        modelHelpers.syncDarkMode(newSettings[SETTINGS.darkMode]);
-        return grid;
+        return modelHelpers.saveSettings(grid, newSettings);
     },
 
     applyRestart: (grid) => {
