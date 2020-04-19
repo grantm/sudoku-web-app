@@ -264,7 +264,10 @@ function dispatchModalAction(action, setGrid) {
 }
 
 function dispatchMenuAction(action, setGrid) {
-    if (action === 'clear-pencilmarks') {
+    if (action === 'show-settings-modal') {
+        setGrid((grid) => modelHelpers.showSettingsModal(grid));
+    }
+    else if (action === 'clear-pencilmarks') {
         setGrid((grid) => modelHelpers.clearPencilmarks(grid));
     }
 }

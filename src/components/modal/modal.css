@@ -76,8 +76,62 @@
 }
 
 @media screen and (max-width: 500px) {
-
     .modal {
         max-width: 90%;
     }
+}
+
+.settings-list {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.settings-list li {
+    margin: 0.6em 0;
+}
+
+.settings-list li label {
+    display: block;
+    position: relative;
+    padding-right: 3.5em;
+}
+
+input[type=checkbox] {
+    display: none;
+}
+
+input[type=checkbox] + .indicator {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    vertical-align: top;
+    height: 16px;
+    width: 32px;
+    background-color: var(--input-toggle-bg-color);
+    border: 1px inset var(--input-toggle-inset-color);
+    margin: 0 0 0 1.8em;
+    padding: 2px;
+    border-radius: 11px;
+}
+
+input[type=checkbox] + .indicator::before {
+    display: inline-block;
+    position: absolute;
+    content: '';
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background-color: var(--input-toggle-off-color);
+    margin: 0;
+    padding: 0;
+    left: 3px;
+    top: 2px;
+    transition: all 250ms;
+}
+
+input[type=checkbox]:checked + .indicator::before {
+    left: 17px;
+    background-color: var(--input-toggle-on-color);
 }

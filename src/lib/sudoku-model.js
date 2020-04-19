@@ -405,6 +405,13 @@ export const modelHelpers = {
         return grid;
     },
 
+    showSettingsModal: (grid) => {
+        return grid.set('modalState', {
+            modalType: 'settings',
+            currentSettings: grid.get('settings'),
+        });
+    },
+
     applyModalAction: (grid, args) => {
         const action = args.action || args;
         grid = grid.set('modalState', undefined);
@@ -413,6 +420,9 @@ export const modelHelpers = {
         }
         else if (action === 'retry-initial-digits') {
             return modelHelpers.retryInitialDigits(grid, args);
+        }
+        else if (action === 'save-settings') {
+            return modelHelpers.saveSettings(grid, args);
         }
         else if (action === 'restart-confirmed') {
             return modelHelpers.applyRestart(grid);
@@ -429,6 +439,13 @@ export const modelHelpers = {
     retryInitialDigits: (grid, args) => {
         const digits = args.digits;
         window.location.search = `s=${digits}`;
+        return grid;
+    },
+
+    saveSettings: (grid, args) => {
+        const {newSettings} = args;
+        grid = grid.set('settings', newSettings);
+        modelHelpers.syncDarkMode(newSettings[SETTINGS.darkMode]);
         return grid;
     },
 

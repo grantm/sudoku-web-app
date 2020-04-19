@@ -22,6 +22,10 @@
     --modal-button-primary-bg-color: #acddfb;
     --modal-button-danger-text-color: #333333;
     --modal-button-danger-bg-color: #ff9e9e;
+    --input-toggle-bg-color: #dddddd;
+    --input-toggle-inset-color: #dddddd20;
+    --input-toggle-off-color: #888888;
+    --input-toggle-on-color: #08bd08;
     --solved-text-color: #00a000;
     --line-color: #e7e7e7;
     --line-color-bold: #333333;
@@ -84,6 +88,10 @@
     --modal-button-bg-color: #726c6d;
     --modal-button-danger-text-color: #cabdbd;
     --modal-button-danger-bg-color: #ce4f58;
+    --input-toggle-bg-color: #726c6d;
+    --input-toggle-inset-color: #444444d0;
+    --input-toggle-off-color: #4f4747;
+    --input-toggle-on-color: #3ba83b;
     --solved-text-color: #61f061;
     --line-color: #7b7878;
     --line-color-bold: #a6a4a4;
