@@ -50,7 +50,7 @@ export default function ModalSettings({modalHandler, modalState}) {
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
-                    name={SETTINGS.HighlightMatches}
+                    name={SETTINGS.highlightMatches}
                     text="Highlight matching digits"
                     allSettings={allSettings}
                     setSetting={setSetting}
