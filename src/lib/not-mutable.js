@@ -27,6 +27,10 @@ class NMList {
         return l;
     }
 
+    clear() {
+        return emptyList;
+    }
+
     get(i, ...args) {
         const def = args.length > 0 ? args[0] : undefined;
         const l = this[_nm_list];
@@ -150,6 +154,10 @@ class NMMap {
         const m = new NMMap();
         m[_nm_map] = args;
         return m;
+    }
+
+    clear() {
+        return emptyMap;
     }
 
     get(k, ...args) {

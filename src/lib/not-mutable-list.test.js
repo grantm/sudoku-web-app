@@ -85,6 +85,14 @@ test('List.set', () => {
     expect(l4.join(',')).toBe('zilch,one');
 });
 
+test('List.clear', () => {
+    const l1 = List(['one', 'two', 'three']);
+    expect(l1.size).toBe(3);
+    const l2 = l1.clear();
+    expect(l2.size).toBe(0);
+    expect(l1.size).toBe(3);
+});
+
 test('List.last', () => {
     const l1 = List(['zero', 'one', 'two', 'three', 'four']);
     expect(l1.size).toBe(5);

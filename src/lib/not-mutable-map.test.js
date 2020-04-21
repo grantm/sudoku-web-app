@@ -50,6 +50,14 @@ test('Map.get()', () => {
     expect(m1.get('three', 'III')).toBe('III');
 });
 
+test('Map.clear()', () => {
+    const m1 = Map({ one: 'I', two: 'II' });
+    expect(m1.size).toBe(2);
+    const m2 = m1.clear();
+    expect(m2.size).toBe(0);
+    expect(m1.size).toBe(2);
+});
+
 test('Map.delete()', () => {
     const m1 = Map({ one: 'I', two: 'II', three: 'III' });
     expect(m1.size).toBe(3);
