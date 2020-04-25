@@ -1,6 +1,10 @@
 :root {
     --background-color: #ffffff;
     --text-color: #333333;
+    --link-text-color: #0000ff;
+    --link-bg-color: transparent;
+    --link-hover-text-color: #0000ff;
+    --link-hover-bg-color: #fcffa3;
     --status-bar-text-color: #777777;
     --status-bar-bg: linear-gradient(#efefef, #e6e6e6);
     --status-bar-border-color: #c7c7c7;
@@ -69,6 +73,10 @@
 :root .dark {
     --background-color: #3c3637;
     --text-color: #333333;
+    --link-text-color: #acddfb;
+    --link-bg-color: transparent;
+    --link-hover-text-color: #acddfb;
+    --link-hover-bg-color: #535353;
     --status-bar-text-color: #dfdfdf;
     --status-bar-bg: linear-gradient(#635c5d, #403b3c);
     --status-bar-border-color: #000000;
@@ -156,6 +164,19 @@ body {
     background-color: var(--background-color);
 }
 
+a {
+    color: var(--link-text-color);
+    background-color: var(--link-bg-color);
+    text-decoration: none;
+    padding: 0 0.1em;
+}
+
+a:hover {
+    color: var(--link-hover-text-color);
+    background-color: var(--link-hover-bg-color);
+    border-bottom: 1px solid var(--link-hover-text-color);
+}
+
 .sudoku-app {
     width: 100%;
     height: 100%;
@@ -173,4 +194,26 @@ body {
 
 .portrait .ui-elements {
     flex-flow: column nowrap;
+}
+
+.buttons {
+    text-align: center;
+}
+
+.buttons a {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: bold;
+    padding: 0.4em 0.8em;
+    margin: 0.3em;
+    color: var(--button-text-color);
+    background-color: var(--button-bg-color);
+    border-radius: 0.1em;
+    border: none;
+}
+
+.portrait .buttons a {
+    font-size: 1rem;
+    margin: 0.2em;
 }

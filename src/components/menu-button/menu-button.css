@@ -42,4 +42,5 @@
 .menu a:focus {
     color: var(--menu-hover-text-color);
     background-color: var(--menu-hover-bg-color);
+    border: none;
 }

@@ -435,6 +435,10 @@ export const modelHelpers = {
         });
     },
 
+    showAboutModal: (grid) => {
+        return grid.set('modalState', { modalType: 'about' });
+    },
+
     applyModalAction: (grid, args) => {
         const action = args.action || args;
         grid = grid.set('modalState', undefined);

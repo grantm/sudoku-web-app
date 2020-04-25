@@ -70,6 +70,15 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         [menuHandler]
     );
 
+    const aboutHandler = useCallback(
+        e => {
+            e.preventDefault();
+            menuHandler('show-about-modal');
+            setHidden(true);
+        },
+        [menuHandler]
+    );
+
     const emailURL = emailShareURL(initialDigits, startTime, endTime);
 
     const overlay = hidden
@@ -97,6 +106,10 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                     >Open in Sudokuwiki.org solver</a>
                 </li>
                 <li><a href="./">Enter a new puzzle</a></li>
+                <li>
+                    <a href="./" onClick={aboutHandler}
+                    >About this app</a>
+                </li>
             </ul>
         </div>
     )

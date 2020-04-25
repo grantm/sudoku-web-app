@@ -85,27 +85,6 @@ text.inner-pencil,
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.buttons {
-    text-align: center;
-}
-
-.buttons a {
-    display: inline-block;
-    text-decoration: none;
-    font-size: 1.8rem;
-    font-weight: bold;
-    padding: 0.4em 0.8em;
-    margin: 0.3em;
-    color: var(--button-text-color);
-    background-color: var(--button-bg-color);
-    border-radius: 0.1em;
-}
-
-.portrait .buttons a {
-    font-size: 1rem;
-    margin: 0.2em;
-}
-
 .animate .solved .cell[data-ring="5"] .cell-bg-overlay { animation: 1600ms linear 0ms 1 running rainbow; }
 .animate .solved .cell[data-ring="4"] .cell-bg-overlay { animation: 1600ms linear 100ms 1 running rainbow; }
 .animate .solved .cell[data-ring="3"] .cell-bg-overlay { animation: 1600ms linear 200ms 1 running rainbow; }
