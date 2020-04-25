@@ -164,6 +164,10 @@ function docKeyPressHandler (e, modalActive, setGrid, solved, inputMode) {
         }
         return;
     }
+    else if (e.key === "F1") {
+        setGrid((grid) => modelHelpers.showHelpPage(grid));
+        return;
+    }
     else if (e.key === "Enter") {
         setGrid((grid) => modelHelpers.gameOverCheck(grid));
         return;
@@ -269,6 +273,9 @@ function dispatchMenuAction(action, setGrid) {
     }
     else if (action === 'clear-pencilmarks') {
         setGrid((grid) => modelHelpers.clearPencilmarks(grid));
+    }
+    else if (action === 'show-help-page') {
+        setGrid((grid) => modelHelpers.showHelpPage(grid));
     }
     else if (action === 'show-about-modal') {
         setGrid((grid) => modelHelpers.showAboutModal(grid));

@@ -4,7 +4,7 @@
     --link-text-color: #0000ff;
     --link-bg-color: transparent;
     --link-hover-text-color: #0000ff;
-    --link-hover-bg-color: #fcffa3;
+    --link-hover-bg-color: #ffeadb;
     --status-bar-text-color: #777777;
     --status-bar-bg: linear-gradient(#efefef, #e6e6e6);
     --status-bar-border-color: #c7c7c7;
@@ -72,7 +72,7 @@
 
 :root .dark {
     --background-color: #3c3637;
-    --text-color: #333333;
+    --text-color: #9d9a9a;
     --link-text-color: #acddfb;
     --link-bg-color: transparent;
     --link-hover-text-color: #acddfb;
@@ -161,6 +161,7 @@ body {
     padding-top: 7.5vh;
     height: 100%;
     width: 100%;
+    color: var(--text-color);
     background-color: var(--background-color);
 }
 

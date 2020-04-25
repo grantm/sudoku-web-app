@@ -4,7 +4,6 @@
 * Protect against accidental reload or back button with "are you sure you want
   to leave this page?"
 * Menu option to share with pencilmarks
-* Help text
 * Tests for model
 * Tests for UI
 * Allow pasting in a digit string in 'enter' mode
@@ -42,3 +41,4 @@
 * Block starting if grid has errors
 * Validation of digit string in URL (81 digits + no conflicts)
 * Settings dialog with selections persisted to LocalStorage
+* Help text

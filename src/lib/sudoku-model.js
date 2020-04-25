@@ -435,6 +435,10 @@ export const modelHelpers = {
         });
     },
 
+    showHelpPage: (grid) => {
+        return grid.set('modalState', { modalType: 'help' });
+    },
+
     showAboutModal: (grid) => {
         return grid.set('modalState', { modalType: 'about' });
     },

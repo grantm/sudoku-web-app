@@ -70,6 +70,15 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         [menuHandler]
     );
 
+    const helpHandler = useCallback(
+        e => {
+            e.preventDefault();
+            menuHandler('show-help-page');
+            setHidden(true);
+        },
+        [menuHandler]
+    );
+
     const aboutHandler = useCallback(
         e => {
             e.preventDefault();
@@ -106,10 +115,8 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                     >Open in Sudokuwiki.org solver</a>
                 </li>
                 <li><a href="./">Enter a new puzzle</a></li>
-                <li>
-                    <a href="./" onClick={aboutHandler}
-                    >About this app</a>
-                </li>
+                <li><a href="./" onClick={helpHandler}>Help</a></li>
+                <li><a href="./" onClick={aboutHandler}>About this app</a></li>
             </ul>
         </div>
     )

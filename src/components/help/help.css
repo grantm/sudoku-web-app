@@ -1,0 +1,61 @@
+
+.help-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: var(--background-color);
+    padding: 2em;
+    overflow-y: auto;
+}
+
+.help-page .close-button {
+    position: fixed;
+    right: 1em;
+    top: 1em;
+    font-size: 1.8em;
+    font-weight: bold;
+    border: none;
+    width: 1.3em;
+    height: 1.3em;
+    color: var(--status-bar-button-text-color);
+    background-color: var(--status-bar-button-hover-color);
+    border-radius: 0.1em;
+}
+
+.help-page .close-button:hover {
+    background-color: var(--status-bar-button-hover-color);
+}
+
+.help-page .content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.4;
+    padding-bottom: 5em;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+ul {
+    padding-left: 1.4em;
+}
+
+li {
+    margin-bottom: 0.3em;
+}
+
+@media screen and (max-width: 500px) {
+
+    .help-page {
+        padding: 1.2em;
+    }
+
+    .help-page .close-button {
+        right: 0.4em;
+        top: 0.4em;
+    }
+
+}

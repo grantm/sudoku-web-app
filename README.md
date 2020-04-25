@@ -13,7 +13,7 @@ or redo using Ctrl-Z or Ctrl-Y respectively.
 
 Two different types of "pencil marks" can be added:
 
-* outer pencil marks are intended for so-called "Snyder" notation and are
+* outer pencil marks are intended for so-called "Snyder notation" and are
   entered using Shift+Digit
 * inner pencil marks are intended for pairs/triples and are entered using
   Ctrl+Digit

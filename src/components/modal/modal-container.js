@@ -7,6 +7,7 @@ import ModalConfirmRestart from './modal-confirm-restart';
 import ModalConfirmClearColorHighlights from './modal-confirm-clear-color-highlights'
 import ModalCheckResult from './modal-check-result';
 import ModalPaused from './modal-paused';
+import HelpPage from '../help/help';
 
 import "./modal.css";
 
@@ -43,6 +44,9 @@ export default function ModalContainer({modalState, modalHandler}) {
     }
     else if (modalState.modalType === 'paused') {
         content = <ModalPaused modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === 'help') {
+        content = <HelpPage modalHandler={modalHandler} />;
     }
     else {
         console.log('<Modal />: Unhandled modalState:', modalState);
