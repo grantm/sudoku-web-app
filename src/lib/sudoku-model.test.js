@@ -459,6 +459,8 @@ test('set multiple digits', () => {
 test('set cell color', () => {
     let grid = newSudokuModel({initialDigits});
 
+    expect(grid.get('inputMode')).toBe('digit');
+
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 11);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 20);
@@ -466,10 +468,20 @@ test('set cell color', () => {
 
     expect(grid.get('currentSnapshot')).toBe('11C4,20C4');
 
+    grid = modelHelpers.setInputMode(grid, 'color');
     grid = modelHelpers.applySelectionOp(grid, 'clearSelection');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 11);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 20);
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '1');
+
+    expect(grid.get('currentSnapshot')).toBe('');   // 1 is transparent bkgd
+
+    grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '9');
+
+    expect(grid.get('currentSnapshot')).toBe('11C9,20C9');
+    expect(grid.get('inputMode')).toBe('color');
+
+    grid = modelHelpers.updateSelectedCells(grid, 'clearCell', '1');
 
     expect(grid.get('currentSnapshot')).toBe('');
 
@@ -477,9 +489,10 @@ test('set cell color', () => {
 
     expect(grid.get('currentSnapshot')).toBe('11C9,20C9');
 
-    grid = modelHelpers.updateSelectedCells(grid, 'clearCell', '1');
+    grid = modelHelpers.applyModalAction(grid, 'clear-color-highlights-confirmed');
 
     expect(grid.get('currentSnapshot')).toBe('');
+    expect(grid.get('inputMode')).toBe('digit');
 });
 
 test('set pencilmarks', () => {

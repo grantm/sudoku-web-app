@@ -512,7 +512,10 @@ export const modelHelpers = {
                 }
                 return c;
             });
-            return grid.set('cells', cells);
+            return grid.merge({
+                cells: cells,
+                inputMode: 'digit',
+            });
         });
     },
 
