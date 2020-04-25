@@ -303,8 +303,7 @@ function App() {
     const pausedAt = grid.get('pausedAt');
     const solved = grid.get('solved');
     const mode = grid.get('mode');
-    const inputMode = grid.get('inputMode');
-    const tempInputMode = grid.get('tempInputMode');
+    const inputMode = grid.get('tempInputMode') || grid.get('inputMode');
     const completedDigits = grid.get('completedDigits');
     const modalState = grid.get('modalState');
     const modalActive = modalState !== undefined;
@@ -319,7 +318,7 @@ function App() {
 
     useEffect(
         () => {
-            const pressHandler = (e) => docKeyPressHandler(e, modalActive, setGrid, solved, tempInputMode || inputMode);
+            const pressHandler = (e) => docKeyPressHandler(e, modalActive, setGrid, solved, inputMode);
             document.addEventListener('keydown', pressHandler);
             const releaseHandler = (e) => docKeyReleaseHandler(e, modalActive, setGrid);
             document.addEventListener('keyup', releaseHandler);
@@ -328,7 +327,7 @@ function App() {
                 document.removeEventListener('keyup', releaseHandler)
             };
         },
-        [solved, tempInputMode, inputMode, modalActive]
+        [solved, inputMode, modalActive]
     );
 
     const winSize = useWindowSize(400);
@@ -380,7 +379,7 @@ function App() {
                 <div>
                     <VirtualKeyboard
                         dimensions={dimensions}
-                        inputMode={tempInputMode || inputMode}
+                        inputMode={inputMode}
                         completedDigits={completedDigits}
                         keyPressHandler={vkbdKeyHandler}
                     />

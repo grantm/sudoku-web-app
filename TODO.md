@@ -1,6 +1,8 @@
 ## Things to do:
 (Not necessarily in priority order)
 
+* Protect against accidental reload or back button with "are you sure you want
+  to leave this page?"
 * Menu option to share with pencilmarks
 * Help text
 * Tests for model
