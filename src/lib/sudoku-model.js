@@ -252,6 +252,39 @@ export const modelHelpers = {
         return result;
     },
 
+    findCandidatesForCell: (digits, i) => {
+        const candidates = {'1': '', '2': '', '3': '', '4': '', '5': '', '6': '', '7': '', '8': '', '9': ''};
+        const r = Math.floor(i / 9) + 1;
+        const c = (i % 9) + 1;
+        const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
+        [ cellSets.row[r], cellSets.col[c], cellSets.box[b] ].flat().forEach(j => {
+            const d = digits[j];
+            if (d[j] !== '0') {
+                delete candidates[d];
+            }
+        });
+        return Object.keys(candidates).sort();
+    },
+
+    findSolutions: (digits, findAll = false, i = 0, s = []) => {
+        if (i === 81) {
+            s.push(digits.join(''));
+            return s;
+        }
+        if (digits[i] !== '0') {
+            return modelHelpers.findSolutions(digits, findAll, i + 1, s);
+        }
+        modelHelpers.findCandidatesForCell(digits, i).forEach(d => {
+            if (!findAll && s.length > 1) {
+                return s;
+            }
+            digits[i] = d;
+            modelHelpers.findSolutions(digits, findAll, i + 1, s);
+        });
+        digits[i] = '0';
+        return s;
+    },
+
     setCurrentSnapshot: (grid, newSnapshot) => {
         if (grid.get('currentSnapshot') !== newSnapshot) {
             grid = grid.set('currentSnapshot', newSnapshot);
@@ -536,6 +569,28 @@ export const modelHelpers = {
                 modalType: 'check-result',
                 errorMessage: 'Errors found in highlighted cells',
             });
+        }
+        else if (grid.get('mode') === 'enter') {
+            const digits = grid.get('cells').map(c => c.get('digit')).toArray();
+            const solutions = modelHelpers.findSolutions(digits);
+            if (solutions.length === 0) {
+                grid = grid.set('modalState', {
+                    modalType: 'check-result',
+                    errorMessage: 'This arrangement does not have a solution',
+                });
+            }
+            else if (solutions.length > 1) {
+                grid = grid.set('modalState', {
+                    modalType: 'check-result',
+                    errorMessage: 'This arrangement does not have a unique solution',
+                });
+            }
+            else {
+                grid = grid.set('modalState', {
+                    modalType: 'check-result',
+                    errorMessage: 'No errors found.',
+                });
+            }
         }
         else if (result.incompleteCount) {
             const s = result.incompleteCount === 1 ? '' : 's';
