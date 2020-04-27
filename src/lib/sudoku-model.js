@@ -68,7 +68,7 @@ function newCell(index, digit) {
 }
 
 export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
-    initialDigits = initialDigits || '';
+    initialDigits = (initialDigits || '').replace(/\D/g, '');
     const initialError = modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
@@ -171,10 +171,26 @@ export const modelHelpers = {
 
     setGivenDigits: (grid, initialDigits) => {
         const cells = Range(0, 81).toList().map(i => newCell(i, initialDigits[i]));
-        return modelHelpers.highlightErrorCells(grid.merge({
+        grid = modelHelpers.highlightErrorCells(grid.merge({
             initialDigits,
             cells,
         }));
+        const solutions = modelHelpers.findSolutions(initialDigits.split(''));
+        if (solutions.length === 0) {
+            grid = grid.set('modalState', {
+                modalType: 'check-result',
+                warning: true,
+                errorMessage: 'This arrangement does not have a solution',
+            });
+        }
+        else if (solutions.length > 1) {
+            grid = grid.set('modalState', {
+                modalType: 'check-result',
+                warning: true,
+                errorMessage: 'This arrangement does not have a unique solution',
+            });
+        }
+        return grid;
     },
 
     setInitialDigits: (grid, initialDigits, initialError) => {
