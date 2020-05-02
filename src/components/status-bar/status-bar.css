@@ -13,6 +13,33 @@
     border-bottom: 1px solid var(--status-bar-border-color);
 }
 
+.status-bar .site-link {
+    width: 100%;
+    height: 7vh;
+    padding-top: 0.5vh;
+    text-align: center;
+}
+
+.portrait .status-bar .site-link {
+    display: none;
+}
+
+.status-bar .site-link a,
+.status-bar .site-link a:hover,
+.status-bar .site-link a:active {
+    display: inline-block;
+    background-color: transparent;
+    border: none;
+    line-height: 1;
+    padding: 0;
+    outline: none;
+}
+
+.status-bar .site-link img {
+    display: block;
+    width: 38vh;
+}
+
 .status-bar button {
     width: 6vh;
     height: 6vh;
