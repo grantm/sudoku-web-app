@@ -15,7 +15,8 @@ const stopPropagation = (e) => e.stopPropagation();
 function SiteLink () {
     return (
         <div className="site-link">
-            <a href="https://sudokuexchange.com/"><img src={SiteDomainImg} /></a>
+            <a href="https://sudokuexchange.com/"><img src={SiteDomainImg}
+                alt="SudokuExchange.com" /></a>
         </div>
     );
 }
