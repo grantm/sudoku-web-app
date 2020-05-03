@@ -30,46 +30,18 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         []
     );
 
-    const shareHandler = useCallback(
+    const clickHandler = useCallback(
         e => {
-            e.preventDefault();
-            menuHandler('show-share-modal');
-            setHidden(true);
-        },
-        [menuHandler]
-    );
-
-    const settingsHandler = useCallback(
-        e => {
-            e.preventDefault();
-            menuHandler('show-settings-modal');
-            setHidden(true);
-        },
-        [menuHandler]
-    );
-
-    const clearPencilmarksHandler = useCallback(
-        e => {
-            e.preventDefault();
-            menuHandler('clear-pencilmarks');
-            setHidden(true);
-        },
-        [menuHandler]
-    );
-
-    const helpHandler = useCallback(
-        e => {
-            e.preventDefault();
-            menuHandler('show-help-page');
-            setHidden(true);
-        },
-        [menuHandler]
-    );
-
-    const aboutHandler = useCallback(
-        e => {
-            e.preventDefault();
-            menuHandler('show-about-modal');
+            const parent = e.target.parentElement;
+            if (parent.classList && parent.classList.contains('disabled-link')) {
+                e.preventDefault();
+                return;
+            }
+            const menuAction = e.target.dataset.menuAction;
+            if (menuAction) {
+                e.preventDefault();
+                menuHandler(menuAction);
+            }
             setHidden(true);
         },
         [menuHandler]
@@ -79,20 +51,21 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         ? null
         : <div className="overlay" onClick={() => setHidden(true)} />
 
+    const shareLinkClass = initialDigits ? '' : 'disabled-link';
+
     return (
         <div className={classes.join(' ')}>
             { overlay }
             <button type="button" title="Menu" onClick={toggleHandler}><MenuIcon /></button>
-            <ul onMouseUp={() => setHidden(true)}>
-                <li>
-                    <a href="./" onClick={shareHandler}
+            <ul onClick={clickHandler}>
+                <li className={shareLinkClass}>
+                    <a href="./" data-menu-action="show-share-modal"
                     >Share this puzzle</a>
                 </li>
                 <li>
-                    <a href="./" onClick={clearPencilmarksHandler}
-                    >Clear all pencilmarks</a>
+                    <a href="./" data-menu-action="clear-pencilmarks">Clear all pencilmarks</a>
                 </li>
-                <li>
+                <li className={shareLinkClass}>
                     <a href={`https://www.sudokuwiki.org/sudoku.htm?bd=${initialDigits}`}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -100,11 +73,10 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                 </li>
                 <li><a href="./">Enter a new puzzle</a></li>
                 <li>
-                    <a href="./" onClick={settingsHandler}
-                    >Settings</a>
+                    <a href="./" data-menu-action="show-settings-modal">Settings</a>
                 </li>
-                <li><a href="./" onClick={helpHandler}>Help</a></li>
-                <li><a href="./" onClick={aboutHandler}>About this app</a></li>
+                <li><a href="./" data-menu-action="show-help-page">Help</a></li>
+                <li><a href="./" data-menu-action="show-about-modal">About this app</a></li>
             </ul>
         </div>
     )

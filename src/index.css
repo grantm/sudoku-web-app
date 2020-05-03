@@ -15,6 +15,7 @@
     --menu-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
     --menu-hover-text-color: #000000;
     --menu-hover-bg-color: #e6e6e6;
+    --menu-disabled-text-color: #cccccc;
     --modal-text-color: #333333;
     --modal-bg-color: #ffffff;
     --modal-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
@@ -87,6 +88,7 @@
     --menu-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
     --menu-hover-text-color: #c4c4c4;
     --menu-hover-bg-color: #182f5d;
+    --menu-disabled-text-color: #555555;
     --modal-text-color: #9d9a9a;
     --modal-bg-color: #443f3f;
     --modal-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);

@@ -46,3 +46,9 @@
     background-color: var(--menu-hover-bg-color);
     border: none;
 }
+
+.menu .disabled-link a {
+    color: var(--menu-disabled-text-color);
+    font-style: italic;
+    cursor: not-allowed;
+}
