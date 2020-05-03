@@ -40,7 +40,7 @@
 }
 
 .modal .buttons {
-    margin-top: 1.6em;
+    margin-top: 1.0em;
     text-align: right;
     padding-bottom: 1em;
 }
@@ -50,7 +50,6 @@
     color: var(--modal-button-text-color);
     background-color: var(--modal-button-bg-color);
     margin-left: 1em;
-    margin-top: 0.3em;
     min-width: 5em;
     padding: 0.4em 0.8em;
     font-size: 100%;
@@ -141,4 +140,65 @@ input[type=checkbox]:checked + .indicator::before {
 
 .modal.about p {
     max-width: 24em;
+}
+
+.modal.share p {
+    max-width: 18em;
+}
+
+.share-buttons {
+    text-align: center;
+}
+
+.share-buttons ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0.8em 0 0 0;
+}
+
+.share-buttons li {
+    list-style: none;
+    margin-bottom: 0.6em;
+}
+
+.share-buttons a {
+    display: block;
+    text-align: left;
+    white-space: nowrap;
+    background-color: #777777;
+    color: #ffffff;
+    padding: 0.4em 1em 0.5em 0.4em;
+    border-radius: 0.3em;
+    font-weight: bold;
+}
+
+.share-buttons a, .share-buttons a:hover {
+    border: none;
+}
+
+.share-buttons a::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: 0.3em;
+    vertical-align: bottom;
+    border: 1px solid transparent;
+    background-image: url(../../assets/social-icons.png);
+}
+
+.share-buttons a.btn-facebook {
+    background-color: #3b5998;
+}
+
+.share-buttons a.btn-twitter {
+    background-color: #55acee;
+}
+
+.share-buttons a.btn-twitter::before {
+    background-position: 0px -25px;
+}
+
+.share-buttons a.btn-email::before {
+    background-position: 0px -50px;
 }

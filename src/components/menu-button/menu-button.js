@@ -2,28 +2,6 @@ import React, { useState, useCallback } from 'react';
 
 import './menu-button.css';
 
-import { secondsAsHMS } from '../../lib/format-utils';
-
-
-function emailShareURL (initialDigits, startTime, endTime) {
-    if (!initialDigits) {
-        return null;
-    }
-    const siteURL = window.location.toString().replace(/\?.*$/, '');
-    const subject = 'A Sudoku puzzle for you';
-    let timeToBeat = '';
-    if (endTime) {
-        const seconds = Math.floor((endTime - startTime) / 1000);
-        timeToBeat = `Time to beat: ${secondsAsHMS(seconds)}\n\n`;
-    }
-    const body =
-        `Here's a link to a Sudoku puzzle:\n\n` +
-        `${siteURL}?s=${initialDigits}\n\n${timeToBeat}\n\n`;
-    const params = new URLSearchParams();
-    params.set('subject', subject);
-    params.set('body', body);
-    return `mailto:?${params.toString()}`.replace(/[+]/g, '%20');
-}
 
 function MenuIcon () {
     return (
@@ -50,6 +28,15 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
     const toggleHandler = useCallback(
         () => setHidden(h => !h),
         []
+    );
+
+    const shareHandler = useCallback(
+        e => {
+            e.preventDefault();
+            menuHandler('show-share-modal');
+            setHidden(true);
+        },
+        [menuHandler]
     );
 
     const settingsHandler = useCallback(
@@ -88,8 +75,6 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         [menuHandler]
     );
 
-    const emailURL = emailShareURL(initialDigits, startTime, endTime);
-
     const overlay = hidden
         ? null
         : <div className="overlay" onClick={() => setHidden(true)} />
@@ -100,14 +85,13 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
             <button type="button" title="Menu" onClick={toggleHandler}><MenuIcon /></button>
             <ul onMouseUp={() => setHidden(true)}>
                 <li>
-                    <a href="./" onClick={settingsHandler}
-                    >Settings</a>
+                    <a href="./" onClick={shareHandler}
+                    >Share this puzzle</a>
                 </li>
                 <li>
                     <a href="./" onClick={clearPencilmarksHandler}
                     >Clear all pencilmarks</a>
                 </li>
-                <li><a href={emailURL}>Share this puzzle via email</a></li>
                 <li>
                     <a href={`https://www.sudokuwiki.org/sudoku.htm?bd=${initialDigits}`}
                         target="_blank"
@@ -115,6 +99,10 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                     >Open in Sudokuwiki.org solver</a>
                 </li>
                 <li><a href="./">Enter a new puzzle</a></li>
+                <li>
+                    <a href="./" onClick={settingsHandler}
+                    >Settings</a>
+                </li>
                 <li><a href="./" onClick={helpHandler}>Help</a></li>
                 <li><a href="./" onClick={aboutHandler}>About this app</a></li>
             </ul>

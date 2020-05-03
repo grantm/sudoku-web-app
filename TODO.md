@@ -1,14 +1,18 @@
 ## Things to do:
 (Not necessarily in priority order)
 
+* Allow user to select easy/medium/hard when sharing
+* Track progress in localStorage to allow resume after reload or back/fwd
 * Protect against accidental reload or back button with "are you sure you want
   to leave this page?"
+* Option to share via QRcode
 * Menu option to share with pencilmarks
+* Investigate honouring back button to close modal/menu (without propagating
+  state when sharing current URL)
 * Tests for model
 * Tests for UI
 * Allow pasting in a digit string in 'enter' mode
 * Allow copy to digit string
-* Function to check for unique solutions (new mode)
 * Review/playback mode with slider and step buttons
 * Allow contributed themes
 
@@ -42,3 +46,5 @@
 * Validation of digit string in URL (81 digits + no conflicts)
 * Settings dialog with selections persisted to LocalStorage
 * Help text
+* Function to check for unique solutions (new mode)
+* Sharing options via social media

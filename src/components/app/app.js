@@ -268,7 +268,10 @@ function dispatchModalAction(action, setGrid) {
 }
 
 function dispatchMenuAction(action, setGrid) {
-    if (action === 'show-settings-modal') {
+    if (action === 'show-share-modal') {
+        setGrid((grid) => modelHelpers.showShareModal(grid));
+    }
+    else if (action === 'show-settings-modal') {
         setGrid((grid) => modelHelpers.showSettingsModal(grid));
     }
     else if (action === 'clear-pencilmarks') {

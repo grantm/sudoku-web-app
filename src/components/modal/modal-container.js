@@ -2,11 +2,12 @@ import React from 'react';
 
 import ModalInvalidInitialDigits from './modal-invalid-initial-digits';
 import ModalAbout from './modal-about';
-import ModalSettings from './modal-settings';
 import ModalConfirmRestart from './modal-confirm-restart';
 import ModalConfirmClearColorHighlights from './modal-confirm-clear-color-highlights'
 import ModalCheckResult from './modal-check-result';
 import ModalPaused from './modal-paused';
+import ModalShare from './modal-share';
+import ModalSettings from './modal-settings';
 import HelpPage from '../help/help';
 
 import "./modal.css";
@@ -29,6 +30,9 @@ export default function ModalContainer({modalState, modalHandler}) {
     }
     else if (modalState.modalType === 'about') {
         content = <ModalAbout modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === 'share') {
+        content = <ModalShare modalState={modalState} modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === 'settings') {
         content = <ModalSettings modalState={modalState} modalHandler={modalHandler} />;

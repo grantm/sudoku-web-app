@@ -477,6 +477,15 @@ export const modelHelpers = {
         return grid;
     },
 
+    showShareModal: (grid) => {
+        return grid.set('modalState', {
+            modalType: 'share',
+            initialDigits: grid.get('initialDigits'),
+            startTime: grid.get('startTime'),
+            endTime: grid.get('endTime'),
+        });
+    },
+
     showSettingsModal: (grid) => {
         return grid.set('modalState', {
             modalType: 'settings',
