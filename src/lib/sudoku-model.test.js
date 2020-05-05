@@ -31,7 +31,7 @@ function pencilDigits (set) {
 }
 
 test('initialise grid', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     const propNames = mapPropNames(grid);
     expect(propNames).toStrictEqual([
@@ -93,7 +93,7 @@ test('initialise grid', () => {
 });
 
 test('initialise grid cells', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     // Expected pattern of given digits have been set up
     const cells = grid.get('cells');
@@ -217,7 +217,7 @@ test('initialise grid cells', () => {
 });
 
 test('move input focus', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
     const move = false;     // No ctrl or shift
     const extend = true;    // Ctrl or shift
 
@@ -261,7 +261,7 @@ test('move input focus', () => {
 });
 
 test('extend selection', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
     expect(selectedCells(grid)).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 40);
     expect(selectedCells(grid)).toBe('40');
@@ -280,7 +280,7 @@ test('extend selection', () => {
 });
 
 test('input mode', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     const inputMode = (grid) => {
         return grid.get('tempInputMode') || grid.get('inputMode');
@@ -306,7 +306,7 @@ test('input mode', () => {
 });
 
 test('set one digit', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 2);
@@ -346,7 +346,7 @@ test('set one digit', () => {
 });
 
 test('attempt overwrite of given digit', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
 
@@ -370,7 +370,7 @@ test('attempt overwrite of given digit', () => {
 });
 
 test('set multiple digits', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 47);
@@ -458,7 +458,7 @@ test('set multiple digits', () => {
 });
 
 test('set cell color', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     expect(grid.get('inputMode')).toBe('digit');
 
@@ -497,7 +497,7 @@ test('set cell color', () => {
 });
 
 test('set pencilmarks', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
@@ -569,7 +569,7 @@ test('set pencilmarks', () => {
 });
 
 test('autoclean pencilmarks', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
     expect(digitsFromGrid(grid)).toBe(initialDigits);
     let startingSnapshot = '03N39,04N39,31N17,49N17,54T3,57N35,71T3,72T34,74T4,80T3';
     expect(grid.get('currentSnapshot')).toBe('');
@@ -592,7 +592,7 @@ test('autoclean pencilmarks', () => {
 });
 
 test('clear all colours', () => {
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
     expect(digitsFromGrid(grid)).toBe(initialDigits);
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 4);

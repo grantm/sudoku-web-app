@@ -1,7 +1,29 @@
-import { modelHelpers } from './sudoku-model.js';
+import { modelHelpers, newSudokuModel } from './sudoku-model.js';
 
 const initialDigits =
     '000001230' +
+    '123008040' +
+    '804007650' +
+    '765000000' +
+    '000000000' +
+    '000000123' +
+    '012300804' +
+    '080400765' +
+    '076500000';
+
+const initialDigitsNonUnique =
+    '000001230' +
+    '123008040' +
+    '804007650' +
+    '765000000' +
+    '000000000' +
+    '000000123' +
+    '012300800' +
+    '080400000' +
+    '076500000';
+
+const initialDigitsNoSolution =
+    '500001230' +
     '123008040' +
     '804007650' +
     '765000000' +
@@ -39,17 +61,7 @@ test('findSolutions - unique solution', () => {
 });
 
 test('findSolutions - multiple solutions - first two', () => {
-    const d = (
-        '000001230' +
-        '123008040' +
-        '804007650' +
-        '765000000' +
-        '000000000' +
-        '000000123' +
-        '012300800' +
-        '080400000' +
-        '076500000'
-    ).split('');
+    const d = initialDigitsNonUnique.split('');
     const solutions = modelHelpers.findSolutions(d);
     expect(solutions).toStrictEqual([
         "657941238123658749894237651765123984231894567948765123412376895589412376376589412",
@@ -58,17 +70,7 @@ test('findSolutions - multiple solutions - first two', () => {
 });
 
 test('findSolutions - multiple solutions - all', () => {
-    const d = (
-        '000001230' +
-        '123008040' +
-        '804007650' +
-        '765000000' +
-        '000000000' +
-        '000000123' +
-        '012300800' +
-        '080400000' +
-        '076500000'
-    ).split('');
+    const d = initialDigitsNonUnique.split('');
     const solutions = modelHelpers.findSolutions(d, true);
     expect(solutions).toStrictEqual([
         "657941238123658749894237651765123984231894567948765123412376895589412376376589412",
@@ -79,17 +81,26 @@ test('findSolutions - multiple solutions - all', () => {
 });
 
 test('findSolutions - no solutions', () => {
-    const d = (
-        '500001230' +
-        '123008040' +
-        '804007650' +
-        '765000000' +
-        '000000000' +
-        '000000123' +
-        '012300804' +
-        '080400765' +
-        '076500000'
-    ).split('');
+    const d = initialDigitsNoSolution.split('');
     const solutions = modelHelpers.findSolutions(d);
     expect(solutions).toStrictEqual([]);
+});
+
+test('check initialDigits', () => {
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    expect(grid.get('modalState')).toStrictEqual(undefined);
+
+    grid = newSudokuModel({initialDigits: initialDigitsNonUnique});
+    expect(grid.get('modalState')).toStrictEqual({
+        "modalType": "check-result",
+        "warning": true,
+        "errorMessage": "This arrangement does not have a unique solution",
+    });
+
+    grid = newSudokuModel({initialDigits: initialDigitsNoSolution});
+    expect(grid.get('modalState')).toStrictEqual({
+        "modalType": "check-result",
+        "warning": true,
+        "errorMessage": "This arrangement does not have a solution",
+    });
 });

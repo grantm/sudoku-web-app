@@ -27,7 +27,7 @@ function truthyKeys(obj) {
 test('restart', () => {
     // Initialise grid, add some stuff & check state
     const wip = '03D1,15D1,28D1,30D3,31D2C2,39T68,40D1,48T8N79,49N79C6,52D1,56D1,80D1';
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 30);
     grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '3');
     grid = modelHelpers.setInputMode(grid, 'outer');
@@ -69,7 +69,7 @@ test('restart', () => {
 test('clear colours', () => {
     // Initialise grid, add some stuff & check state
     const wip = '03D1,15D1,28D1,30D3,31D2C2,39T68,40D1,48T8N79,49N79C6,52D1,56D1,80D1';
-    let grid = newSudokuModel({initialDigits});
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
     grid = modelHelpers.restoreSnapshot(grid, wip);
     expect(grid.get('currentSnapshot')).toBe(wip);
 

@@ -74,9 +74,9 @@ function newCell(index, digit) {
     });
 }
 
-export const newSudokuModel = ({initialDigits, difficultyLevel, storeCurrentSnapshot}) => {
+export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnapshot, skipCheck}) {
     initialDigits = (initialDigits || '').replace(/\D/g, '');
-    const initialError = modelHelpers.initialErrorCheck(initialDigits);
+    const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
     const grid = Map({
@@ -102,7 +102,7 @@ export const newSudokuModel = ({initialDigits, difficultyLevel, storeCurrentSnap
     });
     return initialError
         ? modelHelpers.setInitialDigits(grid, initialDigits, initialError)
-        : modelHelpers.setGivenDigits(grid, initialDigits);
+        : modelHelpers.setGivenDigits(grid, initialDigits, skipCheck);
 };
 
 function actionsBlocked(grid) {
@@ -186,12 +186,15 @@ export const modelHelpers = {
         return;
     },
 
-    setGivenDigits: (grid, initialDigits) => {
+    setGivenDigits: (grid, initialDigits, skipCheck) => {
         const cells = Range(0, 81).toList().map(i => newCell(i, initialDigits[i]));
         grid = modelHelpers.highlightErrorCells(grid.merge({
             initialDigits,
             cells,
         }));
+        if (skipCheck) {
+            return grid;
+        }
         const solutions = modelHelpers.findSolutions(initialDigits.split(''));
         if (solutions.length === 0) {
             grid = grid.set('modalState', {
