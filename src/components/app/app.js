@@ -33,9 +33,9 @@ const inputModeFromHotKey = {
 
 function initialGridFromURL () {
     const params = new URLSearchParams(window.location.search);
-    const digits = params.get("s");
     const grid = newSudokuModel({
-        initialDigits: digits,
+        initialDigits: params.get('s'),
+        difficultyLevel: params.get('d'),
         storeCurrentSnapshot: sn => document.body.dataset.currentSnapshot = sn,
     });
     document.body.dataset.initialDigits = grid.get('initialDigits');

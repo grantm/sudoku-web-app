@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
+import { modelHelpers } from '../../lib/sudoku-model.js';
 import { secondsAsHMS } from '../../lib/format-utils';
 
 
-function siteURL () {
-    return window.location.toString().replace(/\?.*$/, '');
+function puzzleURL(initialDigits, difficulty) {
+    const baseURL = window.location.toString().replace(/\?.*$/, '');
+    const params = new URLSearchParams();
+    params.set('s', initialDigits);
+    if (difficulty) {
+        params.set('d', difficulty);
+    }
+    return baseURL + '?' + params.toString();
+}
+
+function difficultyLevelName(value) {
+    if (value) {
+        return modelHelpers.difficultyLevelName(value) || '';
+    }
+    return '';
 }
 
 
@@ -17,31 +31,32 @@ function formattedTimeToBeat(startTime, endTime) {
 }
 
 
-function facebookShareURL (initialDigits) {
+function facebookShareURL (initialDigits, difficultyLevel) {
     const params = new URLSearchParams();
-    params.set('u', `${siteURL()}?s=${initialDigits}`);
+    params.set('u', puzzleURL(initialDigits, difficultyLevel));
     return `https://facebook.com/sharer/sharer.php?${params.toString()}`.replace(/[+]/g, '%20');
 }
 
 
-function twitterShareURL (initialDigits, startTime, endTime) {
-    const timeToBeat = endTime
-        ? `\nTime to beat: ${formattedTimeToBeat(startTime, endTime)}\n`
-        : '';
+function twitterShareURL (initialDigits, difficulty, solveTime) {
+    const levelName = difficultyLevelName(difficulty);
+    const difficultyLevel = levelName ? `Difficulty level: ${levelName}\n` : '';
+    const timeToBeat = solveTime ? `Time to beat: ${solveTime}\n` : '';
     const params = new URLSearchParams();
-    params.set('text', `Here's a link to a puzzle on the Sudoku Exchange:${timeToBeat}`);
-    params.set('url', `${siteURL()}?s=${initialDigits}`);
+    params.set('text', `Here's a link to a puzzle on #SudokuExchange:\n${difficultyLevel}${timeToBeat}`);
+    params.set('url', puzzleURL(initialDigits, difficulty));
     return `https://twitter.com/intent/tweet/?${params.toString()}`.replace(/[+]/g, '%20');
 }
 
 
-function emailShareURL (initialDigits, startTime, endTime) {
-    const timeToBeat = endTime
-        ? `\nTime to beat: ${formattedTimeToBeat(startTime, endTime)}\n\n`
-        : '';
+function emailShareURL (initialDigits, difficulty, solveTime) {
+    const pURL = puzzleURL(initialDigits, difficulty);
+    const levelName = difficultyLevelName(difficulty);
+    const difficultyLevel = levelName ? `Difficulty level: ${levelName}\n` : '';
+    const timeToBeat = solveTime ? `Time to beat: ${solveTime}\n` : '';
     const body =
-        `Here's a link to a Sudoku puzzle:\n\n` +
-        `${siteURL()}?s=${initialDigits}\n\n${timeToBeat}\n\n`;
+        `Here's a link to a Sudoku puzzle on SudokuExchange.com:\n\n` +
+        `${pURL}\n\n${difficultyLevel}${timeToBeat}\n`;
     const params = new URLSearchParams();
     params.set('subject', 'A Sudoku puzzle for you');
     params.set('body', body);
@@ -49,27 +64,94 @@ function emailShareURL (initialDigits, startTime, endTime) {
 }
 
 
+function DifficultyOption({value, name, selectedValue, changeHandler}) {
+    const isChecked = value === selectedValue;
+    return (
+        <label>
+            <input type="radio" value={value} checked={isChecked} onChange={changeHandler} />
+            <span>{name}</span>
+        </label>
+    );
+}
+
+
+function DifficultySelector({difficulty, changeHandler}) {
+    const options = modelHelpers.allDifficultyLevels().map(lvl => {
+        return (
+            <DifficultyOption
+                key={lvl.value}
+                selectedValue={difficulty}
+                value={lvl.value}
+                name={lvl.name}
+                changeHandler={changeHandler}
+            />
+        );
+    })
+    return (
+        <div className="difficulty-selector">
+            <p>Difficulty level:</p>
+            <div className="difficulty-options">
+                {options}
+            </div>
+        </div>
+    );
+}
+
+
 export default function ModalShare({modalState, modalHandler}) {
-    const {initialDigits, startTime, endTime} = modalState;
+    const {initialDigits, difficultyLevel, startTime, endTime} = modalState;
+    const solveTime = endTime ? formattedTimeToBeat(startTime, endTime) : null;
+
+    const [difficulty, setDifficulty] = useState(difficultyLevel);
+    const [shareTime, setShareTime] = useState(!!endTime);
+
     const closeHandler = () => modalHandler('cancel');
+
+    const changeDifficulty = useCallback(
+        (e) => { setDifficulty(e.target.value); },
+        [setDifficulty]
+    );
+
+    const toggleShareTime = useCallback(
+        (e) => { setShareTime(!shareTime); },
+        [shareTime, setShareTime]
+    );
+
+    const shareClasses = "share-time" + (shareTime ? '' : ' no-share');
+    const shareTimeQuestion = endTime
+        ? (
+            <p className={shareClasses}>
+                <label>
+                    <input type="checkbox" value={shareTime} onChange={toggleShareTime} checked={shareTime}/>
+                    <span className="indicator" />
+                    Share your time: {solveTime}
+                </label>
+            </p>
+        )
+        : null;
+
+    const shareSolveTime = shareTime ? solveTime : null;
+
     return (
         <div className="modal share">
             <h1>Share this puzzle</h1>
+            <DifficultySelector difficulty={difficulty} changeHandler={changeDifficulty} />
+            {shareTimeQuestion}
             <div className="share-buttons">
                 <ul>
                     <li>
                         <a className="btn-facebook" target="_blank" rel="noopener noreferrer"
-                            href={facebookShareURL(initialDigits, startTime, endTime)}
+                            href={facebookShareURL(initialDigits, difficulty)}
                         >Share on Facebook</a>
                     </li>
                     <li>
                         <a className="btn-twitter" target="_blank" rel="noopener noreferrer"
-                            href={twitterShareURL(initialDigits, startTime, endTime)}
+                            href={twitterShareURL(initialDigits, difficulty, shareSolveTime)}
                         >Share on Twitter</a>
                     </li>
                     <li>
                         <a className="btn-email"
-                            href={emailShareURL(initialDigits, startTime, endTime)}
+                            href={emailShareURL(initialDigits, difficulty, shareSolveTime)}
                         >Share by Email</a>
                     </li>
                 </ul>

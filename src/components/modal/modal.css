@@ -77,12 +77,6 @@
     resize: none;
 }
 
-@media screen and (max-width: 500px) {
-    .modal {
-        max-width: 90%;
-    }
-}
-
 .settings-list {
     list-style: none;
     margin-left: 0;
@@ -138,12 +132,59 @@ input[type=checkbox]:checked + .indicator::before {
     background-color: var(--input-toggle-on-color);
 }
 
-.modal.about p {
-    max-width: 24em;
-}
-
 .modal.share p {
     max-width: 18em;
+}
+
+.difficulty-selector p {
+    margin-bottom: 0.1em;
+}
+
+.difficulty-options input {
+    display: none;
+}
+
+.difficulty-options {
+    display: flex;
+    margin: 0.2em 0 0.8em;
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+.difficulty-options label {
+    flex: 1 0 auto;
+    margin-right: 0.5em;
+}
+
+.difficulty-options label:last-child {
+    margin-right: 0;
+}
+
+.difficulty-options span {
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 0.2em 0;
+    color: var(--input-multi-text-color);
+    border: 1px solid var(--input-multi-text-color);
+    background-color: var(--input-multi-bg-color);
+    border-radius: 0.3em;
+}
+
+.difficulty-options input:checked+span {
+    color: var(--input-multi-selected-text-color);
+    border: 1px solid var(--input-multi-selected-text-color);
+    background-color: var(--input-multi-selected-bg-color);
+    border-color: var(--input-multi-selected-text-color);
+}
+
+.share-time {
+    position: relative;
+}
+
+.share-time.no-share {
+    text-decoration: line-through;
+    text-decoration-color: #999999;
 }
 
 .share-buttons {
@@ -153,7 +194,7 @@ input[type=checkbox]:checked + .indicator::before {
 .share-buttons ul {
     display: inline-block;
     padding: 0;
-    margin: 0.8em 0 0 0;
+    margin: 0.5em 0 0 0;
 }
 
 .share-buttons li {
@@ -201,4 +242,16 @@ input[type=checkbox]:checked + .indicator::before {
 
 .share-buttons a.btn-email::before {
     background-position: 0px -50px;
+}
+
+@media screen and (max-width: 500px) {
+    .modal {
+        max-width: 94%;
+        padding: 0.6em 0.6em 0 0.6em;
+    }
+
+    .difficulty-options {
+        font-size: 4.5vw;
+    }
+
 }

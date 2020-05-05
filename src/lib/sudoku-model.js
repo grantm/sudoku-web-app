@@ -10,6 +10,13 @@ export const SETTINGS = {
     playVictoryAnimation: "play-victory-animation",
 };
 
+const difficultyLevels = [
+    { value: "1", name: "Easy" },
+    { value: "2", name: "Medium" },
+    { value: "3", name: "Hard" },
+    { value: "4", name: "Diabolical" },
+];
+
 const [cellSets, cellProp] = initCellSets();
 
 function initCellSets() {
@@ -67,7 +74,7 @@ function newCell(index, digit) {
     });
 }
 
-export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
+export const newSudokuModel = ({initialDigits, difficultyLevel, storeCurrentSnapshot}) => {
     initialDigits = (initialDigits || '').replace(/\D/g, '');
     const initialError = modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
@@ -76,6 +83,7 @@ export const newSudokuModel = ({initialDigits, storeCurrentSnapshot}) => {
         solved: false,
         mode,
         settings,
+        difficultyLevel: (difficultyLevel || '').replace(/[^1-4]/g, ''),
         inputMode: 'digit',
         tempInputMode: undefined,
         startTime: mode === 'solve' ? Date.now() : undefined,
@@ -152,6 +160,15 @@ export const modelHelpers = {
     getSetting: (grid, settingName) => {
         const allSettings = grid.get('settings');
         return allSettings[settingName];
+    },
+
+    allDifficultyLevels: () => {
+        return difficultyLevels;
+    },
+
+    difficultyLevelName: (value) => {
+        const level = difficultyLevels.find(lvl => lvl.value === value) || {};
+        return level.name;
     },
 
     initialErrorCheck: (initialDigits) => {
@@ -481,6 +498,7 @@ export const modelHelpers = {
         return grid.set('modalState', {
             modalType: 'share',
             initialDigits: grid.get('initialDigits'),
+            difficultyLevel: grid.get('difficultyLevel'),
             startTime: grid.get('startTime'),
             endTime: grid.get('endTime'),
         });

@@ -38,6 +38,7 @@ test('initialise grid', () => {
         "cells",
         "completedDigits",
         "currentSnapshot",
+        "difficultyLevel",
         "endTime",
         "focusIndex",
         "hasErrors",

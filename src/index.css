@@ -31,6 +31,10 @@
     --input-toggle-inset-color: #dddddd20;
     --input-toggle-off-color: #888888;
     --input-toggle-on-color: #08bd08;
+    --input-multi-text-color: #777777;
+    --input-multi-bg-color: transparent;
+    --input-multi-selected-text-color: #333333;
+    --input-multi-selected-bg-color: #73e869;
     --solved-text-color: #00a000;
     --line-color: #e7e7e7;
     --line-color-bold: #333333;
@@ -102,6 +106,10 @@
     --input-toggle-inset-color: #444444d0;
     --input-toggle-off-color: #4f4747;
     --input-toggle-on-color: #3ba83b;
+    --input-multi-text-color: #777777;
+    --input-multi-bg-color: transparent;
+    --input-multi-selected-text-color: #333333;
+    --input-multi-selected-bg-color: #73e869;
     --solved-text-color: #61f061;
     --line-color: #7b7878;
     --line-color-bold: #a6a4a4;

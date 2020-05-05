@@ -1,7 +1,6 @@
 ## Things to do:
 (Not necessarily in priority order)
 
-* Allow user to select easy/medium/hard when sharing
 * Track progress in localStorage to allow resume after reload or back/fwd
 * Protect against accidental reload or back button with "are you sure you want
   to leave this page?"
@@ -48,3 +47,4 @@
 * Help text
 * Function to check for unique solutions (new mode)
 * Sharing options via social media
+* Allow user to share difficulty level and/or solve time
