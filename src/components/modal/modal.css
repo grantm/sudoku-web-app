@@ -132,6 +132,10 @@ input[type=checkbox]:checked + .indicator::before {
     background-color: var(--input-toggle-on-color);
 }
 
+.modal.about p {
+    max-width: 23em;
+}
+
 .modal.share p {
     max-width: 18em;
 }

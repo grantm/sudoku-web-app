@@ -1,10 +1,13 @@
 import React from 'react';
 
+import {version} from '../../../package.json';
+
 export default function ModalAbout({modalHandler}) {
     const closeHandler = () => modalHandler('cancel');
     return (
         <div className="modal about">
             <h1>About this app</h1>
+            <p>Application version: {version}</p>
             <p>This Sudoku web application was created for <a href="https://sudokuexchange.com/"
             >SodokuExchange.com</a> by <a href="https://grantm.github.io/">Grant McLean</a>.</p>
             <p>It is <a href="https://www.fsf.org/about/what-is-free-software">free software</a>{' '}
