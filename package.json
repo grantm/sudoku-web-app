@@ -1,6 +1,17 @@
 {
-  "name": "sudoku",
+  "name": "sudoku-web-app",
   "version": "1.0.1",
+  "description": "A web application for solving & sharing Sudoku puzzles. Created for SudokuExchange.com",
+  "author": {
+    "name": "Grant McLean",
+    "email": "grant@mclean.net.nz",
+    "url": "https://grantm.github.io/"
+  },
+  "license": "AGPLV3",
+  "homepage": "https://sudokuexchange.com",
+  "repository": "github:grantm/sudoku-web-app",
+  "bugs": "https://github.com/grantm/sudoku-web-app/issues",
+  "keywords": [ "sudoku" ],
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "5.7.0",
@@ -15,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -31,6 +43,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "homepage": "."
+  }
 }
