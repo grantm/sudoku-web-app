@@ -8,7 +8,6 @@
     "url": "https://grantm.github.io/"
   },
   "license": "AGPLV3",
-  "homepage": "https://sudokuexchange.com",
   "repository": "github:grantm/sudoku-web-app",
   "bugs": "https://github.com/grantm/sudoku-web-app/issues",
   "keywords": [ "sudoku" ],
@@ -43,5 +42,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "."
 }
