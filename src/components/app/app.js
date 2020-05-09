@@ -24,6 +24,18 @@ const KEYCODE = {
     Z: 90,
 };
 
+const digitFromShiftNumKey = {
+    "End": "1",
+    "ArrowDown": "2",
+    "PageDown": "3",
+    "ArrowLeft": "4",
+    "Unidentified": "5",
+    "ArrowRight": "6",
+    "Home": "7",
+    "ArrowUp": "8",
+    "PageUp": "9",
+}
+
 const inputModeFromHotKey = {
     z: 'digit',
     x: 'outer',
@@ -88,7 +100,7 @@ function cellTouchHandler (e, setGrid) {
     }
 }
 
-function docKeyPressHandler (e, modalActive, setGrid, solved, inputMode) {
+function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     if (solved || modalActive) {
         return;
     }
@@ -100,18 +112,21 @@ function docKeyPressHandler (e, modalActive, setGrid, solved, inputMode) {
     if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
         digit = String.fromCharCode(e.keyCode);
     }
-    if (KEYCODE.numPadDigit0 <= e.keyCode && e.keyCode <= KEYCODE.numPadDigit9) {
+    else if (KEYCODE.numPadDigit0 <= e.keyCode && e.keyCode <= KEYCODE.numPadDigit9) {
         digit = String.fromCharCode(KEYCODE.digit0 + e.keyCode - KEYCODE.numPadDigit0);
     }
+    else if (shiftOrCtrl && e.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
+        digit = digitFromShiftNumKey[e.key];
+    }
     if (digit !== undefined) {
-        if (e.ctrlKey || inputMode === 'inner') {
+        if ((e.shiftKey && e.ctrlKey) || inputMode === 'color') {
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', digit));
+        }
+        else if (e.ctrlKey || inputMode === 'inner') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit));
         }
         else if (e.shiftKey || inputMode === 'outer') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', digit));
-        }
-        else if (e.shiftKey || inputMode === 'color') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', digit));
         }
         else {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', digit));
@@ -181,11 +196,22 @@ function docKeyPressHandler (e, modalActive, setGrid, solved, inputMode) {
         return;
     }
     else if (e.key === "Control") {
-        setGrid((grid) => modelHelpers.setTempInputMode(grid, 'inner'));
+        if (e.shiftKey) {
+
+            setGrid((grid) => modelHelpers.setTempInputMode(grid, 'color'));
+        }
+        else {
+            setGrid((grid) => modelHelpers.setTempInputMode(grid, 'inner'));
+        }
         return;
     }
     else if (e.key === "Shift") {
-        setGrid((grid) => modelHelpers.setTempInputMode(grid, 'outer'));
+        if (e.ctrlKey) {
+            setGrid((grid) => modelHelpers.setTempInputMode(grid, 'color'));
+        }
+        else {
+            setGrid((grid) => modelHelpers.setTempInputMode(grid, 'outer'));
+        }
         return;
     }
     else if (inputModeFromHotKey[e.key]) {
@@ -195,12 +221,26 @@ function docKeyPressHandler (e, modalActive, setGrid, solved, inputMode) {
     // else { console.log('keydown event:', e); }
 }
 
-function docKeyReleaseHandler(e, modalActive, setGrid) {
+function docKeyUpHandler(e, modalActive, setGrid) {
     if (modalActive) {
         return;
     }
-    if (e.key === "Control" || e.key === 'Shift') {
-        setGrid((grid) => modelHelpers.clearTempInputMode(grid));
+    if (e.key === "Control") {
+        if (e.shiftKey) {
+            setGrid((grid) => modelHelpers.setTempInputMode(grid, 'outer'));
+        }
+        else {
+            setGrid((grid) => modelHelpers.clearTempInputMode(grid));
+        }
+        return;
+    }
+    else if (e.key === 'Shift') {
+        if (e.ctrlKey) {
+            setGrid((grid) => modelHelpers.setTempInputMode(grid, 'inner'));
+        }
+        else {
+            setGrid((grid) => modelHelpers.clearTempInputMode(grid));
+        }
         return;
     }
     // else { console.log('keyup event:', e); }
@@ -331,9 +371,9 @@ function App() {
 
     useEffect(
         () => {
-            const pressHandler = (e) => docKeyPressHandler(e, modalActive, setGrid, solved, inputMode);
+            const pressHandler = (e) => docKeyDownHandler(e, modalActive, setGrid, solved, inputMode);
             document.addEventListener('keydown', pressHandler);
-            const releaseHandler = (e) => docKeyReleaseHandler(e, modalActive, setGrid);
+            const releaseHandler = (e) => docKeyUpHandler(e, modalActive, setGrid);
             document.addEventListener('keyup', releaseHandler);
             return () => {
                 document.removeEventListener('keydown', pressHandler)

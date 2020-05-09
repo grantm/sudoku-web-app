@@ -942,7 +942,7 @@ export const modelHelpers = {
         if (actionsBlocked(grid)) {
             return grid;
         }
-        if (newMode.match(/^(inner|outer)$/)) {
+        if (newMode.match(/^(inner|outer|color)$/)) {
             grid = grid.set('tempInputMode', newMode);
         }
         return grid;
