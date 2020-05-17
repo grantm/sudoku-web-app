@@ -218,14 +218,21 @@ export const modelHelpers = {
             ? Range(0, 81).toList().map(i => newCell(i, '0'))
             : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i]));
         let modalState = undefined;
-        if (initialError.insufficientDigits) {
+        if (initialError.noStartingDigits) {
+            modalState = {
+                modalType: 'no-initial-digits',
+                loading: true,
+                fetchRequired: true,
+            };
+        }
+        else if (initialError.insufficientDigits) {
             modalState = {
                 modalType: 'invalid-initial-digits',
                 insufficientDigits: true,
                 initialDigits: initialDigits,
             };
         }
-        if (initialError.hasErrors) {
+        else if (initialError.hasErrors) {
             modalState = {
                 modalType: 'invalid-initial-digits',
                 hasErrors: true,
@@ -237,6 +244,31 @@ export const modelHelpers = {
             modalState,
             cells,
         }));
+    },
+
+    fetchRecentlyShared: (grid, setGrid) => {
+        const modalState = grid.get('modalState');
+        delete modalState.fetchRequired;    // Naughty, but we don't want a re-render
+        fetch('/recently-shared')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => setGrid(grid => {
+                return grid.set('modalState', {
+                    modalType: 'no-initial-digits',
+                    recentlyShared: data,
+                });
+            }))
+            .catch(error => setGrid(grid => {
+                return grid.set('modalState', {
+                    modalType: 'no-initial-digits',
+                    loadingFailed: true,
+                    errorMessage: error.toString(),
+                });
+            }));
     },
 
     checkDigits: (digits) => {

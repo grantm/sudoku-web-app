@@ -67,6 +67,82 @@
     background-color: var(--modal-button-primary-bg-color);
 }
 
+.modal.no-initial-digits {
+    max-width: 30em;
+    padding-bottom: 1.2em;
+}
+
+.modal.no-initial-digits .loading-failed {
+    color: var(--error-text-color);
+    font-style: italic;
+    opacity: 0.8;
+    margin: 1.5em 1.5em 2em;
+}
+
+.recently-shared h2 {
+    font-size: 1.5rem;
+}
+
+.recently-shared h2::before {
+    content: '\25BE';
+    display: inline-block;
+    padding-right: 0.3em;
+    vertical-align: top;
+    line-height: 0.9;
+}
+
+.recently-shared .collapsed h2::before {
+    content: '\25B8';
+    line-height: 0.8;
+}
+
+.recently-shared ul {
+    max-height: 700px;
+    overflow: hidden;
+    opacity: 1;
+    transition: all 600ms;
+}
+
+.recently-shared .collapsed ul {
+    max-height: 0;
+    opacity: 0;
+}
+
+.recently-shared ul {
+    padding-left: 1.0em;
+}
+
+.recently-shared li,
+.recently-shared li a,
+.recently-shared li svg,
+.recently-shared li div {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.recently-shared svg {
+    border-radius: 4px;
+}
+
+.recently-shared a {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    line-height: 0;
+}
+
+.recently-shared a:hover {
+    border: 2px solid var(--link-hover-text-color);
+    background-color: transparent;
+}
+
+.modal button.new-puzzle {
+    margin: 0 0.8em 0 0;
+    white-space: nowrap;
+}
+
 .modal.invalid-initial-digits textarea {
     width: 100%;
     height: 7.5em;

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import ModalNoInitialDigits from './modal-no-initial-digits';
 import ModalInvalidInitialDigits from './modal-invalid-initial-digits';
 import ModalAbout from './modal-about';
 import ModalConfirmRestart from './modal-confirm-restart';
@@ -25,7 +26,10 @@ export default function ModalContainer({modalState, modalHandler}) {
     if (!modalState) {
         return null;
     }
-    if (modalState.modalType === 'invalid-initial-digits') {
+    if (modalState.modalType === 'no-initial-digits') {
+        content = <ModalNoInitialDigits modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === 'invalid-initial-digits') {
         content = <ModalInvalidInitialDigits modalState={modalState} modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === 'about') {
