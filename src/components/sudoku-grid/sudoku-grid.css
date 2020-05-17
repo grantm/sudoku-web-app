@@ -3,14 +3,23 @@
     text-align: center;
 }
 
+.sudoku-grid.mini {
+    display: inline-block;
+}
+
 .sudoku-grid .line {
-    stroke: var(--line-color);
-    stroke-width: var(--line-width);
+    stroke: var(--grid-line-color);
+    stroke-width: var(--grid-line-width);
+}
+
+.sudoku-grid.mini .line {
+    stroke: var(--mini-grid-line-color);
+    stroke-width: var(--grid-line-width);
 }
 
 .sudoku-grid .line-bold {
-    stroke: var(--line-color-bold);
-    stroke-width: var(--line-width-bold);
+    stroke: var(--grid-line-color-bold);
+    stroke-width: var(--grid-line-width-bold);
 }
 
 .grid-bg { fill: var(--background-color); }
@@ -67,7 +76,8 @@
     fill: var(--solved-digit-color);
 }
 
-.cell.given text.digit {
+.cell.given text.digit,
+.mini text.digit {
     fill: var(--given-digit-color);
 }
 
