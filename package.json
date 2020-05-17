@@ -43,5 +43,6 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "."
+  "homepage": ".",
+  "proxy": "http://sudokuexchange.localhost:5000/"
 }
