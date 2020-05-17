@@ -46,7 +46,7 @@ function CellDigit({cell}) {
             className="digit"
             x={cell.get('col') * 100}
             y={cell.get('row') * 100 + 25}
-            fontSize="65"
+            fontSize="72"
             textAnchor="middle"
         >
             {digit}
