@@ -1,0 +1,37 @@
+
+/*
+ * Adapted from: https://tobiasahlin.com/spinkit/ by Tobias Ahlin Bjerrome
+ */
+
+.spinner {
+    width: 52px;
+    height: 52px;
+    margin: 40px auto 60px;
+}
+
+.spinner div {
+    width: 15px;
+    height: 15px;
+    background-color: var(--spinner-color);
+    border: 1px solid var(--background-color);
+    float: left;
+    animation: spinner-gridScaleDelay 1.3s infinite ease-in-out;
+}
+.spinner div:nth-child(1) { animation-delay: 0.2s; }
+.spinner div:nth-child(2) { animation-delay: 0.3s; }
+.spinner div:nth-child(3) { animation-delay: 0.4s; }
+.spinner div:nth-child(4) { animation-delay: 0.1s; }
+.spinner div:nth-child(5) { animation-delay: 0.2s; }
+.spinner div:nth-child(6) { animation-delay: 0.3s; }
+.spinner div:nth-child(7) { animation-delay: 0s; }
+.spinner div:nth-child(8) { animation-delay: 0.1s; }
+.spinner div:nth-child(9) { animation-delay: 0.2s; }
+
+@keyframes spinner-gridScaleDelay {
+    0%, 70%, 100% {
+        transform: scale3D(1, 1, 1);
+    }
+    35% {
+        transform: scale3D(0, 0, 1);
+    }
+}
