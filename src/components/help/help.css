@@ -35,15 +35,15 @@
     padding-bottom: 5em;
 }
 
-h1 {
+.help-page h1 {
     font-size: 2rem;
 }
 
-ul {
+.help-page ul {
     padding-left: 1.4em;
 }
 
-li {
+.help-page li {
     margin-bottom: 0.3em;
 }
 
