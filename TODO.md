@@ -48,3 +48,4 @@
 * Function to check for unique solutions (new mode)
 * Sharing options via social media
 * Allow user to share difficulty level and/or solve time
+* Add modal to allow selecting from recently shared puzzles

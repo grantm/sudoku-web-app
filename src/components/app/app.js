@@ -50,6 +50,7 @@ function initialGridFromURL () {
     const grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
+        entryPoint: params.get('e'),
         storeCurrentSnapshot: sn => document.body.dataset.currentSnapshot = sn,
     });
     document.body.dataset.initialDigits = grid.get('initialDigits');

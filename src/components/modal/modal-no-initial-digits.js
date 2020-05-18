@@ -15,7 +15,7 @@ function RecentlySharedSection ({level, puzzles}) {
     const puzzleLinks = puzzles.map((digits, i) => {
         return (
             <li key={i}>
-                <a href={`/?s=${digits}&d=${level}`}>
+                <a href={`./?s=${digits}&d=${level}`}>
                     <SudokuMiniGrid digits={digits} />
                 </a>
             </li>

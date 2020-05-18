@@ -74,7 +74,7 @@ function newCell(index, digit) {
     });
 }
 
-export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnapshot, skipCheck}) {
+export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnapshot, entryPoint, skipCheck}) {
     initialDigits = (initialDigits || '').replace(/\D/g, '');
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
@@ -101,7 +101,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnap
         modalState: undefined,
     });
     return initialError
-        ? modelHelpers.setInitialDigits(grid, initialDigits, initialError)
+        ? modelHelpers.setInitialDigits(grid, initialDigits, initialError, entryPoint)
         : modelHelpers.setGivenDigits(grid, initialDigits, skipCheck);
 };
 
@@ -213,17 +213,19 @@ export const modelHelpers = {
         return grid;
     },
 
-    setInitialDigits: (grid, initialDigits, initialError) => {
+    setInitialDigits: (grid, initialDigits, initialError, entryPoint) => {
         const cells = initialError.noStartingDigits
             ? Range(0, 81).toList().map(i => newCell(i, '0'))
             : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i]));
         let modalState = undefined;
         if (initialError.noStartingDigits) {
-            modalState = {
-                modalType: 'no-initial-digits',
-                loading: true,
-                fetchRequired: true,
-            };
+            modalState = entryPoint === 'new'
+                ? undefined
+                : {
+                    modalType: 'no-initial-digits',
+                    loading: true,
+                    fetchRequired: true,
+                };
         }
         else if (initialError.insufficientDigits) {
             modalState = {
