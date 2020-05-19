@@ -40,6 +40,7 @@
     --grid-line-color-bold: #333333;
     --mini-grid-line-color: #aaaaaa;
     --given-digit-color: #333333;
+    --visited-digit-color: #aaaaaa;
     --paused-digit-color: #00000033;
     --digit-color: #4444dd;
     --pencil-mark-color: #4444dd;
@@ -117,6 +118,7 @@
     --grid-line-color-bold: #a6a4a4;
     --mini-grid-line-color: #a6a6a6;
     --given-digit-color: #9d9a9a;
+    --visited-digit-color: #666666;
     --paused-digit-color: #7b7272;
     --digit-color: #6d96e6;
     --pencil-mark-color: #4677d9;
