@@ -4,12 +4,15 @@ import { modelHelpers } from '../../lib/sudoku-model.js';
 import { secondsAsHMS } from '../../lib/format-utils';
 
 
-function puzzleURL(initialDigits, difficulty) {
+function puzzleURL(initialDigits, difficulty, vector) {
     const baseURL = window.location.toString().replace(/\?.*$/, '');
     const params = new URLSearchParams();
     params.set('s', initialDigits);
     if (difficulty) {
         params.set('d', difficulty);
+    }
+    if (vector) {
+        params.set('v', vector);
     }
     return baseURL + '?' + params.toString();
 }
@@ -33,7 +36,7 @@ function formattedTimeToBeat(startTime, endTime) {
 
 function facebookShareURL (initialDigits, difficultyLevel) {
     const params = new URLSearchParams();
-    params.set('u', puzzleURL(initialDigits, difficultyLevel));
+    params.set('u', puzzleURL(initialDigits, difficultyLevel, 'sbf'));
     return `https://facebook.com/sharer/sharer.php?${params.toString()}`.replace(/[+]/g, '%20');
 }
 
@@ -44,13 +47,13 @@ function twitterShareURL (initialDigits, difficulty, solveTime) {
     const timeToBeat = solveTime ? `Time to beat: ${solveTime}\n` : '';
     const params = new URLSearchParams();
     params.set('text', `Here's a link to a puzzle on #SudokuExchange:\n${difficultyLevel}${timeToBeat}`);
-    params.set('url', puzzleURL(initialDigits, difficulty));
+    params.set('url', puzzleURL(initialDigits, difficulty, 'sbt'));
     return `https://twitter.com/intent/tweet/?${params.toString()}`.replace(/[+]/g, '%20');
 }
 
 
 function emailShareURL (initialDigits, difficulty, solveTime) {
-    const pURL = puzzleURL(initialDigits, difficulty);
+    const pURL = puzzleURL(initialDigits, difficulty, 'sbe');
     const levelName = difficultyLevelName(difficulty);
     const difficultyLevel = levelName ? `Difficulty level: ${levelName}\n` : '';
     const timeToBeat = solveTime ? `Time to beat: ${solveTime}\n` : '';
