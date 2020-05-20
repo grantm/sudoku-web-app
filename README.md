@@ -1,22 +1,24 @@
-This project implements an interactive web page for playing Sudoku.
+This project implements the Sudoku web app used on [SudokuExchange.com](https://sudokuexchange.com).
 
-## User Guide
+Features include:
 
-Use the mouse or the keyboard to select cells:
-
-* click to select one cell, click and drag to select multiple cells
-* use the arrow keys to select an adjacent cell, use Ctrl+arrow to extend the
-  selection
-
-Add digits by typing a number.  Remove digits using Backspace or Delete.  Undo
-or redo using Ctrl-Z or Ctrl-Y respectively.
-
-Two different types of "pencil marks" can be added:
-
-* outer pencil marks are intended for so-called "Snyder notation" and are
-  entered using Shift+Digit
-* inner pencil marks are intended for pairs/triples and are entered using
-  Ctrl+Digit
+* Enter a puzzle into a blank grid (e.g: transcribe a printed puzzle)
+* Check that the puzzle has a unique solution (in case you made a typo)
+* Share a puzzle as a link [like this](https://sudokuexchange.com/play/?s=000001230123008040804007650765000000000000000000000123012300804080400765076500000)
+* Two types of pencilmarks (for Snyder notation and doubles/triples or simple candidate lists)
+* Cell colouring
+* An optional dark mode theme
+* Keyboard shortcuts for desktop browsers (including Ctrl-Z/Y Undo/Redo)
+* Touchscreen support for mobile or tablet browsers
+* Help option on the menu to access user guide
+* Multi-cell selections for entering pencil marks
+* Flexible display: scales up to huge screens or down to small screens, adapts
+  automatically to portrait vs landscape orientation, and supports full screen mode
+  to remove distractions
+* Configurable options so you can turn on the features you find helpful and turn
+  off the features you find annoying
+* Free to use and no ads
+* Full source code available
 
 ## Copyright and License
 
