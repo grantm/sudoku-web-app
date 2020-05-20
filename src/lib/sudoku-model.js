@@ -323,17 +323,19 @@ export const modelHelpers = {
     },
 
     findCandidatesForCell: (digits, i) => {
-        const candidates = {'1': '', '2': '', '3': '', '4': '', '5': '', '6': '', '7': '', '8': '', '9': ''};
+        const candidates = '0123456789'.split('');
+        const digitBase = '0'.charCodeAt(0);
         const r = Math.floor(i / 9) + 1;
         const c = (i % 9) + 1;
         const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
         [ cellSets.row[r], cellSets.col[c], cellSets.box[b] ].flat().forEach(j => {
-            const d = digits[j];
-            if (d[j] !== '0') {
-                delete candidates[d];
+            const d = digits[j] || '0';
+            if (d !== '0') {
+                const index = d.charCodeAt(0) - digitBase;
+                candidates[index] = '0';
             }
         });
-        return Object.keys(candidates).sort();
+        return candidates.filter(d => d !== '0');
     },
 
     findSolutions: (digits, findAll = false, i = 0, s = []) => {
