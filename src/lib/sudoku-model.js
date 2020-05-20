@@ -176,7 +176,6 @@ export const modelHelpers = {
             return { noStartingDigits: true };
         }
         if (!initialDigits.match(/^[0-9]{81}$/)) {
-            console.log(initialDigits);
             return { insufficientDigits: true };
         }
         const result = modelHelpers.checkDigits(initialDigits);
@@ -216,7 +215,7 @@ export const modelHelpers = {
     setInitialDigits: (grid, initialDigits, initialError, entryPoint) => {
         const cells = initialError.noStartingDigits
             ? Range(0, 81).toList().map(i => newCell(i, '0'))
-            : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i]));
+            : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i] || '0'));
         let modalState = undefined;
         if (initialError.noStartingDigits) {
             modalState = entryPoint === 'new'
