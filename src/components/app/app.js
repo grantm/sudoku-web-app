@@ -138,6 +138,10 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         return;
     }
     else if (e.key === "Backspace" || e.key === "Delete") {
+        if (e.target === document.body) {
+            // We don't want browser to treat this as a back button action
+            e.preventDefault();
+        }
         setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));
         return;
     }
