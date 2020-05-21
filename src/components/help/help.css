@@ -47,6 +47,14 @@
     margin-bottom: 0.3em;
 }
 
+.help-page dt {
+    font-weight: 600;
+}
+
+.help-page dd {
+    margin: 0 0 0.8em 1.6em;
+}
+
 @media screen and (max-width: 500px) {
 
     .help-page {

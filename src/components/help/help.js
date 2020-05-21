@@ -14,7 +14,7 @@ export default function HelpPage({modalHandler}) {
             <p>Alternatively, you can start in <strong>enter</strong> mode with an
             empty grid - allowing you to enter the starting digits for a sudoku
             puzzle (perhaps by transcribing from a newspaper or magazine), then
-            click 'Start' to begin solving.</p>
+            click ‘Start’ to begin solving.</p>
 
             <h1>Entering digits</h1>
             <p>To enter a digit, first select a cell in the grid by either:</p>
@@ -36,7 +36,7 @@ export default function HelpPage({modalHandler}) {
                 <li>use Shift or Ctrl with the arrow keys to extend the selection</li>
                 <li>use Shift-space or Ctrl-space to select or unselect the current cell</li>
             </ul>
-            <p>Don't worry if your selection includes cells which already contain completed
+            <p>Don’t worry if your selection includes cells which already contain completed
             digits - these cells will not be affected by entering pencil marks.</p>
             <p>Two different types of pencil marks can be added:</p>
             <ul>
@@ -58,6 +58,10 @@ export default function HelpPage({modalHandler}) {
                 <li>C - Inner pencil marks</li>
                 <li>Z - Cell colours</li>
             </ul>
+            <p>If you have switched to a pencil marking mode (inner or outer), you can still
+            enter a digit by double-clicking that digit.  The double-click action overrides
+            the current mode and does a normal digit entry, but afterwards you remain in the
+            original pencil marking mode.</p>
             <p>The app menu includes an option to clear all pencil marks in a single
             action.</p>
 
@@ -70,12 +74,44 @@ export default function HelpPage({modalHandler}) {
             selected cells.</p>
             <p>The Esc key will cancel the current selection.</p>
 
+            <h1>Settings</h1>
+            <p>The “Settings” menu option allows you to turn on the features you find helpful
+            and turn off the features you find annoying.  The settings should be ‘sticky’
+            across multiple visits to the site.</p>
+            <dl>
+                <dt>Dark mode</dt>
+                <dd>Change the application theme colours to use a darker background
+                and lighter colours for interactive elements.  Some people will
+                find this results in less eye strain.</dd>
+                <dt>Show Timer</dt>
+                <dd>If you don't need the added pressure of a clock ticking while you’re
+                trying to think, turn this option off.</dd>
+                <dt>Highlight matching digits</dt>
+                <dd>When you select a cell containing a digit, the app will highlight all
+                other cells that contain the same digit (either full digit or pencil mark).
+                Some people find this helpful others may find it distracting or even consider
+                it cheating.</dd>
+                <dt>Highlight conflicting digits</dt>
+                <dd>When you enter a digit and that digit is already present in the same
+                row, column or 3x3 box, the app can highlight the digit to alert you to the
+                mistake. Some people consider this cheating.  Note, just because a digit you
+                entered is not highlighted as ‘conflicting’ doesn’t mean it’s correct.</dd>
+                <dt>Auto-clean pencil marks</dt>
+                <dd>When you enter a digit, the app will remove that digit from any pencil
+                marks in the same row, column or 3x3 box.  If you don’t want your pencil
+                marks to be cleaned up automatically, turn this option off.</dd>
+                <dt>Play animation when puzzle solved</dt>
+                <dd>When you have successfully solved a puzzle, the app will play a brief,
+                but some would say “satisfying”, animated colour sequence.  If you are
+                sensitive to flashing lights you should turn this off.</dd>
+            </dl>
+
             <h1>Other operations</h1>
             <p>To switch the app into full-screen mode use the button on the status bar or
-            the 'F' key on the keyboard.</p>
+            the ‘F’ key on the keyboard.</p>
             <p>You can simply share the URL of the puzzle page.  To make this a little easier,
-            there's a menu option to email a link to a friend.</p>
-            <p>If you get stuck, there's a menu option to open the puzzle in the sudoku solver
+            there’s a menu option to “Share this puzzle” using Twitter, Facebook or email.</p>
+            <p>If you get stuck, there’s a menu option to open the puzzle in the sudoku solver
             on <a href="https://www.sudokuwiki.org/sudoku.htm">sudokuwiki.org</a>.</p>
             <p>The menu also includes a Settings option to turn on some features that you
             might find helpful or to turn off features you find annoying.</p>
