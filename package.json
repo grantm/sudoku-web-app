@@ -44,5 +44,5 @@
     ]
   },
   "homepage": ".",
-  "proxy": "http://sudokuexchange.localhost:5000/"
+  "proxy": "http://sudokuexchange.localhost:1080"
 }
