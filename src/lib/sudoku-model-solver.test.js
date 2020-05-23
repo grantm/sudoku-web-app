@@ -33,6 +33,28 @@ const initialDigitsNoSolution =
     '080400765' +
     '076500000';
 
+const initialDigitsTooFewGivens =
+    '123456789' +
+    '000000000' +
+    '000000000' +
+    '000000000' +
+    '000000000' +
+    '000000000' +
+    '000000000' +
+    '000000000' +
+    '765432100';
+
+const initialDigitsPathological =
+    '098700000' +
+    '000000000' +
+    '000000000' +
+    '000000000' +
+    '034567891' +
+    '000000000' +
+    '000000000' +
+    '000000000' +
+    '023456789';
+
 test('findCandidatesForCell', () => {
     const d = initialDigits.split('');
     expect(d[0]).toBe('0');
@@ -46,8 +68,10 @@ test('findCandidatesForCell', () => {
 
 test('findSolutions - unique solution', () => {
     const d = initialDigits.split('');
-    const solutions = modelHelpers.findSolutions(d);
-    expect(solutions).toStrictEqual([
+    const result = modelHelpers.findSolutions(d);
+    expect(result.uniqueSolution).toBe(true);
+    expect(result.error).toBe(undefined);
+    expect(result.solutions).toStrictEqual([
         '657941238' +
         '123658947' +
         '894237651' +
@@ -62,8 +86,10 @@ test('findSolutions - unique solution', () => {
 
 test('findSolutions - multiple solutions - first two', () => {
     const d = initialDigitsNonUnique.split('');
-    const solutions = modelHelpers.findSolutions(d);
-    expect(solutions).toStrictEqual([
+    const result = modelHelpers.findSolutions(d);
+    expect(result.uniqueSolution).toBe(false);
+    expect(result.error).toBe('This arrangement does not have a unique solution');
+    expect(result.solutions).toStrictEqual([
         "657941238123658749894237651765123984231894567948765123412376895589412376376589412",
         "657941238123658749894237651765123984231894576948765123412376895589412367376589412",
     ]);
@@ -71,8 +97,10 @@ test('findSolutions - multiple solutions - first two', () => {
 
 test('findSolutions - multiple solutions - all', () => {
     const d = initialDigitsNonUnique.split('');
-    const solutions = modelHelpers.findSolutions(d, true);
-    expect(solutions).toStrictEqual([
+    const result = modelHelpers.findSolutions(d, { findAll: true });
+    expect(result.uniqueSolution).toBe(false);
+    expect(result.error).toBe('This arrangement does not have a unique solution');
+    expect(result.solutions).toStrictEqual([
         "657941238123658749894237651765123984231894567948765123412376895589412376376589412",
         "657941238123658749894237651765123984231894576948765123412376895589412367376589412",
         "657941238123658947894237651765123489231894576948765123512376894389412765476589312",
@@ -82,8 +110,26 @@ test('findSolutions - multiple solutions - all', () => {
 
 test('findSolutions - no solutions', () => {
     const d = initialDigitsNoSolution.split('');
-    const solutions = modelHelpers.findSolutions(d);
-    expect(solutions).toStrictEqual([]);
+    const result = modelHelpers.findSolutions(d);
+    expect(result.uniqueSolution).toBe(false);
+    expect(result.error).toBe('This arrangement does not have a solution');
+    expect(result.solutions).toStrictEqual([]);
+});
+
+test('findSolutions - too few givens', () => {
+    const d = initialDigitsTooFewGivens.split('');
+    const result = modelHelpers.findSolutions(d, {timeout: 100});
+    expect(result.uniqueSolution).toBe(false);
+    expect(result.error).toBe('This arrangement may not have a unique solution');
+    expect(result.solutions).toStrictEqual([]);
+});
+
+test('findSolutions - timeout', () => {
+    const d = initialDigitsPathological.split('');
+    const result = modelHelpers.findSolutions(d, {timeout: 100});
+    expect(result.uniqueSolution).toBe(false);
+    expect(result.error).toBe('The solver timed out while checking for a unique solution');
+    expect(result.solutions).toStrictEqual([]);
 });
 
 test('check initialDigits', () => {

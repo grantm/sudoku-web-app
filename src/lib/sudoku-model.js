@@ -194,19 +194,13 @@ export const modelHelpers = {
         if (skipCheck) {
             return grid;
         }
-        const solutions = modelHelpers.findSolutions(initialDigits.split(''));
-        if (solutions.length === 0) {
+        const digits = initialDigits.split('');
+        const result = modelHelpers.findSolutions(digits);
+        if (!result.uniqueSolution) {
             grid = grid.set('modalState', {
                 modalType: 'check-result',
                 warning: true,
-                errorMessage: 'This arrangement does not have a solution',
-            });
-        }
-        else if (solutions.length > 1) {
-            grid = grid.set('modalState', {
-                modalType: 'check-result',
-                warning: true,
-                errorMessage: 'This arrangement does not have a unique solution',
+                errorMessage: result.error,
             });
         }
         return grid;
@@ -337,23 +331,71 @@ export const modelHelpers = {
         return candidates.filter(d => d !== '0');
     },
 
-    findSolutions: (digits, findAll = false, i = 0, s = []) => {
-        if (i === 81) {
-            s.push(digits.join(''));
-            return s;
+    findSolutions: (digits, userOpt) => {
+        const opt = Object.assign({findAll: false}, userOpt);
+        const state = {
+            findAll: opt.findAll,
+            solutions: [],
+            iterations: 0,
+            maxTime: Date.now() + (opt.timeout || 3000),
+        };
+        const givensCount = digits.filter(d => d !== '0').length;
+        if (givensCount < 17) {
+            return {
+                solutions: [],
+                uniqueSolution: false,
+                error: 'This arrangement may not have a unique solution',
+            };
         }
-        if (digits[i] !== '0') {
-            return modelHelpers.findSolutions(digits, findAll, i + 1, s);
+        modelHelpers.tryCandidates(digits, state, 0);
+        const solutions = state.solutions;
+        const result = {
+            solutions: solutions,
+            uniqueSolution: false,
+        };
+        if (solutions.length === 1  && !state.timedOut) {
+            result.uniqueSolution = true;
         }
-        modelHelpers.findCandidatesForCell(digits, i).forEach(d => {
-            if (!findAll && s.length > 1) {
-                return s;
+        else if (solutions.length > 1 ) {
+            result.error = 'This arrangement does not have a unique solution';
+        }
+        else if (state.timedOut) {
+            result.error = 'The solver timed out while checking for a unique solution';
+        }
+        else {
+            result.error = 'This arrangement does not have a solution';
+        }
+        return result;
+    },
+
+    tryCandidates: (digits, state, cellIndex) => {
+        state.iterations++;
+        if (cellIndex === 81) {
+            state.solutions.push(digits.join(''));
+            return;
+        }
+        if (state.timedOut) {
+            return;
+        }
+        if ((state.iterations % 10000) === 0) {
+            if (Date.now() > state.maxTime) {
+                state.timedOut = true;
+                return;
             }
-            digits[i] = d;
-            modelHelpers.findSolutions(digits, findAll, i + 1, s);
+        }
+        if (digits[cellIndex] !== '0') {
+            modelHelpers.tryCandidates(digits, state, cellIndex + 1);
+            return;
+        }
+        modelHelpers.findCandidatesForCell(digits, cellIndex).forEach(d => {
+            if (!state.findAll && state.solutions.length > 1) {
+                return;
+            }
+            digits[cellIndex] = d;
+            modelHelpers.tryCandidates(digits, state, cellIndex + 1);
         });
-        digits[i] = '0';
-        return s;
+        digits[cellIndex] = '0';
+        return;
     },
 
     setCurrentSnapshot: (grid, newSnapshot) => {
@@ -653,23 +695,17 @@ export const modelHelpers = {
         }
         else if (grid.get('mode') === 'enter') {
             const digits = grid.get('cells').map(c => c.get('digit')).toArray();
-            const solutions = modelHelpers.findSolutions(digits);
-            if (solutions.length === 0) {
+            const result = modelHelpers.findSolutions(digits);
+            if (result.uniqueSolution) {
                 grid = grid.set('modalState', {
                     modalType: 'check-result',
-                    errorMessage: 'This arrangement does not have a solution',
-                });
-            }
-            else if (solutions.length > 1) {
-                grid = grid.set('modalState', {
-                    modalType: 'check-result',
-                    errorMessage: 'This arrangement does not have a unique solution',
+                    errorMessage: 'No errors found.',
                 });
             }
             else {
                 grid = grid.set('modalState', {
                     modalType: 'check-result',
-                    errorMessage: 'No errors found.',
+                    errorMessage: result.error,
                 });
             }
         }
