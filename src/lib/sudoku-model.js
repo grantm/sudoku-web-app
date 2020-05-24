@@ -7,6 +7,7 @@ export const SETTINGS = {
     highlightMatches: "highlight-matches",
     highlightConflicts: "highlight-conflicts",
     autocleanPencilmarks: "autoclean-pencilmarks",
+    flipNumericKeys: "flip-numeric-keys",
     playVictoryAnimation: "play-victory-animation",
 };
 
@@ -117,6 +118,7 @@ export const modelHelpers = {
         [SETTINGS.highlightMatches]: true,
         [SETTINGS.highlightConflicts]: true,
         [SETTINGS.autocleanPencilmarks]: true,
+        [SETTINGS.flipNumericKeys]: false,
         [SETTINGS.playVictoryAnimation]: true,
     },
 

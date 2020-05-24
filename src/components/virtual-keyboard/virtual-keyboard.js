@@ -96,6 +96,23 @@ const landscapePlayButtonDefs = [
     },
 ];
 
+const landscapeFlipMapping = [
+    { top: 730 },
+    { top: 730 },
+    { top: 730 },
+    null,
+    null,
+    null,
+    { top: 250 },
+    { top: 250 },
+    { top: 250 },
+    null,
+    null,
+    null,
+    null,
+    null,
+];
+
 const portraitPlayBaseButton = {
     width: 200,
     height: 200,
@@ -189,6 +206,24 @@ const portraitPlayButtonDefs = [
         top: 250,
     },
 ];
+
+const portraitFlipMapping = [
+    { top: 730 },
+    { top: 730 },
+    { top: 730 },
+    null,
+    null,
+    null,
+    { top: 250 },
+    { top: 250 },
+    { top: 250 },
+    null,
+    null,
+    null,
+    null,
+    null,
+];
+
 
 const buttonIcons = {
 
@@ -473,7 +508,7 @@ function VkbdModePanel({inputMode, toolTipText}) {
     );
 }
 
-function keyboardLayout(dimensions) {
+function keyboardLayout(dimensions, flipNumericKeys) {
     const layout = {};
 
     if (dimensions.orientation === 'portrait') {
@@ -485,6 +520,8 @@ function keyboardLayout(dimensions) {
             btn.text = btn.text || btn.value;
             return btn;
         });
+
+        layout.flipMapping = portraitFlipMapping;
     }
     else {
         layout.width = 1000;
@@ -495,15 +532,24 @@ function keyboardLayout(dimensions) {
             btn.text = btn.text || btn.value;
             return btn;
         });
+
+        layout.flipMapping = landscapeFlipMapping;
+    }
+
+    if (flipNumericKeys && layout.flipMapping) {
+        layout.buttonDefs = layout.buttonDefs.map((def, i) => {
+            const flipped = layout.flipMapping[i];
+            return Object.assign({}, def, flipped);
+        });
     }
 
     return layout;
 }
 
-export default function VirtualKeyboard({dimensions, inputMode, completedDigits, keyPressHandler}) {
+export default function VirtualKeyboard({dimensions, inputMode, completedDigits, flipNumericKeys, keyPressHandler}) {
     const rawTouchHandler = useButtonTouch(keyPressHandler);
     const rawClickHandler = useButtonClick(keyPressHandler);
-    const layout = keyboardLayout(dimensions);
+    const layout = keyboardLayout(dimensions, flipNumericKeys);
     const toolTipText = {
         mode: 'Input modes - shortcuts: Z, X, C & V',
         digit: 'Enter a digit',

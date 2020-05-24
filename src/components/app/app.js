@@ -445,6 +445,7 @@ function App() {
                     <VirtualKeyboard
                         dimensions={dimensions}
                         inputMode={inputMode}
+                        flipNumericKeys={settings[SETTINGS.flipNumericKeys]}
                         completedDigits={completedDigits}
                         keyPressHandler={vkbdKeyHandler}
                     />
