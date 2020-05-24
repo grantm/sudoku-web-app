@@ -444,6 +444,7 @@ function VkbdModePanel({inputMode, toolTipText}) {
                 textAnchor="middle"
             >
                 Mode:
+                <title>{toolTipText.mode}</title>
             </text>
             <rect className="button-bg" x="320" y="65" width="130" height="130" rx="15" />
             <rect className="button-bg" x="480" y="65" width="130" height="130" rx="15" />
@@ -504,6 +505,7 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
     const rawClickHandler = useButtonClick(keyPressHandler);
     const layout = keyboardLayout(dimensions);
     const toolTipText = {
+        mode: 'Input modes - shortcuts: Z, X, C & V',
         digit: 'Enter a digit',
         outer: 'Add an "outer" pencil-mark - Shift+Digit',
         inner: 'Add an "inner" pencil-mark - Ctrl+Digit',
