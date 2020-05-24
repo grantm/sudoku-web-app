@@ -74,6 +74,11 @@
 }
 
 #fullscreen-button {
-    right: 12vh;
+    right: 18vh;
+    top: 0.8vh;
+}
+
+#settings-button {
+    right: 10vh;
     top: 0.8vh;
 }
