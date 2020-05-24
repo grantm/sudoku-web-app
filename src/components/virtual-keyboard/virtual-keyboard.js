@@ -512,7 +512,7 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
         redo: 'Redo last change - Ctrl+Y',
         restart: 'Restart the puzzle',
         delete: 'Delete digits, pencil-marks & color highlights',
-        check: 'Check grid for errors',
+        check: 'Check grid for conflicting digits',
     };
     return (
         <div className="vkbd"

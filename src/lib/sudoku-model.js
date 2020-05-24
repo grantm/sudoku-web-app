@@ -699,7 +699,7 @@ export const modelHelpers = {
             if (result.uniqueSolution) {
                 grid = grid.set('modalState', {
                     modalType: 'check-result',
-                    errorMessage: 'No errors found.',
+                    errorMessage: 'No conflicting digits were found.',
                 });
             }
             else {
@@ -713,7 +713,7 @@ export const modelHelpers = {
             const s = result.incompleteCount === 1 ? '' : 's';
             grid = grid.set('modalState', {
                 modalType: 'check-result',
-                errorMessage: `No errors found, but ${result.incompleteCount} cell${s} not yet filled`,
+                errorMessage: `No conflicting digits were found, but ${result.incompleteCount} cell${s} not yet filled`,
             });
         }
         return grid;
