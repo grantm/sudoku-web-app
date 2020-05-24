@@ -929,9 +929,6 @@ export const modelHelpers = {
                 const currDigit = newCells.get(currIndex).get('digit');
                 grid = grid.set('matchDigit', currDigit);
             }
-            else {
-                grid = grid.set('matchDigit', '0');
-            }
         }
         else if (opName === 'clearSelection') {
             grid = grid.set('matchDigit', '0');
