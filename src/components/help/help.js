@@ -100,6 +100,10 @@ export default function HelpPage({modalHandler}) {
                 <dd>When you enter a digit, the app will remove that digit from any pencil
                 marks in the same row, column or 3x3 box.  If you don’t want your pencil
                 marks to be cleaned up automatically, turn this option off.</dd>
+                <dt>Flip on-screen keyboard digits</dt>
+                <dd>The default layout for the on-screen keyboard is like a phone dialler
+                with 1-2-3 across the top. This option allows you to flip the rows so that
+                1-2-3 is across the bottom to match the numeric keypad on a desktop computer.</dd>
                 <dt>Play animation when puzzle solved</dt>
                 <dd>When you have successfully solved a puzzle, the app will play a brief,
                 but some would say “satisfying”, animated colour sequence.  If you are
