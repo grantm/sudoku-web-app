@@ -7,6 +7,7 @@ import ModalConfirmRestart from './modal-confirm-restart';
 import ModalConfirmClearColorHighlights from './modal-confirm-clear-color-highlights'
 import ModalCheckResult from './modal-check-result';
 import ModalPaused from './modal-paused';
+import ModalPaste from './modal-paste';
 import ModalShare from './modal-share';
 import ModalSettings from './modal-settings';
 import HelpPage from '../help/help';
@@ -31,6 +32,9 @@ export default function ModalContainer({modalState, modalHandler}) {
     }
     else if (modalState.modalType === 'invalid-initial-digits') {
         content = <ModalInvalidInitialDigits modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === 'paste') {
+        content = <ModalPaste modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === 'about') {
         content = <ModalAbout modalHandler={modalHandler} />;

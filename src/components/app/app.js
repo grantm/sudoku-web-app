@@ -320,6 +320,9 @@ function dispatchMenuAction(action, setGrid) {
     if (action === 'show-share-modal') {
         setGrid((grid) => modelHelpers.showShareModal(grid));
     }
+    else if (action === 'show-paste-modal') {
+        setGrid((grid) => modelHelpers.showPasteModal(grid));
+    }
     else if (action === 'show-settings-modal') {
         setGrid((grid) => modelHelpers.showSettingsModal(grid));
     }

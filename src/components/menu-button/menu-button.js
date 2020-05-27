@@ -72,6 +72,9 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                     >Open in Sudokuwiki.org solver</a>
                 </li>
                 <li><a href="./?e=new">Enter a new puzzle</a></li>
+                <li>
+                    <a href="./" data-menu-action="show-paste-modal">Paste a new puzzle</a>
+                </li>
                 <li><a href="./">Browse “recently shared”</a></li>
                 <li>
                     <a href="./" data-menu-action="show-settings-modal">Settings</a>

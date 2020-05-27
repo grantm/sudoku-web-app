@@ -57,6 +57,11 @@
     border-radius: 0.15em;
 }
 
+.modal button:disabled {
+    color: #99999988;
+    cursor: not-allowed;
+}
+
 .modal button.danger {
     color: var(--modal-button-danger-text-color);
     background-color: var(--modal-button-danger-bg-color);
@@ -147,6 +152,7 @@
     white-space: nowrap;
 }
 
+.modal.paste textarea,
 .modal.invalid-initial-digits textarea {
     width: 100%;
     height: 7.5em;

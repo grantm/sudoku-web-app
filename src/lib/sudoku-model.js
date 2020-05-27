@@ -586,6 +586,10 @@ export const modelHelpers = {
         });
     },
 
+    showPasteModal: (grid) => {
+        return grid.set('modalState', { modalType: 'paste' });
+    },
+
     showSettingsModal: (grid) => {
         return grid.set('modalState', {
             modalType: 'settings',
@@ -608,6 +612,9 @@ export const modelHelpers = {
             return grid;
         }
         else if (action === 'retry-initial-digits') {
+            return modelHelpers.retryInitialDigits(grid, args);
+        }
+        else if (action === 'paste-initial-digits') {
             return modelHelpers.retryInitialDigits(grid, args);
         }
         else if (action === 'save-settings') {
