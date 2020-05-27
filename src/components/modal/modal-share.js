@@ -108,6 +108,9 @@ export default function ModalShare({modalState, modalHandler}) {
     const [difficulty, setDifficulty] = useState(difficultyLevel);
     const [shareTime, setShareTime] = useState(!!endTime);
 
+    const thisURL = puzzleURL(initialDigits, difficulty);
+    const imageURL = `/thumbnail/l/${initialDigits}.png`;
+
     const closeHandler = () => modalHandler('cancel');
 
     const changeDifficulty = useCallback(
@@ -159,8 +162,9 @@ export default function ModalShare({modalState, modalHandler}) {
                     </li>
                 </ul>
             </div>
-            <p>You can also use your web browser’s tools to share the page you’re
-            viewing right now.</p>
+            <p>Or, just share the <a href={thisURL}>URL of this page</a>.</p>
+            <p>Alternatively, the puzzle is available as <a href={imageURL}>an
+            image</a>.</p>
             <div className="buttons">
                 <button onClick={closeHandler}>Close</button>
             </div>
