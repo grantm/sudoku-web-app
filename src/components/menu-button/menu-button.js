@@ -63,7 +63,7 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                     >Share this puzzle</a>
                 </li>
                 <li>
-                    <a href="./" data-menu-action="clear-pencilmarks">Clear all pencilmarks</a>
+                    <a href="./" data-menu-action="clear-pencilmarks">Clear all pencil marks</a>
                 </li>
                 <li className={shareLinkClass}>
                     <a href={`https://www.sudokuwiki.org/sudoku.htm?bd=${initialDigits}`}

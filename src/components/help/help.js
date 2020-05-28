@@ -113,12 +113,39 @@ export default function HelpPage({modalHandler}) {
             <h1>Other operations</h1>
             <p>To switch the app into full-screen mode use the button on the status bar or
             the ‘F’ key on the keyboard.</p>
-            <p>You can simply share the URL of the puzzle page.  To make this a little easier,
-            there’s a menu option to “Share this puzzle” using Twitter, Facebook or email.</p>
-            <p>If you get stuck, there’s a menu option to open the puzzle in the sudoku solver
-            on <a href="https://www.sudokuwiki.org/sudoku.htm">sudokuwiki.org</a>.</p>
-            <p>The menu also includes a Settings option to turn on some features that you
-            might find helpful or to turn off features you find annoying.</p>
+            <p>A number of other options are available via the menu button (&#9776;) in the
+            top right corner:</p>
+            <dl>
+                <dt>Sharing a Puzzle</dt>
+                <dd>You can share any puzzle by simply copying the link from your browser URL bar.
+                To make this a little easier, this menu option has buttons to share the puzzle
+                using Twitter, Facebook or email.</dd>
+                <dt>Clear all pencil marks</dt>
+                <dd>If things are getting too messy, use this option to throw away all your pencil
+                marks, leaving the original starting digits and any digits you have entered.</dd>
+                <dt>SudokuWiki.org solver</dt>
+                <dd>If you get stuck, there’s a menu option to open the puzzle in the sudoku solver
+                on <a href="https://www.sudokuwiki.org/sudoku.htm">sudokuwiki.org</a>.  This option
+                automates opening the solver page and pasting in the starting digits of the puzzle.
+                Note, none of the digits you have entered so far are copied across.</dd>
+                <dt>Enter a new puzzle</dt>
+                <dd>Allows you to take a puzzle from somewhere else (e.g.: a newspaper or magazine)
+                and type the starting digits directly into the grid.  Move between cells using the
+                arrows keys or the mouse (or touchscreen).</dd>
+                <dt>Paste a new puzzle</dt>
+                <dd>This option is useful if you have a puzzle in the form of a string of 81 digits
+                ('0' for empty cells).  You could enter that string directly in the URL, but the
+                URL bar is not always available on mobile devices when you've saved this site to
+                your home screen.</dd>
+                <dt>Browse “recently shared”</dt>
+                <dd>This option allows you to select puzzles that other users have shared recently
+                on the SudokuExchange web site.  This list of puzzles is gather from the web
+                server logs (through a process that should be a lot more automated than it
+                currently is).</dd>
+                <dt>About this app</dt>
+                <dd>Find information about the application version number, who wrote it and where
+                you can get access to the source code.</dd>
+            </dl>
 
         </div>
     </div>;
