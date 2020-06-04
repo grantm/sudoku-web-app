@@ -6,7 +6,7 @@ export default function ModalPaste({modalHandler}) {
 
     const inputHandler = (e) => {
         const text = e.target.value;
-        let match = text.replace(/\s+/gs, '').match(/s=(\d{81})/);
+        let match = text.replace(/\s+/gs, '').replace(/[_.-]/g, '0').match(/^(\d{81})$/);
         setNewDigits(match ? match[1] : text);
     };
     const haveValidDigits = newDigits.match(/^\d{81}$/);
