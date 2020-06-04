@@ -254,17 +254,29 @@ export const modelHelpers = {
                 return response.json();
             })
             .then(data => setGrid(grid => {
-                return grid.set('modalState', {
-                    modalType: 'no-initial-digits',
-                    recentlyShared: data,
-                });
+                const modalState = grid.get('modalState') || {};
+                if (modalState.modalType === 'no-initial-digits') {
+                    return grid.set('modalState', {
+                        modalType: 'no-initial-digits',
+                        recentlyShared: data,
+                    });
+                }
+                else {
+                    return grid;    // user has moved on, silently discard response
+                }
             }))
             .catch(error => setGrid(grid => {
-                return grid.set('modalState', {
-                    modalType: 'no-initial-digits',
-                    loadingFailed: true,
-                    errorMessage: error.toString(),
-                });
+                const modalState = grid.get('modalState') || {};
+                if (modalState.modalType === 'no-initial-digits') {
+                    return grid.set('modalState', {
+                        modalType: 'no-initial-digits',
+                        loadingFailed: true,
+                        errorMessage: error.toString(),
+                    });
+                }
+                else {
+                    return grid;    // user has moved on, silently discard response
+                }
             }));
     },
 
