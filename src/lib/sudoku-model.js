@@ -626,6 +626,9 @@ export const modelHelpers = {
         else if (action === 'retry-initial-digits') {
             return modelHelpers.retryInitialDigits(grid, args);
         }
+        else if (action === 'show-paste-modal') {
+            return modelHelpers.showPasteModal(grid, args);
+        }
         else if (action === 'paste-initial-digits') {
             return modelHelpers.retryInitialDigits(grid, args);
         }
