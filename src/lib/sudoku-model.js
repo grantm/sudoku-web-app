@@ -76,7 +76,7 @@ function newCell(index, digit) {
 }
 
 export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnapshot, entryPoint, skipCheck}) {
-    initialDigits = (initialDigits || '').replace(/\D/g, '');
+    initialDigits = (initialDigits || '').replace(/[_.-]/g, '0').replace(/\D/g, '');
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
