@@ -10,7 +10,9 @@
   "license": "AGPLV3",
   "repository": "github:grantm/sudoku-web-app",
   "bugs": "https://github.com/grantm/sudoku-web-app/issues",
-  "keywords": [ "sudoku" ],
+  "keywords": [
+    "sudoku"
+  ],
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "5.7.0",
@@ -19,7 +21,8 @@
     "immutable": "^4.0.0-rc.12",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1"
+    "react-scripts": "^3.4.1",
+    "save-svg-as-png": "^1.4.17"
   },
   "scripts": {
     "start": "react-scripts start",

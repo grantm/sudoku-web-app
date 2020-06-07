@@ -123,6 +123,9 @@ export default function HelpPage({modalHandler}) {
                 <dt>Clear all pencil marks</dt>
                 <dd>If things are getting too messy, use this option to throw away all your pencil
                 marks, leaving the original starting digits and any digits you have entered.</dd>
+                <dt>Save a screenshot</dt>
+                <dd>Take a snapshot of just the Sudoku grid part of the screen, including pencil
+                marks, colouring and cell highlighting, and save it as a PNG download.</dd>
                 <dt>SudokuWiki.org solver</dt>
                 <dd>If you get stuck, there’s a menu option to open the puzzle in the sudoku solver
                 on <a href="https://www.sudokuwiki.org/sudoku.htm">sudokuwiki.org</a>.  This option

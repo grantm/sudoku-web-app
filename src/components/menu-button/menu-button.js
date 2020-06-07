@@ -65,6 +65,9 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                 <li>
                     <a href="./" data-menu-action="clear-pencilmarks">Clear all pencil marks</a>
                 </li>
+                <li>
+                    <a href="./" data-menu-action="save-screenshot">Save a screenshot</a>
+                </li>
                 <li className={shareLinkClass}>
                     <a href={`https://www.sudokuwiki.org/sudoku.htm?bd=${initialDigits}`}
                         target="_blank"

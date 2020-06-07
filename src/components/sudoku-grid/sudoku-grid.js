@@ -50,7 +50,7 @@ function useCellTouch (touchHandler) {
 }
 
 
-function SudokuGrid({grid, dimensions, isPaused, mouseDownHandler, mouseOverHandler, touchHandler}) {
+function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouseOverHandler, touchHandler}) {
     const settings = grid.get('settings');
     const highlightMatches = settings[SETTINGS.highlightMatches];
     const matchDigit = highlightMatches ? grid.get('matchDigit') : undefined;
@@ -70,6 +70,7 @@ function SudokuGrid({grid, dimensions, isPaused, mouseDownHandler, mouseOverHand
     });
     return (
         <div className="sudoku-grid"
+            id={gridId || null}
             onTouchStart={rawTouchHandler}
             onTouchEnd={rawTouchHandler}
             onTouchMove={rawTouchHandler}
