@@ -42,8 +42,8 @@ export default function HelpPage({modalHandler}) {
             <ul>
                 <li>outer pencil marks are intended for so-called “Snyder notation” and are
                 entered using Shift+Digit</li>
-                <li>inner pencil marks are intended for pairs/triples and are entered using
-                Ctrl+Digit</li>
+                <li>inner pencil marks are intended for pairs/triples/candidates and are entered
+                using Ctrl+Digit</li>
             </ul>
             <p>Alternatively, the on-screen keyboard includes mode buttons for the different
             types of pencil marks.  Simply select a mode then use the digit buttons to toggle
@@ -62,8 +62,13 @@ export default function HelpPage({modalHandler}) {
             enter a digit by double-clicking that digit.  The double-click action overrides
             the current mode and does a normal digit entry, but afterwards you remain in the
             original pencil marking mode.</p>
-            <p>The app menu includes an option to clear all pencil marks in a single
-            action.</p>
+            <p>There are also two pencil-mark-related menu options:</p>
+            <ul>
+                <li><b>Hide/Show Pencilmarks</b> — can be used to temporarily hide pencil
+                marks and cell colouring to reduce on-screen clutter (hot key: <b>P</b>).</li>
+                <li><b>Clear all pencil marks</b> — will permanently discard all pencil
+                marks and cell colouring you have added to the grid.</li>
+            </ul>
 
             <h1>Undo / redo</h1>
             <p>If you make a mistake, you can undo one or more steps using Ctrl-Z or the
@@ -120,9 +125,12 @@ export default function HelpPage({modalHandler}) {
                 <dd>You can share any puzzle by simply copying the link from your browser URL bar.
                 To make this a little easier, this menu option has buttons to share the puzzle
                 using Twitter, Facebook or email.</dd>
+                <dt>Show/Hide pencil marks</dt>
+                <dd>Temporarily hide pencil marks and cell colouring.</dd>
                 <dt>Clear all pencil marks</dt>
-                <dd>If things are getting too messy, use this option to throw away all your pencil
-                marks, leaving the original starting digits and any digits you have entered.</dd>
+                <dd>If things are getting too messy, use this option to discard all your pencil
+                marks and cell colouring, leaving the original starting digits and any digits
+                you have entered.</dd>
                 <dt>Save a screenshot</dt>
                 <dd>Take a snapshot of just the Sudoku grid part of the screen, including pencil
                 marks, colouring and cell highlighting, and save it as a PNG download.</dd>

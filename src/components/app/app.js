@@ -24,6 +24,7 @@ const KEYCODE = {
     S: 83,
     D: 68,
     F: 70,
+    P: 80,
     Y: 89,
     Z: 90,
 };
@@ -216,6 +217,9 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         }
         return;
     }
+    else if (e.keyCode === KEYCODE.P) {
+        setGrid((grid) => modelHelpers.toggleShowPencilmarks(grid));
+    }
     else if (e.key === "F1") {
         setGrid((grid) => modelHelpers.showHelpPage(grid));
         return;
@@ -356,6 +360,9 @@ function dispatchMenuAction(action, setGrid) {
     else if (action === 'show-settings-modal') {
         setGrid((grid) => modelHelpers.showSettingsModal(grid));
     }
+    else if (action === 'toggle-show-pencilmarks') {
+        setGrid((grid) => modelHelpers.toggleShowPencilmarks(grid));
+    }
     else if (action === 'clear-pencilmarks') {
         setGrid((grid) => modelHelpers.clearPencilmarks(grid));
     }
@@ -464,6 +471,7 @@ function App() {
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}
                 pausedAt={pausedAt}
+                showPencilmarks={grid.get('showPencilmarks')}
                 menuHandler={menuHandler}
                 pauseHandler={pauseHandler}
                 initialDigits={grid.get('initialDigits')}

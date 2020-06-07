@@ -23,7 +23,7 @@ function SiteLink () {
 }
 
 
-function StatusBar ({showTimer, startTime, endTime, pausedAt, menuHandler, pauseHandler, initialDigits}) {
+function StatusBar ({showTimer, startTime, endTime, pausedAt, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
     const timer = showTimer
         ? (
             <TimerWithPause
@@ -44,6 +44,7 @@ function StatusBar ({showTimer, startTime, endTime, pausedAt, menuHandler, pause
                 initialDigits={initialDigits}
                 startTime={startTime}
                 endTime={endTime}
+                showPencilmarks={showPencilmarks}
                 menuHandler={menuHandler}
             />
         </div>

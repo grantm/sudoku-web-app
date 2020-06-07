@@ -50,6 +50,7 @@ test('initialise grid', () => {
         "pausedAt",
         "redoList",
         "settings",
+        "showPencilmarks",
         "solved",
         "startTime",
         "storeCurrentSnapshot",
@@ -566,6 +567,15 @@ test('set pencilmarks', () => {
     expect(grid.get('currentSnapshot')).toBe('00D7,03N1,04T13N1,06T2,07T2,74D7');
     grid = modelHelpers.undoOneAction(grid);
     expect(grid.get('currentSnapshot')).toBe('00D7,04T13,06T2,07T2,74D7');
+});
+
+test('show/hide pencilmarks', () => {
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    expect(grid.get('showPencilmarks')).toBe(true);
+    grid = modelHelpers.toggleShowPencilmarks(grid)
+    expect(grid.get('showPencilmarks')).toBe(false);
+    grid = modelHelpers.toggleShowPencilmarks(grid)
+    expect(grid.get('showPencilmarks')).toBe(true);
 });
 
 test('autoclean pencilmarks', () => {

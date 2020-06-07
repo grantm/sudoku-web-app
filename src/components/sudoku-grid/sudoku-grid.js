@@ -53,6 +53,7 @@ function useCellTouch (touchHandler) {
 function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouseOverHandler, touchHandler}) {
     const settings = grid.get('settings');
     const highlightMatches = settings[SETTINGS.highlightMatches];
+    const showPencilmarks = grid.get('showPencilmarks');
     const matchDigit = highlightMatches ? grid.get('matchDigit') : undefined;
     const rawTouchHandler = useCellTouch(touchHandler);
     const cellContents = grid.get('cells').toArray().map((c) => {
@@ -60,6 +61,7 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
             <SudokuCell
                 key={c.get('location')}
                 cell={c}
+                showPencilmarks={showPencilmarks}
                 matchDigit={matchDigit}
                 isPaused={isPaused}
                 mouseDownHandler={mouseDownHandler}

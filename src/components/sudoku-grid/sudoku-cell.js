@@ -17,10 +17,11 @@ function hasPencilledDigit(cell, d) {
     return cell.get('innerPencils').includes(d) || cell.get('outerPencils').includes(d);
 }
 
-function CellBackground({cell, matchDigit}) {
+function CellBackground({cell, showPencilmarks}) {
+    const colorCode = showPencilmarks ? cell.get('colorCode') : '1';
     return <>
         <rect
-            className={`cell-bg color-code-${cell.get('colorCode')}`}
+            className={`cell-bg color-code-${colorCode}`}
             x={cell.get('x')}
             y={cell.get('y')}
             width="100"
@@ -133,7 +134,7 @@ function PausedSudokuCell({cell}) {
 }
 
 
-function SudokuCell({cell, matchDigit, isPaused, mouseDownHandler, mouseOverHandler}) {
+function SudokuCell({cell, showPencilmarks, matchDigit, isPaused, mouseDownHandler, mouseOverHandler}) {
     if (isPaused) {
         return <PausedSudokuCell cell={cell} />
     }
@@ -149,10 +150,12 @@ function SudokuCell({cell, matchDigit, isPaused, mouseDownHandler, mouseOverHand
     }
     const digit = cell.get('digit')
     if (matchDigit !== '0') {
-        if (digit === matchDigit || hasPencilledDigit(cell, matchDigit)) {
+        if (digit === matchDigit || (showPencilmarks && hasPencilledDigit(cell, matchDigit))) {
             classes.push('matched');
         }
     }
+    const outerPencilmarks = showPencilmarks ? <CellOuterPencilMarks cell={cell} /> : null;
+    const innerPencilmarks = showPencilmarks ? <CellInnerPencilMarks cell={cell} /> : null;
     return (
         <g className={classes.join(' ')}
             data-cell-index={cell.get('index')}
@@ -161,10 +164,10 @@ function SudokuCell({cell, matchDigit, isPaused, mouseDownHandler, mouseOverHand
             data-box={cell.get('box')}
             data-ring={cell.get('ring')}
         >
-            <CellBackground cell={cell} matchDigit={matchDigit} />
+            <CellBackground cell={cell} showPencilmarks={showPencilmarks} />
             <CellDigit cell={cell} />
-            <CellOuterPencilMarks cell={cell} />
-            <CellInnerPencilMarks cell={cell} />
+            {outerPencilmarks}
+            {innerPencilmarks}
             <CellCover
                 cell={cell}
                 mouseDownHandler={mouseDownHandler}

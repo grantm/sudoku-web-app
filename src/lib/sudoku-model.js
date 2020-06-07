@@ -95,6 +95,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnap
         currentSnapshot: '',
         storeCurrentSnapshot: storeCurrentSnapshot,
         cells: List(),
+        showPencilmarks: true,
         hasErrors: false,
         focusIndex: null,
         completedDigits: {},
@@ -913,6 +914,10 @@ export const modelHelpers = {
             pausedAt: undefined,
             startTime: Date.now() - elapsed,
         });
+    },
+
+    toggleShowPencilmarks: (grid) => {
+        return grid.update('showPencilmarks', flag => !flag);
     },
 
     clearPencilmarks: (grid) => {

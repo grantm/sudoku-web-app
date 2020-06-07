@@ -17,7 +17,7 @@ function MenuIcon () {
     )
 }
 
-function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
+function MenuButton ({initialDigits, startTime, endTime, showPencilmarks, menuHandler}) {
     const [hidden, setHidden] = useState(true);
 
     const classes = ['menu'];
@@ -47,6 +47,8 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
         [menuHandler]
     );
 
+    const showHidePencilmarks = showPencilmarks ? 'Hide' : 'Show';
+
     const overlay = hidden
         ? null
         : <div className="overlay" onClick={() => setHidden(true)} />
@@ -61,6 +63,9 @@ function MenuButton ({initialDigits, startTime, endTime, menuHandler}) {
                 <li className={shareLinkClass}>
                     <a href="./" data-menu-action="show-share-modal"
                     >Share this puzzle</a>
+                </li>
+                <li>
+                    <a href="./" data-menu-action="toggle-show-pencilmarks">{showHidePencilmarks} pencil marks</a>
                 </li>
                 <li>
                     <a href="./" data-menu-action="clear-pencilmarks">Clear all pencil marks</a>
