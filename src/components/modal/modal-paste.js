@@ -24,7 +24,7 @@ export default function ModalPaste({modalHandler}) {
         <div className="modal paste">
             <h1>Paste a puzzle</h1>
             <p>Paste a string of 81 digits below:</p>
-            <textarea value={newDigits} onChange={inputHandler} />
+            <textarea value={newDigits} onChange={inputHandler} autoFocus />
             <div className="buttons">
                 <button className="cancel" onClick={cancelHandler}>Cancel</button>
                 <button className={submitClass} onClick={pasteHandler} disabled={!haveValidDigits}>Start</button>
