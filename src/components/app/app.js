@@ -287,6 +287,10 @@ function docKeyUpHandler(e, modalActive, setGrid) {
     // else { console.log('keyup event:', e); }
 }
 
+function clearTempInputMode(setGrid) {
+    setGrid((grid) => modelHelpers.clearTempInputMode(grid));
+}
+
 function vkbdKeyPressHandler(e, setGrid, inputMode) {
     const keyValue = e.keyValue;
     if (e.type === 'dblclick') {
@@ -436,6 +440,15 @@ function App() {
             };
         },
         [solved, inputMode, modalActive]
+    );
+
+    useEffect(
+        () => {
+            const blurHandler = (e) => clearTempInputMode(setGrid);
+            window.addEventListener('blur', blurHandler);
+            return () => window.removeEventListener('blur', blurHandler);
+        },
+        [setGrid] // This effect will essentially never be re-run
     );
 
     const winSize = useWindowSize(400);
