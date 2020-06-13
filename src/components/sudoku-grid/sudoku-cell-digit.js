@@ -1,0 +1,27 @@
+import React from 'react';
+
+export default function SudokuCellDigit({cell, dim, cellSize}) {
+    const digit = cell.get('digit');
+    if (digit === '0') {
+        return null;
+    }
+    const classes = [ 'digit' ];
+    if (cell.get('isGiven')) {
+         classes.push('given');
+    }
+    if (cell.get('errorMessage') !== undefined) {
+        classes.push('error');
+    }
+    const fontSize = 72 * cellSize / 100;
+    return (
+        <text
+            className={classes.join(' ')}
+            x={dim.textX}
+            y={dim.textY}
+            fontSize={fontSize}
+            textAnchor="middle"
+        >
+            {digit}
+        </text>
+    );
+}

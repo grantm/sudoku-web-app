@@ -609,7 +609,6 @@ export const modelHelpers = {
             modalType: MODAL_TYPE_SHARE,
             initialDigits: grid.get('initialDigits'),
             difficultyLevel: grid.get('difficultyLevel'),
-            gistUrl: grid.get('gistUrl'),
             startTime: grid.get('startTime'),
             endTime: grid.get('endTime'),
         });

@@ -24,59 +24,58 @@
 
 .grid-bg { fill: var(--background-color); }
 
-.cell-bg,
-.cell-bg-overlay {
+.cell-select-match-overlay {
     fill: transparent;
 }
 
-.cell-bg.color-code-1 { fill: var(--cell-bg-1-fill-color); }
-.cell-bg.color-code-2 { fill: var(--cell-bg-2-fill-color); }
-.cell-bg.color-code-3 { fill: var(--cell-bg-3-fill-color); }
-.cell-bg.color-code-4 { fill: var(--cell-bg-4-fill-color); }
-.cell-bg.color-code-5 { fill: var(--cell-bg-5-fill-color); }
-.cell-bg.color-code-6 { fill: var(--cell-bg-6-fill-color); }
-.cell-bg.color-code-7 { fill: var(--cell-bg-7-fill-color); }
-.cell-bg.color-code-8 { fill: var(--cell-bg-8-fill-color); }
-.cell-bg.color-code-9 { fill: var(--cell-bg-9-fill-color); }
+.cell-bg .color-code-1 { fill: var(--cell-bg-1-fill-color); }
+.cell-bg .color-code-2 { fill: var(--cell-bg-2-fill-color); }
+.cell-bg .color-code-3 { fill: var(--cell-bg-3-fill-color); }
+.cell-bg .color-code-4 { fill: var(--cell-bg-4-fill-color); }
+.cell-bg .color-code-5 { fill: var(--cell-bg-5-fill-color); }
+.cell-bg .color-code-6 { fill: var(--cell-bg-6-fill-color); }
+.cell-bg .color-code-7 { fill: var(--cell-bg-7-fill-color); }
+.cell-bg .color-code-8 { fill: var(--cell-bg-8-fill-color); }
+.cell-bg .color-code-9 { fill: var(--cell-bg-9-fill-color); }
 
-.selected .cell-bg-overlay {
+.selected .cell-select-match-overlay {
     fill: var(--selected-fill-color);
 }
 
-.matched .cell-bg-overlay {
+.matched .cell-select-match-overlay {
     fill: var(--matched-fill-color);
 }
 
-.selected.matched .cell-bg-overlay {
+.selected.matched .cell-select-match-overlay {
     fill: var(--selected-matched-fill-color);
 }
 
-.error.selected .cell-bg-overlay {
+.error.selected .cell-select-match-overlay {
     fill: var(--error-selected-fill-color);
 }
 
-.error .cell-bg-overlay {
+.error .cell-select-match-overlay {
     fill: var(--error-fill-color);
 }
 
-.cell.error text.digit {
+text.digit.error {
     fill: var(--error-text-color);
 }
 
-.solved .cell-bg-overlay {
+.solved .cell-select-match-overlay {
     fill: var(--solved-fill-color);
 }
 
-.cell text.digit {
+text.digit {
     fill: var(--digit-color);
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.solved .cell text.digit {
+.solved text.digit {
     fill: var(--solved-digit-color);
 }
 
-.cell.given text.digit,
+text.digit.given,
 .mini text.digit {
     fill: var(--given-digit-color);
 }
@@ -98,11 +97,11 @@ a:hover .difficulty-bar {
     opacity: 1;
 }
 
-.solved .cell.given text.digit {
+.solved text.digit.given {
     fill: var(--solved-given-digit-color);
 }
 
-.paused .cell text.digit {
+.paused text.digit {
     fill: var(--paused-digit-color);
 }
 
@@ -112,11 +111,11 @@ text.inner-pencil,
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.animate .solved .cell[data-ring="5"] .cell-bg-overlay { animation: 1600ms linear 0ms 1 running rainbow; }
-.animate .solved .cell[data-ring="4"] .cell-bg-overlay { animation: 1600ms linear 100ms 1 running rainbow; }
-.animate .solved .cell[data-ring="3"] .cell-bg-overlay { animation: 1600ms linear 200ms 1 running rainbow; }
-.animate .solved .cell[data-ring="2"] .cell-bg-overlay { animation: 1600ms linear 300ms 1 running rainbow; }
-.animate .solved .cell[data-ring="1"] .cell-bg-overlay { animation: 1600ms linear 400ms 1 running rainbow; }
+.animate .solved .cell-bg[data-ring="5"] .cell-select-match-overlay { animation: 1600ms linear 0ms 1 running rainbow; }
+.animate .solved .cell-bg[data-ring="4"] .cell-select-match-overlay { animation: 1600ms linear 100ms 1 running rainbow; }
+.animate .solved .cell-bg[data-ring="3"] .cell-select-match-overlay { animation: 1600ms linear 200ms 1 running rainbow; }
+.animate .solved .cell-bg[data-ring="2"] .cell-select-match-overlay { animation: 1600ms linear 300ms 1 running rainbow; }
+.animate .solved .cell-bg[data-ring="1"] .cell-select-match-overlay { animation: 1600ms linear 400ms 1 running rainbow; }
 
 @keyframes rainbow {
     from { fill: #8bb3ff; }

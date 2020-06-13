@@ -5,9 +5,82 @@ import './sudoku-grid.css';
 import { SETTINGS } from '../../lib/sudoku-model.js';
 
 import calculateGridDimensions from './grid-dimensions';
-import SudokuCell from './sudoku-cell';
+
+import SudokuCellPaused from './sudoku-cell-paused';
+import SudokuCellBackground from './sudoku-cell-background';
+import SudokuCellPencilMarks from './sudoku-cell-pencil-marks';
+import SudokuCellDigit from './sudoku-cell-digit';
+import SudokuCellCover from './sudoku-cell-cover';
+
 import GridLines from './grid-lines.js';
 
+
+function layerCellBackgrounds (cells, cellSize, dim, matchDigit, showPencilmarks) {
+    return cells.map((cell, i) => {
+        const cellDim = dim.cell[i];
+        return (
+            <SudokuCellBackground key={`bg${i}`}
+                cell={cell}
+                dim={cellDim}
+                cellSize={cellSize}
+                matchDigit={matchDigit}
+                showPencilmarks={showPencilmarks}
+            />
+        );
+    });
+}
+
+function layerCellPencilMarks (cells, cellSize, dim, outerPencilOffsets) {
+    return cells.map((cell, i) => {
+        const cellDim = dim.cell[i];
+        return <SudokuCellPencilMarks key={`pm${i}`}
+            cell={cell}
+            dim={cellDim}
+            cellSize={cellSize}
+            outerPencilOffsets={outerPencilOffsets}
+        />;
+    });
+}
+
+function layerCellDigits (cells, cellSize, dim) {
+    return cells.map((cell, i) => {
+        const cellDim = dim.cell[i];
+        return <SudokuCellDigit key={`dig${i}`} cell={cell} dim={cellDim} cellSize={cellSize} />;
+    });
+}
+
+function layerCellCovers (cells, cellSize, dim, mouseDownHandler, mouseOverHandler) {
+    return cells.map((cell, i) => {
+        const cellDim = dim.cell[i];
+        return <SudokuCellCover key={`cov${i}`}
+            cell={cell}
+            dim={cellDim}
+            cellSize={cellSize}
+            mouseDownHandler={mouseDownHandler}
+            mouseOverHandler={mouseOverHandler}
+        />;
+    });
+}
+
+function layerCellPaused (cells, cellSize, dim) {
+    return cells.map((cell, i) => {
+        const cellDim = dim.cell[i];
+        return <SudokuCellPaused key={`pau${i}`} cell={cell} dim={cellDim} />;
+    });
+}
+
+function cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks, mouseDownHandler, mouseOverHandler) {
+    const backgrounds = layerCellBackgrounds(cells, cellSize, dim, matchDigit, showPencilmarks);
+    const pencilMarks = showPencilmarks ? layerCellPencilMarks(cells, cellSize, dim, dim.outerPencilOffsets) : [];
+    const digits      = layerCellDigits(cells, cellSize, dim);
+    const covers      = layerCellCovers(cells, cellSize, dim, mouseDownHandler, mouseOverHandler);
+    return <>
+        {backgrounds}
+        {pencilMarks}
+        {digits}
+        {covers}
+    </>;
+}
 
 function indexFromTouchEvent (e) {
     const t = (e.touches || {})[0];
@@ -60,23 +133,10 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
     const showPencilmarks = grid.get('showPencilmarks');
     const matchDigit = highlightMatches ? grid.get('matchDigit') : undefined;
     const rawTouchHandler = useCellTouch(inputHandler);
-    const cellContents = grid.get('cells').toArray().map((c, i) => {
-        const cellDim = dim.cell[i];
-        return (
-            <SudokuCell
-                key={cellDim.location}
-                cell={c}
-                dim={cellDim}
-                cellSize={dim.cellSize}
-                outerPencilOffsets={dim.outerPencilOffsets}
-                showPencilmarks={showPencilmarks}
-                matchDigit={matchDigit}
-                isPaused={isPaused}
-                mouseDownHandler={mouseDownHandler}
-                mouseOverHandler={mouseOverHandler}
-            />
-        )
-    });
+    const cells = grid.get('cells').toArray();
+    const cellContents = isPaused
+        ? layerCellPaused(cells, cellSize, dim)
+        : cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks, mouseDownHandler, mouseOverHandler);
     return (
         <div className="sudoku-grid"
             id={gridId || null}
