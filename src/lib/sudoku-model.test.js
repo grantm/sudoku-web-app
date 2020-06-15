@@ -221,7 +221,7 @@ test('initialise grid cells', () => {
 test('move input focus', () => {
     let grid = newSudokuModel({initialDigits, skipCheck: true});
     const move = false;     // No ctrl or shift
-    const extend = true;    // Ctrl or shift
+    const extend = true;    // Ctrl/shift + move
 
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.moveFocus(grid, -1, 0, move);
@@ -247,8 +247,7 @@ test('move input focus', () => {
     expect(grid.get('focusIndex')).toBe(36);
 
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
-    expect(grid.get('focusIndex')).toBe(0)
-    ;
+    expect(grid.get('focusIndex')).toBe(0);
     grid = modelHelpers.moveFocus(grid, 0, -1, move);
     expect(grid.get('focusIndex')).toBe(72);
 
@@ -336,7 +335,7 @@ test('set one digit', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '9');
 
     expect(grid.get('focusIndex')).toBe(2);
-    expect(grid.get('currentSnapshot')).toBe('02D9');
+    expect(grid.get('currentSnapshot')).toBe('13D9');
     expect(grid.get('matchDigit')).toBe('9');
 
     let c2 = grid.get('cells').get(2);
@@ -351,7 +350,7 @@ test('set one digit', () => {
     c2 = grid.get('cells').get(2);
     expect(c2.get('isSelected')).toBe(false);
 
-    expect(grid.get('currentSnapshot')).toBe('02D9');
+    expect(grid.get('currentSnapshot')).toBe('13D9');
     expect(grid.get('matchDigit')).toBe('0');
     expect(digitsFromGrid(grid)).toBe(
         '009008000' +
@@ -400,7 +399,7 @@ test('set multiple digits', () => {
     expect(grid.get('focusIndex')).toBe(57);
     grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '2');
 
-    expect(grid.get('currentSnapshot')).toBe('47D2,57D2');
+    expect(grid.get('currentSnapshot')).toBe('63D2,74D2');
     expect(grid.get('matchDigit')).toBe('2');
 
     expect(digitsFromGrid(grid)).toBe(
@@ -450,7 +449,7 @@ test('set multiple digits', () => {
         '000001900' +
         '000009000'
     );
-    expect(grid.get('currentSnapshot')).toBe('00D9,13D9,28D9,39D9,47D2,52D9,56D9,57D2,69D9');
+    expect(grid.get('currentSnapshot')).toBe('11D9,25D9,42D9,54D9,63D2,68D9,73D9,74D2,87D9');
     expect(grid.get('matchDigit')).toBe('9');
     expect(grid.get('completedDigits')).toStrictEqual({
         "1": false,
@@ -488,7 +487,7 @@ test('set cell color', () => {
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 20);
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '4');
 
-    expect(grid.get('currentSnapshot')).toBe('11C4,20C4');
+    expect(grid.get('currentSnapshot')).toBe('23C4,33C4');
 
     grid = modelHelpers.setInputMode(grid, 'color');
     grid = modelHelpers.applySelectionOp(grid, 'clearSelection');
@@ -500,7 +499,7 @@ test('set cell color', () => {
 
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '9');
 
-    expect(grid.get('currentSnapshot')).toBe('11C9,20C9');
+    expect(grid.get('currentSnapshot')).toBe('23C9,33C9');
     expect(grid.get('inputMode')).toBe('color');
 
     grid = modelHelpers.updateSelectedCells(grid, 'clearCell', '1');
@@ -509,7 +508,7 @@ test('set cell color', () => {
 
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '9');
 
-    expect(grid.get('currentSnapshot')).toBe('11C9,20C9');
+    expect(grid.get('currentSnapshot')).toBe('23C9,33C9');
 
     grid = modelHelpers.applyModalAction(grid, 'clear-color-highlights-confirmed');
 
@@ -525,7 +524,7 @@ test('set pencilmarks', () => {
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 74);
     grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '7');
 
-    expect(grid.get('currentSnapshot')).toBe('00D7,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,93D7');
 
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 4);
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '1');
@@ -534,7 +533,7 @@ test('set pencilmarks', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '3');
     expect(grid.get('matchDigit')).toBe('3');
 
-    expect(grid.get('currentSnapshot')).toBe('00D7,04T123,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,15T123,93D7');
 
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 5); // a given digit
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 6);
@@ -542,7 +541,7 @@ test('set pencilmarks', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
     expect(grid.get('matchDigit')).toBe('2');
 
-    expect(grid.get('currentSnapshot')).toBe('00D7,04T13,06T2,07T2,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,15T13,17T2,18T2,93D7');
 
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 4);
@@ -550,7 +549,7 @@ test('set pencilmarks', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '3');
     expect(grid.get('matchDigit')).toBe('3');
 
-    expect(grid.get('currentSnapshot')).toBe('00D7,03N13,04T13N13,06T2,07T2,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,93D7');
 
     let c4 = grid.get('cells').get(4);
     expect(pencilDigits(c4.get('innerPencils'))).toBe('13');
@@ -562,31 +561,31 @@ test('set pencilmarks', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '4');
     expect(grid.get('matchDigit')).toBe('0');
 
-    expect(grid.get('currentSnapshot')).toBe('00D7,03N13,04T13N13,06T2,07T2,13C4,14C4,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,25C4,26C4,93D7');
 
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 4);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 13);
     grid = modelHelpers.updateSelectedCells(grid, 'clearCell');
     expect(grid.get('matchDigit')).toBe('0');
 
-    expect(grid.get('currentSnapshot')).toBe('00D7,03N13,06T2,07T2,14C4,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,17T2,18T2,26C4,93D7');
 
     grid = modelHelpers.clearPencilmarks(grid);
     expect(grid.get('focusIndex')).toBe(13);
     expect(grid.get('matchDigit')).toBe('0');
 
-    expect(grid.get('currentSnapshot')).toBe('00D7,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,93D7');
 
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('00D7,03N13,06T2,07T2,14C4,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,17T2,18T2,26C4,93D7');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('00D7,03N13,04T13N13,06T2,07T2,13C4,14C4,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,25C4,26C4,93D7');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('00D7,03N13,04T13N13,06T2,07T2,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,93D7');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('00D7,03N1,04T13N1,06T2,07T2,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N1,15T13N1,17T2,18T2,93D7');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('00D7,04T13,06T2,07T2,74D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,15T13,17T2,18T2,93D7');
 });
 
 test('pencilMarksToInner', () => {
@@ -598,9 +597,9 @@ test('pencilMarksToInner', () => {
     expect(selectedCells(grid)).toBe('63,72');
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '4');
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '5');
-    expect(grid.get('currentSnapshot')).toBe('63T45,72T45');
+    expect(grid.get('currentSnapshot')).toBe('81T45,91T45');
     grid = modelHelpers.updateSelectedCells(grid, 'pencilMarksToInner', '5');
-    expect(grid.get('currentSnapshot')).toBe('63N45,72N45');
+    expect(grid.get('currentSnapshot')).toBe('81N45,91N45');
 });
 
 test('show/hide pencilmarks', () => {
@@ -615,7 +614,7 @@ test('show/hide pencilmarks', () => {
 test('autoclean pencilmarks', () => {
     let grid = newSudokuModel({initialDigits, skipCheck: true});
     expect(digitsFromGrid(grid)).toBe(initialDigits);
-    let startingSnapshot = '03N39,04N39,31N17,49N17,54T3,57N35,71T3,72T34,74T4,80T3';
+    let startingSnapshot = '14N39,15N39,45N17,65N17,71T3,74N35,89T3,91T34,93T4,99T3';
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.restoreSnapshot(grid, startingSnapshot)
     expect(grid.get('currentSnapshot')).toBe(startingSnapshot);
@@ -632,7 +631,7 @@ test('autoclean pencilmarks', () => {
         '000001000' +
         '000039000'
     );
-    expect(grid.get('currentSnapshot')).toBe('03N39,04N9,31N17,49N17,54T3,57N5,71T3,72T4,74T4,76D3');
+    expect(grid.get('currentSnapshot')).toBe('14N39,15N9,45N17,65N17,71T3,74N5,89T3,91T4,93T4,95D3');
 });
 
 test('clear all colours', () => {
@@ -642,20 +641,20 @@ test('clear all colours', () => {
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 4);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 5);
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '2');
-    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2');
+    expect(grid.get('currentSnapshot')).toBe('14C2,15C2,16C2');
     expect(grid.get('undoList').size).toBe(1);
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 12);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 13);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 14);
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '4');
     expect(grid.get('undoList').size).toBe(2);
-    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4');
+    expect(grid.get('currentSnapshot')).toBe('14C2,15C2,16C2,24C4,25C4,26C4');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 21);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 22);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 23);
     grid = modelHelpers.updateSelectedCells(grid, 'setCellColor', '5');
     expect(grid.get('undoList').size).toBe(3);
-    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4,21C5,22C5,23C5');
+    expect(grid.get('currentSnapshot')).toBe('14C2,15C2,16C2,24C4,25C4,26C4,34C5,35C5,36C5');
     grid = modelHelpers.applyModalAction(grid, 'clear-color-highlights-confirmed');
     expect(grid.get('undoList').size).toBe(4);
     expect(grid.get('cells').get(4).get('colorCode')).toBe('1');
@@ -663,15 +662,15 @@ test('clear all colours', () => {
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 6);
     grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '7');
     expect(grid.get('undoList').size).toBe(5);
-    expect(grid.get('currentSnapshot')).toBe('06D7');
+    expect(grid.get('currentSnapshot')).toBe('17D7');
     grid = modelHelpers.undoOneAction(grid);
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4,21C5,22C5,23C5');
+    expect(grid.get('currentSnapshot')).toBe('14C2,15C2,16C2,24C4,25C4,26C4,34C5,35C5,36C5');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2,12C4,13C4,14C4');
+    expect(grid.get('currentSnapshot')).toBe('14C2,15C2,16C2,24C4,25C4,26C4');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('03C2,04C2,05C2');
+    expect(grid.get('currentSnapshot')).toBe('14C2,15C2,16C2');
     grid = modelHelpers.undoOneAction(grid);
     expect(grid.get('currentSnapshot')).toBe('');
 });

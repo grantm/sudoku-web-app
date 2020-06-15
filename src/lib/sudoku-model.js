@@ -54,6 +54,13 @@ function initCellSets() {
 }
 
 
+const charCodeOne = '1'.charCodeAt(0);
+
+function indexFromRC (rc) {
+    return (rc.charCodeAt(0) - charCodeOne) * 9 + (rc.charCodeAt(1) - charCodeOne);
+}
+
+
 function newCell(index, digit) {
     digit = digit || '0';
     if (!digit.match(/^[0-9]$/)) {
@@ -493,8 +500,7 @@ export const modelHelpers = {
         const snapshot = cells.filter(c => {
             return c.get('snapshot') !== '';
         }).map(c => {
-            const index = c.get('index');
-            return (index < 10 ? '0' : '') + index + c.get('snapshot');
+            return [c.get('row'), c.get('col'), c.get('snapshot')].join('');
         }).toArray().join(',');
         return snapshot;
     },
@@ -509,7 +515,7 @@ export const modelHelpers = {
                 colorCode: '1',
                 snapshot: '',
             };
-            const index = parseInt(csn.substr(0, 2), 10);
+            const index = indexFromRC(csn);
             props.snapshot = csn.substr(2);
             let state = null;
             for(let i = 2; i < csn.length; i++) {
@@ -955,8 +961,7 @@ export const modelHelpers = {
             const cells = grid.get('cells');
             const clearSnapshot = cells.filter(c => !c.get('isGiven') && c.get('digit') !== '0')
                 .map(c => {
-                    const index = c.get('index');
-                    return (index < 10 ? '0' : '') + index + 'D' + c.get('digit');
+                    return [c.get('row'), c.get('col'), 'D', c.get('digit')].join('');
                 })
                 .join(',');
             return modelHelpers.restoreSnapshot(grid, clearSnapshot);
