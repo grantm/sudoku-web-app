@@ -1,5 +1,20 @@
 import React from 'react';
 
+import {
+    MODAL_TYPE_NO_INITIAL_DIGITS,
+    MODAL_TYPE_INVALID_INITIAL_DIGITS,
+    MODAL_TYPE_PASTE,
+    MODAL_TYPE_SHARE,
+    MODAL_TYPE_SETTINGS,
+    MODAL_TYPE_CHECK_RESULT,
+    MODAL_TYPE_PAUSED,
+    MODAL_TYPE_CONFIRM_RESTART,
+    MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
+    MODAL_TYPE_HELP,
+    MODAL_TYPE_ABOUT,
+} from '../../lib/modal-types';
+
+
 import ModalNoInitialDigits from './modal-no-initial-digits';
 import ModalInvalidInitialDigits from './modal-invalid-initial-digits';
 import ModalAbout from './modal-about';
@@ -27,37 +42,37 @@ export default function ModalContainer({modalState, modalHandler}) {
     if (!modalState) {
         return null;
     }
-    if (modalState.modalType === 'no-initial-digits') {
+    if (modalState.modalType === MODAL_TYPE_NO_INITIAL_DIGITS) {
         content = <ModalNoInitialDigits modalState={modalState} modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'invalid-initial-digits') {
+    else if (modalState.modalType === MODAL_TYPE_INVALID_INITIAL_DIGITS) {
         content = <ModalInvalidInitialDigits modalState={modalState} modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'paste') {
+    else if (modalState.modalType === MODAL_TYPE_PASTE) {
         content = <ModalPaste modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'about') {
+    else if (modalState.modalType === MODAL_TYPE_ABOUT) {
         content = <ModalAbout modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'share') {
+    else if (modalState.modalType === MODAL_TYPE_SHARE) {
         content = <ModalShare modalState={modalState} modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'settings') {
+    else if (modalState.modalType === MODAL_TYPE_SETTINGS) {
         content = <ModalSettings modalState={modalState} modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'confirm-restart') {
+    else if (modalState.modalType === MODAL_TYPE_CONFIRM_RESTART) {
         content = <ModalConfirmRestart modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'confirm-clear-color-highlights') {
+    else if (modalState.modalType === MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS) {
         content = <ModalConfirmClearColorHighlights modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'check-result') {
+    else if (modalState.modalType === MODAL_TYPE_CHECK_RESULT) {
         content = <ModalCheckResult modalState={modalState} modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'paused') {
+    else if (modalState.modalType === MODAL_TYPE_PAUSED) {
         content = <ModalPaused modalState={modalState} modalHandler={modalHandler} />;
     }
-    else if (modalState.modalType === 'help') {
+    else if (modalState.modalType === MODAL_TYPE_HELP) {
         content = <HelpPage modalHandler={modalHandler} />;
     }
     else {

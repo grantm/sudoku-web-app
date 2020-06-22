@@ -1,6 +1,20 @@
 // import { List, Map, Range, Set } from 'immutable';
 import { List, Map, Range, Set } from './not-mutable';
 
+import {
+    MODAL_TYPE_NO_INITIAL_DIGITS,
+    MODAL_TYPE_INVALID_INITIAL_DIGITS,
+    MODAL_TYPE_PASTE,
+    MODAL_TYPE_SHARE,
+    MODAL_TYPE_SETTINGS,
+    MODAL_TYPE_CHECK_RESULT,
+    MODAL_TYPE_PAUSED,
+    MODAL_TYPE_CONFIRM_RESTART,
+    MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
+    MODAL_TYPE_HELP,
+    MODAL_TYPE_ABOUT,
+} from './modal-types';
+
 export const SETTINGS = {
     darkMode: "dark-mode",
     showTimer: "show-timer",
@@ -104,7 +118,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnap
     });
     return initialError
         ? modelHelpers.setInitialDigits(grid, initialDigits, initialError, entryPoint)
-        : modelHelpers.setGivenDigits(grid, initialDigits, skipCheck);
+        : modelHelpers.setGivenDigits(grid, initialDigits, {skipCheck});
 };
 
 function actionsBlocked(grid) {
@@ -188,20 +202,20 @@ export const modelHelpers = {
         return;
     },
 
-    setGivenDigits: (grid, initialDigits, skipCheck) => {
+    setGivenDigits: (grid, initialDigits, options) => {
         const cells = Range(0, 81).toList().map(i => newCell(i, initialDigits[i]));
         grid = modelHelpers.highlightErrorCells(grid.merge({
             initialDigits,
             cells,
         }));
-        if (skipCheck) {
+        if (options.skipCheck) {
             return grid;
         }
         const digits = initialDigits.split('');
         const result = modelHelpers.findSolutions(digits);
         if (!result.uniqueSolution) {
             grid = grid.set('modalState', {
-                modalType: 'check-result',
+                modalType: MODAL_TYPE_CHECK_RESULT,
                 warning: true,
                 errorMessage: result.error,
             });
@@ -218,21 +232,21 @@ export const modelHelpers = {
             modalState = entryPoint === 'new'
                 ? undefined
                 : {
-                    modalType: 'no-initial-digits',
+                    modalType: MODAL_TYPE_NO_INITIAL_DIGITS,
                     loading: true,
                     fetchRequired: true,
                 };
         }
         else if (initialError.insufficientDigits) {
             modalState = {
-                modalType: 'invalid-initial-digits',
+                modalType: MODAL_TYPE_INVALID_INITIAL_DIGITS,
                 insufficientDigits: true,
                 initialDigits: initialDigits,
             };
         }
         else if (initialError.hasErrors) {
             modalState = {
-                modalType: 'invalid-initial-digits',
+                modalType: MODAL_TYPE_INVALID_INITIAL_DIGITS,
                 hasErrors: true,
                 initialDigits: initialDigits,
             };
@@ -256,9 +270,9 @@ export const modelHelpers = {
             })
             .then(data => setGrid(grid => {
                 const modalState = grid.get('modalState') || {};
-                if (modalState.modalType === 'no-initial-digits') {
+                if (modalState.modalType === MODAL_TYPE_NO_INITIAL_DIGITS) {
                     return grid.set('modalState', {
-                        modalType: 'no-initial-digits',
+                        modalType: MODAL_TYPE_NO_INITIAL_DIGITS,
                         recentlyShared: data,
                     });
                 }
@@ -268,9 +282,9 @@ export const modelHelpers = {
             }))
             .catch(error => setGrid(grid => {
                 const modalState = grid.get('modalState') || {};
-                if (modalState.modalType === 'no-initial-digits') {
+                if (modalState.modalType === MODAL_TYPE_NO_INITIAL_DIGITS) {
                     return grid.set('modalState', {
-                        modalType: 'no-initial-digits',
+                        modalType: MODAL_TYPE_NO_INITIAL_DIGITS,
                         loadingFailed: true,
                         errorMessage: error.toString(),
                     });
@@ -578,50 +592,55 @@ export const modelHelpers = {
     },
 
     confirmRestart: (grid) => {
-        return grid.set('modalState', { modalType: 'confirm-restart'});
+        return grid.set('modalState', { modalType: MODAL_TYPE_CONFIRM_RESTART});
     },
 
     confirmClearColorHighlights: (grid) => {
         const coloredCount = grid.get('cells').count(c => c.get('colorCode') !== '1')
         if (coloredCount > 0) {
-            return grid.set('modalState', { modalType: 'confirm-clear-color-highlights'});
+            return grid.set('modalState', { modalType: MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS});
         }
         return grid;
     },
 
     showShareModal: (grid) => {
         return grid.set('modalState', {
-            modalType: 'share',
+            modalType: MODAL_TYPE_SHARE,
             initialDigits: grid.get('initialDigits'),
             difficultyLevel: grid.get('difficultyLevel'),
+            gistUrl: grid.get('gistUrl'),
             startTime: grid.get('startTime'),
             endTime: grid.get('endTime'),
         });
     },
 
     showPasteModal: (grid) => {
-        return grid.set('modalState', { modalType: 'paste' });
+        return grid.set('modalState', { modalType: MODAL_TYPE_PASTE });
     },
 
     showSettingsModal: (grid) => {
         return grid.set('modalState', {
-            modalType: 'settings',
+            modalType: MODAL_TYPE_SETTINGS,
             currentSettings: grid.get('settings'),
         });
     },
 
     showHelpPage: (grid) => {
-        return grid.set('modalState', { modalType: 'help' });
+        return grid.set('modalState', { modalType: MODAL_TYPE_HELP });
     },
 
     showAboutModal: (grid) => {
-        return grid.set('modalState', { modalType: 'about' });
+        return grid.set('modalState', { modalType: MODAL_TYPE_ABOUT });
     },
 
     applyModalAction: (grid, args) => {
         const action = args.action || args;
         grid = grid.set('modalState', undefined);
         if (action === 'cancel') {
+            return grid;
+        }
+        else if (action === 'goto-main-entry') {
+            window.location.search = '';
             return grid;
         }
         else if (action === 'retry-initial-digits') {
@@ -714,7 +733,7 @@ export const modelHelpers = {
         if (result.hasErrors) {
             grid = modelHelpers.applyErrorHighlights(grid, result.errorAtIndex);
             grid = grid.set('modalState', {
-                modalType: 'check-result',
+                modalType: MODAL_TYPE_CHECK_RESULT,
                 errorMessage: 'Errors found in highlighted cells',
             });
         }
@@ -723,13 +742,13 @@ export const modelHelpers = {
             const result = modelHelpers.findSolutions(digits);
             if (result.uniqueSolution) {
                 grid = grid.set('modalState', {
-                    modalType: 'check-result',
+                    modalType: MODAL_TYPE_CHECK_RESULT,
                     errorMessage: 'No conflicting digits were found.',
                 });
             }
             else {
                 grid = grid.set('modalState', {
-                    modalType: 'check-result',
+                    modalType: MODAL_TYPE_CHECK_RESULT,
                     errorMessage: result.error,
                 });
             }
@@ -737,7 +756,7 @@ export const modelHelpers = {
         else if (result.incompleteCount) {
             const s = result.incompleteCount === 1 ? '' : 's';
             grid = grid.set('modalState', {
-                modalType: 'check-result',
+                modalType: MODAL_TYPE_CHECK_RESULT,
                 errorMessage: `No conflicting digits were found, but ${result.incompleteCount} cell${s} not yet filled`,
             });
         }
@@ -904,7 +923,7 @@ export const modelHelpers = {
     pauseTimer: (grid) => {
         return grid.merge({
             pausedAt: Date.now(),
-            modalState: { modalType: 'paused'},
+            modalState: { modalType: MODAL_TYPE_PAUSED},
         });
     },
 
