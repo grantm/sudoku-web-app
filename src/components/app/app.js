@@ -106,7 +106,7 @@ function cellMouseDownHandler (e, setGrid) {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
     }
     else {
-        if (e.ctrlKey || e.shiftKey) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey) {
             setGrid((grid) => modelHelpers.applySelectionOp(grid, 'toggleExtendSelection', index));
         }
         else {
@@ -143,7 +143,9 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     if (e.altKey) {
         return;     // Don't intercept browser hot-keys
     }
-    const shiftOrCtrl = e.shiftKey || e.ctrlKey;
+    console.log(`${e.key} metaKey=${e.metaKey}`, e);
+    const ctrlOrMeta = e.ctrlKey || e.metaKey;
+    const shiftOrCtrl = e.shiftKey || ctrlOrMeta;
     let digit = undefined;
     if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
         digit = String.fromCharCode(e.keyCode);
@@ -155,10 +157,10 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         digit = digitFromShiftNumKey[e.key];
     }
     if (digit !== undefined) {
-        if ((e.shiftKey && e.ctrlKey) || inputMode === 'color') {
+        if ((e.shiftKey && ctrlOrMeta) || inputMode === 'color') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', digit));
         }
-        else if (e.ctrlKey || inputMode === 'inner') {
+        else if (ctrlOrMeta || inputMode === 'inner') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit));
         }
         else if (e.shiftKey || inputMode === 'outer') {
@@ -182,11 +184,11 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
         return;
     }
-    else if (e.keyCode === KEYCODE.Z && e.ctrlKey) {
+    else if (e.keyCode === KEYCODE.Z && ctrlOrMeta) {
         setGrid((grid) => modelHelpers.undoOneAction(grid));
         return;
     }
-    else if (e.keyCode === KEYCODE.Y && e.ctrlKey) {
+    else if (e.keyCode === KEYCODE.Y && ctrlOrMeta) {
         setGrid((grid) => modelHelpers.redoOneAction(grid));
         return;
     }
@@ -238,9 +240,8 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'toggleExtendSelection', grid.get('focusIndex')));
         return;
     }
-    else if (e.key === "Control") {
+    else if (e.key === "Control" || e.key === "Meta") {
         if (e.shiftKey) {
-
             setGrid((grid) => modelHelpers.setTempInputMode(grid, 'color'));
         }
         else {
@@ -249,7 +250,7 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         return;
     }
     else if (e.key === "Shift") {
-        if (e.ctrlKey) {
+        if (ctrlOrMeta) {
             setGrid((grid) => modelHelpers.setTempInputMode(grid, 'color'));
         }
         else {
@@ -268,7 +269,7 @@ function docKeyUpHandler(e, modalActive, setGrid) {
     if (modalActive) {
         return;
     }
-    if (e.key === "Control") {
+    if (e.key === "Control" || e.key === "Meta") {
         if (e.shiftKey) {
             setGrid((grid) => modelHelpers.setTempInputMode(grid, 'outer'));
         }
@@ -278,7 +279,7 @@ function docKeyUpHandler(e, modalActive, setGrid) {
         return;
     }
     else if (e.key === 'Shift') {
-        if (e.ctrlKey) {
+        if (e.ctrlKey || e.metaKey) {
             setGrid((grid) => modelHelpers.setTempInputMode(grid, 'inner'));
         }
         else {
@@ -308,7 +309,7 @@ function vkbdKeyPressHandler(e, setGrid, inputMode) {
         return;
     }
     if ('0' <= keyValue && keyValue <= '9') {
-        if (e.ctrlKey || inputMode === 'inner') {
+        if (e.ctrlKey || e.metaKey || inputMode === 'inner') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', keyValue));
         }
         else if (e.shiftKey || inputMode === 'outer') {
