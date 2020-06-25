@@ -12,11 +12,11 @@ function RecentlySharedSection ({level, puzzles}) {
     if (!levelName || !puzzles || puzzles.length < 1) {
         return null;
     }
-    const puzzleLinks = puzzles.map((digits, i) => {
+    const puzzleLinks = puzzles.map((puzzle, i) => {
         return (
             <li key={i}>
-                <a href={`./?s=${digits}&d=${level}`}>
-                    <SudokuMiniGrid digits={digits} />
+                <a href={`./?s=${puzzle.digits || puzzle}&d=${level}&i=${i+1}`}>
+                    <SudokuMiniGrid puzzle={puzzle} />
                 </a>
             </li>
         );

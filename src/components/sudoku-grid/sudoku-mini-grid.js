@@ -5,7 +5,22 @@ import './sudoku-grid.css';
 import GridLines from './grid-lines.js';
 
 
-function SudokuMiniGrid({digits, size='120px'}) {
+function DifficultyIndicator ({difficulty}) {
+    if (difficulty === undefined) {
+        return null;
+    }
+    const barWidth = Math.min(difficulty, 10) * 90;
+    return <g>
+        <rect className="difficulty-bar" x="50" y="990" width={barWidth} height="15" />
+        <rect x="50" y="970" width={barWidth} height="50" fill="transparent">
+            <title>Difficulty rating: {difficulty}</title>
+        </rect>
+    </g>;
+}
+
+function SudokuMiniGrid({puzzle, size='120px'}) {
+    const digits = typeof(puzzle) === 'string' ? puzzle : puzzle.digits;
+    const difficulty = puzzle.difficulty;
     const givenDigits = digits.split('').map((digit, i) => {
         if (digit === '0') {
             return null;
@@ -28,12 +43,13 @@ function SudokuMiniGrid({digits, size='120px'}) {
     return (
         <div className="sudoku-grid mini" style={{width: size}}>
             <svg version="1.1"
-                viewBox="0 0 1000 1000"
+                viewBox="0 0 1000 1040"
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="grid-bg" width="100%" height="100%" />
                 {givenDigits}
                 <GridLines />
+                <DifficultyIndicator difficulty={difficulty} />
             </svg>
         </div>
     );

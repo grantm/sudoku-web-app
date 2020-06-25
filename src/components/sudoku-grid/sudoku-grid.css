@@ -89,6 +89,15 @@ a:visited:hover .mini text.digit {
     fill: var(--given-digit-color);
 }
 
+.difficulty-bar {
+    fill: var(--mini-grid-line-color);
+    opacity: 0.3;
+}
+
+a:hover .difficulty-bar {
+    opacity: 1;
+}
+
 .solved .cell.given text.digit {
     fill: var(--solved-given-digit-color);
 }
