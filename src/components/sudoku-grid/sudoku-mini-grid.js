@@ -19,6 +19,8 @@ function DifficultyIndicator ({difficulty}) {
 }
 
 function SudokuMiniGrid({puzzle, size='120px'}) {
+    const cellSize = 100;
+    const marginSize = 50;
     const digits = typeof(puzzle) === 'string' ? puzzle : puzzle.digits;
     const difficulty = puzzle.difficulty;
     const givenDigits = digits.split('').map((digit, i) => {
@@ -31,9 +33,9 @@ function SudokuMiniGrid({puzzle, size='120px'}) {
             <text
                 key={i}
                 className="digit"
-                x={col * 100 + 100}
-                y={row * 100 + 125}
-                fontSize="88"
+                x={col * cellSize + cellSize}
+                y={row * cellSize + 130 * cellSize / 100}
+                fontSize={84 * cellSize / 100}
                 textAnchor="middle"
             >
                 {digit}
@@ -48,7 +50,7 @@ function SudokuMiniGrid({puzzle, size='120px'}) {
             >
                 <rect className="grid-bg" width="100%" height="100%" />
                 {givenDigits}
-                <GridLines />
+                <GridLines cellSize={cellSize} marginSize={marginSize} />
                 <DifficultyIndicator difficulty={difficulty} />
             </svg>
         </div>

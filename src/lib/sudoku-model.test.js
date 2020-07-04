@@ -137,13 +137,9 @@ test('initialise grid cells', () => {
         "innerPencils",
         "isGiven",
         "isSelected",
-        "location",
         "outerPencils",
-        "ring",
         "row",
         "snapshot",
-        "x",
-        "y",
     ]);
     expect(c0.get('box')).toBe(1);
     expect(c0.get('colorCode')).toBe('1');
@@ -154,13 +150,9 @@ test('initialise grid cells', () => {
     expect(c0.get('errorMessage')).toBe(undefined);
     expect(c0.get('isGiven')).toBe(false);
     expect(c0.get('isSelected')).toBe(false);
-    expect(c0.get('location')).toBe('R1C1');
     expect(c0.get('outerPencils').toArray()).toStrictEqual([]);
-    expect(c0.get('ring')).toBe(1);
     expect(c0.get('row')).toBe(1);
     expect(c0.get('snapshot')).toBe('');
-    expect(c0.get('x')).toBe(50);
-    expect(c0.get('y')).toBe(50);
 
     expect(cells.get(3).get('box')).toBe(2);
     expect(cells.get(6).get('box')).toBe(3);
@@ -196,26 +188,6 @@ test('initialise grid cells', () => {
     expect(cells.get(42).get('col')).toBe(7);
     expect(cells.get(43).get('col')).toBe(8);
     expect(cells.get(44).get('col')).toBe(9);
-
-    expect(cells.get(0).get('ring')).toBe(1);
-    expect(cells.get(1).get('ring')).toBe(1);
-    expect(cells.get(10).get('ring')).toBe(2);
-    expect(cells.get(11).get('ring')).toBe(2);
-    expect(cells.get(20).get('ring')).toBe(3);
-    expect(cells.get(21).get('ring')).toBe(3);
-    expect(cells.get(30).get('ring')).toBe(4);
-    expect(cells.get(31).get('ring')).toBe(4);
-    expect(cells.get(40).get('ring')).toBe(5);
-
-    expect(cells.get(8).get('location')).toBe('R1C9');
-    expect(cells.get(16).get('location')).toBe('R2C8');
-    expect(cells.get(24).get('location')).toBe('R3C7');
-    expect(cells.get(32).get('location')).toBe('R4C6');
-    expect(cells.get(40).get('location')).toBe('R5C5');
-    expect(cells.get(48).get('location')).toBe('R6C4');
-    expect(cells.get(56).get('location')).toBe('R7C3');
-    expect(cells.get(64).get('location')).toBe('R8C2');
-    expect(cells.get(72).get('location')).toBe('R9C1');
 });
 
 test('move input focus', () => {

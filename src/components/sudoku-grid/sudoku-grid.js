@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import './sudoku-grid.css';
 
 import { SETTINGS } from '../../lib/sudoku-model.js';
 
+import calculateGridDimensions from './grid-dimensions';
 import SudokuCell from './sudoku-cell';
 import GridLines from './grid-lines.js';
 
@@ -51,16 +52,23 @@ function useCellTouch (inputHandler) {
 
 
 function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouseOverHandler, inputHandler}) {
+    const cellSize = 100;
+    const marginSize = 50;
+    const dim = useMemo(() => calculateGridDimensions(cellSize, marginSize), [cellSize, marginSize]);
     const settings = grid.get('settings');
     const highlightMatches = settings[SETTINGS.highlightMatches];
     const showPencilmarks = grid.get('showPencilmarks');
     const matchDigit = highlightMatches ? grid.get('matchDigit') : undefined;
     const rawTouchHandler = useCellTouch(inputHandler);
-    const cellContents = grid.get('cells').toArray().map((c) => {
+    const cellContents = grid.get('cells').toArray().map((c, i) => {
+        const cellDim = dim.cell[i];
         return (
             <SudokuCell
-                key={c.get('location')}
+                key={cellDim.location}
                 cell={c}
+                dim={cellDim}
+                cellSize={dim.cellSize}
+                outerPencilOffsets={dim.outerPencilOffsets}
                 showPencilmarks={showPencilmarks}
                 matchDigit={matchDigit}
                 isPaused={isPaused}
@@ -78,12 +86,12 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
         >
             <svg version="1.1"
                 style={{width: dimensions.gridLength}}
-                viewBox="0 0 1000 1000"
+                viewBox={`0 0 ${dim.width} ${dim.height}`}
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="grid-bg" width="100%" height="100%" />
                 {cellContents}
-                <GridLines />
+                <GridLines cellSize={dim.cellSize} marginSize={dim.marginSize} />
             </svg>
         </div>
     );

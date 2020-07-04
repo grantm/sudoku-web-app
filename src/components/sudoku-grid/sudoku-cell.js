@@ -1,53 +1,43 @@
 import React from 'react';
 
 const allDigits = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-const outerPencilOffsets = [
-    { key: 'tl', x: 18, y: 31 },
-    { key: 'tr', x: 80, y: 31 },
-    { key: 'bl', x: 18, y: 91 },
-    { key: 'br', x: 80, y: 91 },
-    { key: 'tc', x: 49, y: 31 },
-    { key: 'bc', x: 49, y: 91 },
-    { key: 'lc', x: 18, y: 61 },
-    { key: 'rc', x: 80, y: 61 },
-    { key: 'cc', x: 49, y: 61 },
-];
 
 function hasPencilledDigit(cell, d) {
     return cell.get('innerPencils').includes(d) || cell.get('outerPencils').includes(d);
 }
 
-function CellBackground({cell, showPencilmarks}) {
+function CellBackground({cell, dim, cellSize, showPencilmarks}) {
     const colorCode = showPencilmarks ? cell.get('colorCode') : '1';
     return <>
         <rect
             className={`cell-bg color-code-${colorCode}`}
-            x={cell.get('x')}
-            y={cell.get('y')}
-            width="100"
-            height="100"
+            x={dim.x}
+            y={dim.y}
+            width={cellSize}
+            height={cellSize}
         />
         <rect
             className="cell-bg-overlay"
-            x={cell.get('x')}
-            y={cell.get('y')}
-            width="100"
-            height="100"
+            x={dim.x}
+            y={dim.y}
+            width={cellSize}
+            height={cellSize}
         />
     </>
 }
 
-function CellDigit({cell}) {
+function CellDigit({cell, dim, cellSize}) {
     const digit = cell.get('digit');
+    const fontSize = 72 * cellSize / 100;
     if (digit === '0') {
         return null;
     }
     return (
         <text
             className="digit"
-            x={cell.get('col') * 100}
-            y={cell.get('row') * 100 + 25}
-            fontSize="72"
+            x={dim.textX}
+            y={dim.textY}
+            fontSize={fontSize}
             textAnchor="middle"
         >
             {digit}
@@ -55,22 +45,23 @@ function CellDigit({cell}) {
     );
 }
 
-function CellOuterPencilMarks({cell}) {
+function CellOuterPencilMarks({cell, dim, cellSize, offsets}) {
     const pm = cell.get('outerPencils');
     if (cell.get('digit') !== '0' || pm.size === 0) {
         return null;
     }
+    const fontSize = 26 * cellSize / 100;
     let i = 0;
     const marks = allDigits
         .filter(d => pm.includes(d))
         .map((d) => {
-            const pos = outerPencilOffsets[i++];
+            const offset = offsets[i++];
             return (
                 <text
-                    key={pos.key}
-                    x={cell.get('x') + pos.x}
-                    y={cell.get('y') + pos.y}
-                    fontSize="26"
+                    key={offset.key}
+                    x={dim.x + offset.x}
+                    y={dim.y + offset.y}
+                    fontSize={fontSize}
                     textAnchor="middle"
                 >
                     {d}
@@ -80,18 +71,19 @@ function CellOuterPencilMarks({cell}) {
     return <g className="outer-pencil">{marks}</g>;
 }
 
-function CellInnerPencilMarks({cell}) {
+function CellInnerPencilMarks({cell, dim, cellSize}) {
     const pm = cell.get('innerPencils');
     if (cell.get('digit') !== '0' || pm.size === 0) {
         return null;
     }
+    const fontSize = 26 * cellSize / 100;
     const digits = allDigits.filter(d => pm.includes(d)).join('');
     return (
         <text
             className="inner-pencil"
-            x={cell.get('x') + 49}
-            y={cell.get('y') + 61}
-            fontSize="26"
+            x={dim.x + 49 * cellSize / 100}
+            y={dim.y + 61 * cellSize / 100}
+            fontSize={fontSize}
             textAnchor="middle"
         >
             {digits}
@@ -99,17 +91,17 @@ function CellInnerPencilMarks({cell}) {
     );
 }
 
-function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
+function CellCover({cell, dim, cellSize, mouseDownHandler, mouseOverHandler}) {
     const tooltip = cell.get('errorMessage')
         ? <title>{cell.get('errorMessage')}</title>
         : null;
     return (
         <rect
-            x={cell.get('x')}
-            y={cell.get('y')}
-            data-cell-index={cell.get('index')}
-            width="100"
-            height="100"
+            x={dim.x}
+            y={dim.y}
+            data-cell-index={dim.index}
+            width={cellSize}
+            height={cellSize}
             fill="transparent"
             onMouseDown={mouseDownHandler}
             onMouseOver={mouseOverHandler}
@@ -119,13 +111,13 @@ function CellCover({cell, mouseDownHandler, mouseOverHandler}) {
 }
 
 
-function PausedSudokuCell({cell}) {
+function PausedSudokuCell({cell, dim}) {
     return (
         <g className="cell">
             <text
                 className="digit"
-                x={cell.get('col') * 100}
-                y={cell.get('row') * 100 + 25}
+                x={dim.textX}
+                y={dim.textY}
                 fontSize="65"
                 textAnchor="middle"
             >?</text>
@@ -134,9 +126,9 @@ function PausedSudokuCell({cell}) {
 }
 
 
-function SudokuCell({cell, showPencilmarks, matchDigit, isPaused, mouseDownHandler, mouseOverHandler}) {
+function SudokuCell({cell, dim, cellSize, outerPencilOffsets, showPencilmarks, matchDigit, isPaused, mouseDownHandler, mouseOverHandler}) {
     if (isPaused) {
-        return <PausedSudokuCell cell={cell} />
+        return <PausedSudokuCell cell={cell} dim={dim} />
     }
     const classes = [ 'cell' ];
     if (cell.get('isGiven')) {
@@ -154,22 +146,26 @@ function SudokuCell({cell, showPencilmarks, matchDigit, isPaused, mouseDownHandl
             classes.push('matched');
         }
     }
-    const outerPencilmarks = showPencilmarks ? <CellOuterPencilMarks cell={cell} /> : null;
-    const innerPencilmarks = showPencilmarks ? <CellInnerPencilMarks cell={cell} /> : null;
+    const outerPencilmarks = showPencilmarks
+        ? <CellOuterPencilMarks cell={cell} dim={dim} cellSize={cellSize} offsets={outerPencilOffsets} />
+        : null;
+    const innerPencilmarks = showPencilmarks ? <CellInnerPencilMarks cell={cell} dim={dim} cellSize={cellSize} /> : null;
     return (
         <g className={classes.join(' ')}
-            data-cell-index={cell.get('index')}
-            data-row={cell.get('row')}
-            data-col={cell.get('col')}
-            data-box={cell.get('box')}
-            data-ring={cell.get('ring')}
+            data-cell-index={dim.index}
+            data-row={dim.row}
+            data-col={dim.col}
+            data-box={dim.box}
+            data-ring={dim.ring}
         >
-            <CellBackground cell={cell} showPencilmarks={showPencilmarks} />
-            <CellDigit cell={cell} />
+            <CellBackground cell={cell} dim={dim} cellSize={cellSize} showPencilmarks={showPencilmarks} />
+            <CellDigit cell={cell} dim={dim} cellSize={cellSize} />
             {outerPencilmarks}
             {innerPencilmarks}
             <CellCover
                 cell={cell}
+                dim={dim}
+                cellSize={cellSize}
                 mouseDownHandler={mouseDownHandler}
                 mouseOverHandler={mouseOverHandler}
             />

@@ -71,18 +71,13 @@ function newCell(index, digit) {
     const row = Math.floor(index / 9) + 1;
     const col = (index % 9) + 1;
     const box = Math.floor((row - 1) / 3) * 3 + Math.floor((col - 1) / 3) + 1;
-    const ring = 5 - Math.max(Math.abs(5 - row), Math.abs(5 - col));
     return Map({
         // Properties set at creation and then never changed
         index,
         row,
         col,
         box,
-        ring,
-        location: `R${row}C${col}`,
         isGiven: digit !== '0',
-        x: 50 + (col - 1) * 100,
-        y: 50 + (row - 1) * 100,
         // Properties that might change and get serialised for undo/redo
         digit,
         outerPencils: Set(),
