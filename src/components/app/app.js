@@ -143,7 +143,6 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     if (e.altKey) {
         return;     // Don't intercept browser hot-keys
     }
-    console.log(`${e.key} metaKey=${e.metaKey}`, e);
     const ctrlOrMeta = e.ctrlKey || e.metaKey;
     const shiftOrCtrl = e.shiftKey || ctrlOrMeta;
     let digit = undefined;
