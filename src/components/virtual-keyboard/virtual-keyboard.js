@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 
 import "./virtual-keyboard.css";
 
@@ -314,7 +314,6 @@ const buttonIcons = {
 };
 
 const stopPropagation = (e) => e.stopPropagation();
-const DOUBLE_CLICK_TIME = 550;
 let seenTouchEvent = false;
 
 function keyValueFromTouchEvent (e) {
@@ -326,52 +325,29 @@ function keyValueFromTouchEvent (e) {
     return [];
 }
 
-function useButtonTouch (keyPressHandler) {
-    const [lastPress, setLastPress] = useState(undefined);
-    return (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        seenTouchEvent = true;
-        const eventType = e.type;
-        if (eventType === 'touchstart') {
-            const [keyValue, wantDoubleClick] = keyValueFromTouchEvent(e);
-            if (keyValue !== undefined) {
-                const now = Date.now();
-                if (lastPress && wantDoubleClick && lastPress.keyValue === keyValue) {
-                    if ((now - lastPress.eventTime) < DOUBLE_CLICK_TIME) {
-                        setTimeout(() => {
-                            keyPressHandler({type: 'dblclick', keyValue, source: 'touch'});
-                        }, 100);
-                        setLastPress(undefined);
-                        return;
-                    }
-                }
-                keyPressHandler({type: 'click', keyValue, source: 'touch'});
-                setLastPress({ keyValue, eventTime: now });
-            }
+function buttonTouchHandler (e, inputHandler) {
+    e.preventDefault();
+    e.stopPropagation();
+    seenTouchEvent = true;
+    const eventType = e.type;
+    if (eventType === 'touchstart') {
+        const [keyValue, wantDoubleClick] = keyValueFromTouchEvent(e);
+        if (keyValue !== undefined) {
+            inputHandler({type: 'vkbdKeyPress', wantDoubleClick, keyValue, value: keyValue, source: 'touch'});
         }
-    };
+    }
 }
 
-function useButtonClick (keyPressHandler) {
-    return (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (seenTouchEvent) {
-            return;
-        }
-        const eventType = e.type;
-        var keyValue = e.target.dataset.keyValue
-        if (keyValue === undefined) {
-            return;
-        }
-        if (eventType === 'dblclick') {
-            if (!e.target.dataset.wantDoubleClick) {
-                return;
-            }
-        }
-        keyPressHandler({type: e.type, keyValue, source: 'click'});
-    };
+function buttonClickHandler (e, inputHandler) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (seenTouchEvent) {
+        return;
+    }
+    const {keyValue, wantDoubleClick} = e.target.dataset;
+    if (keyValue !== undefined) {
+        inputHandler({type: 'vkbdKeyPress', wantDoubleClick, keyValue, value: keyValue, source: 'click'});
+    }
 }
 
 
@@ -546,9 +522,9 @@ function keyboardLayout(dimensions, flipNumericKeys) {
     return layout;
 }
 
-export default function VirtualKeyboard({dimensions, inputMode, completedDigits, flipNumericKeys, keyPressHandler}) {
-    const rawTouchHandler = useButtonTouch(keyPressHandler);
-    const rawClickHandler = useButtonClick(keyPressHandler);
+export default function VirtualKeyboard({dimensions, inputMode, completedDigits, flipNumericKeys, inputHandler}) {
+    const rawTouchHandler = useCallback(e => buttonTouchHandler(e, inputHandler), [inputHandler]);
+    const rawClickHandler = useCallback(e => buttonClickHandler(e, inputHandler), [inputHandler]);
     const layout = keyboardLayout(dimensions, flipNumericKeys);
     const toolTipText = {
         mode: 'Input modes - shortcuts: Z, X, C & V',
@@ -566,7 +542,6 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
         <div className="vkbd"
             onTouchStart={rawTouchHandler}
             onClick={rawClickHandler}
-            onDoubleClick={rawClickHandler}
             onMouseDown={stopPropagation}
         >
             <svg version="1.1"

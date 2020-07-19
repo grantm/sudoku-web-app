@@ -25,7 +25,7 @@ function indexFromTouchEvent (e) {
     return;
 }
 
-function useCellTouch (touchHandler) {
+function useCellTouch (inputHandler) {
     const [lastCellTouched, setLastCellTouched] = useState(false);
     return (e) => {
         e.preventDefault();
@@ -38,10 +38,10 @@ function useCellTouch (touchHandler) {
         const cellIndex = indexFromTouchEvent(e);
         if (cellIndex !== undefined && cellIndex !== lastCellTouched) {
             if (eventType === 'touchstart') {
-                touchHandler({type: 'cellTouched', cellIndex});
+                inputHandler({type: 'cellTouched', cellIndex, value: cellIndex, source: 'touch'});
             }
             else if (eventType === 'touchmove') {
-                touchHandler({type: 'cellSwipedTo', cellIndex});
+                inputHandler({type: 'cellSwipedTo', cellIndex, value: cellIndex, source: 'touch'});
             }
             setLastCellTouched(cellIndex);
             // console.log(`${eventType} event on cell #${cellIndex}`);
@@ -50,12 +50,12 @@ function useCellTouch (touchHandler) {
 }
 
 
-function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouseOverHandler, touchHandler}) {
+function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouseOverHandler, inputHandler}) {
     const settings = grid.get('settings');
     const highlightMatches = settings[SETTINGS.highlightMatches];
     const showPencilmarks = grid.get('showPencilmarks');
     const matchDigit = highlightMatches ? grid.get('matchDigit') : undefined;
-    const rawTouchHandler = useCellTouch(touchHandler);
+    const rawTouchHandler = useCellTouch(inputHandler);
     const cellContents = grid.get('cells').toArray().map((c) => {
         return (
             <SudokuCell
@@ -66,7 +66,6 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
                 isPaused={isPaused}
                 mouseDownHandler={mouseDownHandler}
                 mouseOverHandler={mouseOverHandler}
-                touchHandler={touchHandler}
             />
         )
     });

@@ -125,17 +125,6 @@ function cellMouseOverHandler (e, setGrid) {
     }
 }
 
-function cellTouchHandler (e, setGrid) {
-    const eventType = e.type;
-    const index = e.cellIndex;
-    if (eventType === 'cellTouched') {
-        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', index));
-    }
-    else if (eventType === 'cellSwipedTo') {
-        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
-    }
-}
-
 function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     if (solved || modalActive) {
         return;
@@ -293,9 +282,42 @@ function clearTempInputMode(setGrid) {
     setGrid((grid) => modelHelpers.clearTempInputMode(grid));
 }
 
+const inputEventHandler = (function() {
+    const DOUBLE_CLICK_TIME = 650
+    let lastEvent = {};
+
+    return (e, setGrid, inputMode) => {
+        const {type, value} = e;
+        const now = Date.now();
+        if (e.wantDoubleClick && type === lastEvent.type && value === lastEvent.value) {
+            if ((now - lastEvent.eventTime) < DOUBLE_CLICK_TIME) {
+                e.isDoubleClick = true;
+            }
+        }
+        lastEvent = {type, value, eventTime: now};
+        if (e.type === 'vkbdKeyPress') {
+            return vkbdKeyPressHandler(e, setGrid, inputMode);
+        }
+        else if (e.type === 'cellTouched' || e.type === 'cellSwipedTo') {
+            return cellTouchHandler(e, setGrid);
+        }
+    }
+})();
+
+function cellTouchHandler (e, setGrid) {
+    const eventType = e.type;
+    const index = e.cellIndex;
+    if (eventType === 'cellTouched') {
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', index));
+    }
+    else if (eventType === 'cellSwipedTo') {
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
+    }
+}
+
 function vkbdKeyPressHandler(e, setGrid, inputMode) {
     const keyValue = e.keyValue;
-    if (e.type === 'dblclick') {
+    if (e.isDoubleClick) {
         if (keyValue === 'input-mode-color') {
             setGrid((grid) => modelHelpers.confirmClearColorHighlights(grid));
         }
@@ -424,8 +446,7 @@ function App() {
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
-    const touchHandler = useCallback(e => cellTouchHandler(e, setGrid), []);
-    const vkbdKeyHandler = useCallback(e => vkbdKeyPressHandler(e, setGrid, inputMode), [inputMode]);
+    const inputHandler = useCallback(e => inputEventHandler(e, setGrid, inputMode), [inputMode]);
     const modalHandler = useCallback(a => dispatchModalAction(a, setGrid), []);
     const menuHandler = useCallback(a => dispatchMenuAction(a, setGrid), []);
     const pauseHandler = useCallback(() => pauseTimer(setGrid), []);
@@ -499,7 +520,7 @@ function App() {
                     isPaused={!!pausedAt}
                     mouseDownHandler={mouseDownHandler}
                     mouseOverHandler={mouseOverHandler}
-                    touchHandler={touchHandler}
+                    inputHandler={inputHandler}
                 />
                 <div>
                     <VirtualKeyboard
@@ -507,7 +528,7 @@ function App() {
                         inputMode={inputMode}
                         flipNumericKeys={settings[SETTINGS.flipNumericKeys]}
                         completedDigits={completedDigits}
-                        keyPressHandler={vkbdKeyHandler}
+                        inputHandler={inputHandler}
                     />
                     {startButton}
                 </div>
