@@ -5,6 +5,9 @@ import { modelHelpers } from '../../lib/sudoku-model.js';
 import SudokuMiniGrid from '../sudoku-grid/sudoku-mini-grid';
 import Spinner from '../spinner/spinner';
 
+function stopPropagation (e) {
+    e.stopPropagation();
+}
 
 function RecentlySharedSection ({level, puzzles}) {
     const [collapsed, setCollapsed] = useState(true);
@@ -15,7 +18,7 @@ function RecentlySharedSection ({level, puzzles}) {
     const puzzleLinks = puzzles.map((puzzle, i) => {
         return (
             <li key={i}>
-                <a href={`./?s=${puzzle.digits || puzzle}&d=${level}&i=${i+1}`}>
+                <a href={`./?s=${puzzle.digits || puzzle}&d=${level}&i=${i+1}`} onClick={stopPropagation}>
                     <SudokuMiniGrid puzzle={puzzle} />
                 </a>
             </li>
