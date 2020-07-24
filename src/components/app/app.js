@@ -409,6 +409,11 @@ function pauseTimer(setGrid) {
     setGrid((grid) => modelHelpers.pauseTimer(grid));
 }
 
+function preStartCheck() {
+    // Suppress onpageunload handling when user clicks 'Start' after entering a puzzle
+    delete document.body.dataset.currentSnapshot;
+}
+
 function getDimensions(winSize) {
     const dim = { ...winSize };
     if (dim.width > dim.height) {
@@ -488,7 +493,7 @@ function App() {
     const startButton = mode === 'enter'
         ? (
             <div className="buttons">
-                <a href={'?s=' + modelHelpers.asDigits(grid)}>Start</a>
+                <a href={'?s=' + modelHelpers.asDigits(grid)} onClick={preStartCheck}>Start</a>
             </div>
         )
         : null;
