@@ -502,6 +502,7 @@ function App() {
         <ModalContainer
             modalState={modalState}
             modalHandler={modalHandler}
+            menuHandler={menuHandler}
         />
     );
 

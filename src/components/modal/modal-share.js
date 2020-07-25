@@ -101,7 +101,7 @@ function DifficultySelector({difficulty, changeHandler}) {
 }
 
 
-export default function ModalShare({modalState, modalHandler}) {
+export default function ModalShare({modalState, modalHandler, menuHandler}) {
     const {initialDigits, difficultyLevel, startTime, endTime} = modalState;
     const solveTime = endTime ? formattedTimeToBeat(startTime, endTime) : null;
 
@@ -109,7 +109,10 @@ export default function ModalShare({modalState, modalHandler}) {
     const [shareTime, setShareTime] = useState(!!endTime);
 
     const thisURL = puzzleURL(initialDigits, difficulty);
-    const imageURL = `/thumbnail/l/${initialDigits}.png`;
+    const saveScreenshotHandler = (e) => {
+        e.preventDefault();
+        menuHandler("save-screenshot");
+    }
 
     const closeHandler = () => modalHandler('cancel');
 
@@ -163,8 +166,12 @@ export default function ModalShare({modalState, modalHandler}) {
                 </ul>
             </div>
             <p>Or, just share the <a href={thisURL}>URL of this page</a>.</p>
-            <p>Alternatively, the puzzle is available as <a href={imageURL}>an
-            image</a>.</p>
+            <p>Alternatively, you can download the puzzle as{' '}
+                <a
+                    href="./"
+                    onClick={saveScreenshotHandler}
+                >an image</a>.
+            </p>
             <div className="buttons">
                 <button onClick={closeHandler}>Close</button>
             </div>

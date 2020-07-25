@@ -37,7 +37,7 @@ function ModalBackdrop() {
     );
 }
 
-export default function ModalContainer({modalState, modalHandler}) {
+export default function ModalContainer({modalState, modalHandler, menuHandler}) {
     let content = null;
     if (!modalState) {
         return null;
@@ -55,7 +55,7 @@ export default function ModalContainer({modalState, modalHandler}) {
         content = <ModalAbout modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_SHARE) {
-        content = <ModalShare modalState={modalState} modalHandler={modalHandler} />;
+        content = <ModalShare modalState={modalState} modalHandler={modalHandler} menuHandler={menuHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_SETTINGS) {
         content = <ModalSettings modalState={modalState} modalHandler={modalHandler} />;
