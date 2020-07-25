@@ -7,7 +7,8 @@ import * as serviceWorker from './serviceWorker';
 window.addEventListener('beforeunload', function (e) {
     // If a puzzle is in progress, allow user to cancel page unload
     const currentSnapshot = document.body.dataset.currentSnapshot;
-    if (currentSnapshot) {
+    const solved = document.querySelector('.sudoku-app.solved');
+    if (currentSnapshot && !solved) {
         e.preventDefault();     // Sufficient for Firefox
         e.returnValue = '';     // Needed by Chrome
     }
