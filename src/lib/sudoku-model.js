@@ -743,7 +743,7 @@ export const modelHelpers = {
             if (result.uniqueSolution) {
                 grid = grid.set('modalState', {
                     modalType: MODAL_TYPE_CHECK_RESULT,
-                    errorMessage: 'No conflicting digits were found.',
+                    errorMessage: 'Looks good - this arrangement does have unique solution',
                 });
             }
             else {
