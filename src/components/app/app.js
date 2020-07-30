@@ -29,6 +29,8 @@ const KEYCODE = {
     P: 80,
     Y: 89,
     Z: 90,
+    bracketLeft: 219,
+    bracketRight: 221,
 };
 
 const digitFromShiftNumKey = {
@@ -172,11 +174,11 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
         return;
     }
-    else if (e.keyCode === KEYCODE.Z && ctrlOrMeta) {
+    else if ((e.keyCode === KEYCODE.Z && ctrlOrMeta) || e.keyCode === KEYCODE.bracketLeft) {
         setGrid((grid) => modelHelpers.undoOneAction(grid));
         return;
     }
-    else if (e.keyCode === KEYCODE.Y && ctrlOrMeta) {
+    else if ((e.keyCode === KEYCODE.Y && ctrlOrMeta) || e.keyCode === KEYCODE.bracketRight) {
         setGrid((grid) => modelHelpers.redoOneAction(grid));
         return;
     }
