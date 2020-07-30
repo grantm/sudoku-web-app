@@ -71,10 +71,10 @@ export default function HelpPage({modalHandler}) {
             </ul>
 
             <h1>Undo / redo</h1>
-            <p>If you make a mistake, you can undo one or more steps using Ctrl-Z or the
-            undo button on the on-screen keypad.</p>
-            <p>After using undo, you can use Ctrl-Y or the on-screen redo button to replay
-            one or more actions.</p>
+            <p>If you make a mistake, you can undo one or more steps using Ctrl-Z, or '[',
+            or the undo button on the on-screen keypad.</p>
+            <p>After using undo, you can use Ctrl-Y or, or ']', or the on-screen redo button
+            to replay one or more actions.</p>
             <p>You can use Delete or Backspace to remove a digit or pencil marks from
             selected cells.</p>
             <p>The Esc key will cancel the current selection.</p>
