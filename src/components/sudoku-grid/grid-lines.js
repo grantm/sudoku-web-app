@@ -11,8 +11,8 @@ function GridLines() {
         }).join(' ');
     return (
         <g>
-            <path className="line" d={fineLines}/>
-            <path className="line-bold" d={boldLines}/>
+            <path className="line" d={fineLines} pointerEvents="none" />
+            <path className="line-bold" d={boldLines} pointerEvents="none" />
             <rect className="line-bold" x="50" y="50" width="900" height="900" fill="transparent" pointerEvents="none" />
         </g>
     );
