@@ -1,5 +1,9 @@
 import React from 'react';
 
+function stopPropagation (e) {
+    e.stopPropagation();
+}
+
 function GridLines({cellSize, marginSize}) {
     const gridLength = 9 * cellSize;
 
@@ -15,15 +19,15 @@ function GridLines({cellSize, marginSize}) {
         }).join(' ');
     return (
         <g>
-            <path className="line" d={fineLines} pointerEvents="none" />
-            <path className="line-bold" d={boldLines} pointerEvents="none" />
+            <path className="line" d={fineLines} onMouseDown={stopPropagation} />
+            <path className="line-bold" d={boldLines} onMouseDown={stopPropagation} />
             <rect className="line-bold"
                 x={marginSize}
                 y={marginSize}
                 width={gridLength}
                 height={gridLength}
                 fill="transparent"
-                pointerEvents="none"
+                onMouseDown={stopPropagation}
             />
         </g>
     );

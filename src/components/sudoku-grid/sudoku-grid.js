@@ -69,16 +69,14 @@ function layerCellPaused (cells, cellSize, dim) {
     });
 }
 
-function cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks, mouseDownHandler, mouseOverHandler) {
+function cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks) {
     const backgrounds = layerCellBackgrounds(cells, cellSize, dim, matchDigit, showPencilmarks);
     const pencilMarks = showPencilmarks ? layerCellPencilMarks(cells, cellSize, dim, dim.outerPencilOffsets) : [];
     const digits      = layerCellDigits(cells, cellSize, dim);
-    const covers      = layerCellCovers(cells, cellSize, dim, mouseDownHandler, mouseOverHandler);
     return <>
         {backgrounds}
         {pencilMarks}
         {digits}
-        {covers}
     </>;
 }
 
@@ -136,7 +134,8 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
     const cells = grid.get('cells').toArray();
     const cellContents = isPaused
         ? layerCellPaused(cells, cellSize, dim)
-        : cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks, mouseDownHandler, mouseOverHandler);
+        : cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks);
+    const cellCovers = layerCellCovers(cells, cellSize, dim, mouseDownHandler, mouseOverHandler);
     return (
         <div className="sudoku-grid"
             id={gridId || null}
@@ -152,6 +151,7 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
                 <rect className="grid-bg" width="100%" height="100%" />
                 {cellContents}
                 <GridLines cellSize={dim.cellSize} marginSize={dim.marginSize} />
+                {cellCovers}
             </svg>
         </div>
     );

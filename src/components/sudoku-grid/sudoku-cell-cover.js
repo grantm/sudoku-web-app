@@ -6,12 +6,13 @@ export default function SudokuCellCover({cell, dim, cellSize, mouseDownHandler, 
         : null;
     return (
         <rect
-            x={dim.x}
-            y={dim.y}
-            data-cell-index={dim.index}
-            width={cellSize}
-            height={cellSize}
+            className="cell-cover"
+            x={dim.x - 0.5}
+            y={dim.y - 0.5}
             fill="transparent"
+            data-cell-index={dim.index}
+            width={cellSize + 1}
+            height={cellSize + 1}
             onMouseDown={mouseDownHandler}
             onMouseOver={mouseOverHandler}
             pointerEvents="fill"
