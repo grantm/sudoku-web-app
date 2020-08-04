@@ -127,7 +127,7 @@ function cellMouseOverHandler (e, setGrid) {
     }
 }
 
-function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
+function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode, grid) {
     if (solved || modalActive) {
         return;
     }
@@ -147,13 +147,14 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         digit = digitFromShiftNumKey[e.key];
     }
     if (digit !== undefined) {
+        const selectedCells = grid.get("cells").filter((c) => c.get("isSelected"));
         if ((e.shiftKey && ctrlOrMeta) || inputMode === 'color') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', digit));
         }
         else if (ctrlOrMeta || inputMode === 'inner') {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit));
         }
-        else if (e.shiftKey || inputMode === 'outer') {
+        else if (e.shiftKey || inputMode === 'outer' || selectedCells.size > 1) {
             setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', digit));
         }
         else {
@@ -460,7 +461,7 @@ function App() {
 
     useEffect(
         () => {
-            const pressHandler = (e) => docKeyDownHandler(e, modalActive, setGrid, solved, inputMode);
+            const pressHandler = (e) => docKeyDownHandler(e, modalActive, setGrid, solved, inputMode, grid);
             document.addEventListener('keydown', pressHandler);
             const releaseHandler = (e) => docKeyUpHandler(e, modalActive, setGrid);
             document.addEventListener('keyup', releaseHandler);
@@ -469,7 +470,7 @@ function App() {
                 document.removeEventListener('keyup', releaseHandler)
             };
         },
-        [solved, inputMode, modalActive]
+        [solved, inputMode, modalActive, grid]
     );
 
     useEffect(
