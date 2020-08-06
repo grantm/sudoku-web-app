@@ -197,6 +197,7 @@ test('List.reduce', () => {
 
 test('List.count', () => {
     const l1 = List(['one', 'two', 'three', 'four', 'five']);
+    expect(l1.count()).toBe(5);
     expect(l1.count(x => x.match(/e/))).toBe(3);
 });
 

@@ -91,7 +91,12 @@ class NMList {
     }
 
     count (f) {
-        return this.reduce((acc, val) => {return f(val) ? acc + 1 : acc}, 0);
+        if (typeof f === 'function') {
+            return this.reduce((acc, val) => {return f(val) ? acc + 1 : acc}, 0);
+        }
+        else {
+            return this[_nm_list].length;
+        }
     }
 
     forEach (f) {
