@@ -127,7 +127,7 @@ function cellMouseOverHandler (e, setGrid) {
     }
 }
 
-function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode, grid) {
+function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     if (solved || modalActive) {
         return;
     }
@@ -147,19 +147,21 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode, grid) {
         digit = digitFromShiftNumKey[e.key];
     }
     if (digit !== undefined) {
-        const selectedCells = grid.get("cells").filter((c) => c.get("isSelected"));
-        if ((e.shiftKey && ctrlOrMeta) || inputMode === 'color') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', digit));
-        }
-        else if (ctrlOrMeta || inputMode === 'inner') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit));
-        }
-        else if (e.shiftKey || inputMode === 'outer' || selectedCells.size > 1) {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', digit));
-        }
-        else {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', digit));
-        }
+        setGrid((grid) => {
+            const selectedCellCount = grid.get("cells").count((c) => c.get("isSelected"));
+            if ((e.shiftKey && ctrlOrMeta) || inputMode === 'color') {
+                return modelHelpers.updateSelectedCells(grid, 'setCellColor', digit);
+            }
+            else if (ctrlOrMeta || inputMode === 'inner') {
+                return modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit);
+            }
+            else if (e.shiftKey || inputMode === 'outer' || selectedCellCount > 1) {
+                return modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', digit);
+            }
+            else {
+                return modelHelpers.updateSelectedCells(grid, 'setDigit', digit);
+            }
+        });
         e.preventDefault();
         return;
     }
@@ -333,18 +335,21 @@ function vkbdKeyPressHandler(e, setGrid, inputMode) {
         return;
     }
     if ('0' <= keyValue && keyValue <= '9') {
-        if (e.ctrlKey || e.metaKey || inputMode === 'inner') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', keyValue));
-        }
-        else if (e.shiftKey || inputMode === 'outer') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', keyValue));
-        }
-        else if (inputMode === 'color') {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setCellColor', keyValue));
-        }
-        else {
-            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'setDigit', keyValue));
-        }
+        setGrid((grid) => {
+            const selectedCellCount = grid.get("cells").count((c) => c.get("isSelected"));
+            if (e.ctrlKey || e.metaKey || inputMode === 'inner') {
+                return modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', keyValue);
+            }
+            else if (e.shiftKey || inputMode === 'outer' || selectedCellCount > 1) {
+                return modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', keyValue);
+            }
+            else if (inputMode === 'color') {
+                return modelHelpers.updateSelectedCells(grid, 'setCellColor', keyValue);
+            }
+            else {
+                return modelHelpers.updateSelectedCells(grid, 'setDigit', keyValue);
+            }
+        });
         return;
     }
     else if (keyValue === 'delete') {
@@ -461,7 +466,7 @@ function App() {
 
     useEffect(
         () => {
-            const pressHandler = (e) => docKeyDownHandler(e, modalActive, setGrid, solved, inputMode, grid);
+            const pressHandler = (e) => docKeyDownHandler(e, modalActive, setGrid, solved, inputMode);
             document.addEventListener('keydown', pressHandler);
             const releaseHandler = (e) => docKeyUpHandler(e, modalActive, setGrid);
             document.addEventListener('keyup', releaseHandler);
@@ -470,7 +475,7 @@ function App() {
                 document.removeEventListener('keyup', releaseHandler)
             };
         },
-        [solved, inputMode, modalActive, grid]
+        [solved, inputMode, modalActive]
     );
 
     useEffect(
