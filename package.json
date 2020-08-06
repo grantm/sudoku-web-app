@@ -1,6 +1,6 @@
 {
   "name": "sudoku-web-app",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A web application for solving & sharing Sudoku puzzles. Created for SudokuExchange.com",
   "author": {
     "name": "Grant McLean",
