@@ -340,11 +340,11 @@ function vkbdKeyPressHandler(e, setGrid, inputMode) {
             if (e.ctrlKey || e.metaKey || inputMode === 'inner') {
                 return modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', keyValue);
             }
-            else if (e.shiftKey || inputMode === 'outer' || selectedCellCount > 1) {
-                return modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', keyValue);
-            }
             else if (inputMode === 'color') {
                 return modelHelpers.updateSelectedCells(grid, 'setCellColor', keyValue);
+            }
+            else if (e.shiftKey || inputMode === 'outer' || selectedCellCount > 1) {
+                return modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', keyValue);
             }
             else {
                 return modelHelpers.updateSelectedCells(grid, 'setDigit', keyValue);
