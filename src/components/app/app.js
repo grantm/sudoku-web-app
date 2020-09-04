@@ -173,6 +173,10 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'clearCell'));
         return;
     }
+    else if (e.key === ".") {
+        setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'pencilMarksToInner'));
+        return;
+    }
     else if (e.key === "Escape") {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
         return;
@@ -325,6 +329,9 @@ function vkbdKeyPressHandler(e, setGrid, inputMode) {
     if (e.isDoubleClick) {
         if (keyValue === 'input-mode-color') {
             setGrid((grid) => modelHelpers.confirmClearColorHighlights(grid));
+        }
+        else if (keyValue === 'input-mode-inner') {
+            setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'pencilMarksToInner'));
         }
         else if ('1' <= keyValue && keyValue <= '9') {
             if (inputMode === 'inner' || inputMode === 'outer') {

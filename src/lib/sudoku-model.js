@@ -876,6 +876,17 @@ export const modelHelpers = {
         return c.set('outerPencils', pencilMarks);
     },
 
+    pencilMarksToInnerAsCellOp: (c, digit) => {
+        if (c.get('digit') !== '0') {
+            return c;
+        }
+        let newInner = c.get('innerPencils').union(c.get('outerPencils'));
+        return c.merge({
+            'innerPencils': newInner,
+            'outerPencils': Set(),
+        });
+    },
+
     setCellColorAsCellOp: (c, newColorCode) => {
         return c.set('colorCode', newColorCode);
     },

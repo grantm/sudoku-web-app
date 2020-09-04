@@ -589,6 +589,20 @@ test('set pencilmarks', () => {
     expect(grid.get('currentSnapshot')).toBe('00D7,04T13,06T2,07T2,74D7');
 });
 
+test('pencilMarksToInner', () => {
+    const extend = true;
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    expect(grid.get('showPencilmarks')).toBe(true);
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 63);
+    grid = modelHelpers.moveFocus(grid, 0, 1, extend);
+    expect(selectedCells(grid)).toBe('63,72');
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '4');
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '5');
+    expect(grid.get('currentSnapshot')).toBe('63T45,72T45');
+    grid = modelHelpers.updateSelectedCells(grid, 'pencilMarksToInner', '5');
+    expect(grid.get('currentSnapshot')).toBe('63N45,72N45');
+});
+
 test('show/hide pencilmarks', () => {
     let grid = newSudokuModel({initialDigits, skipCheck: true});
     expect(grid.get('showPencilmarks')).toBe(true);

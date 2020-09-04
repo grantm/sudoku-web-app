@@ -59,9 +59,13 @@ export default function HelpPage({modalHandler}) {
                 <li>Z - Cell colours</li>
             </ul>
             <p>If you have switched to a pencil marking mode (inner or outer), you can still
-            enter a digit by double-clicking that digit.  The double-click action overrides
-            the current mode and does a normal digit entry, but afterwards you remain in the
-            original pencil marking mode.</p>
+            enter a digit by double-tapping/clicking that digit on the on-screen keyboard.
+            The double-click action overrides the current mode and does a normal digit entry,
+            but afterwards you remain in the original pencil marking mode.</p>
+            <p>Sometimes you might enter some 'outer' pencil marks and then realise that the
+            selected cells form a pair or a triple.  If you want to switch all the pencil marks
+            in the selected cells to 'inner' pencil marks, use the ‘.’ (dot or period) key or
+            double-tap/click the inner pencil marks mode button.</p>
             <p>There are also two pencil-mark-related menu options:</p>
             <ul>
                 <li><b>Hide/Show Pencilmarks</b> — can be used to temporarily hide pencil

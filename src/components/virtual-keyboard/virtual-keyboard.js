@@ -475,7 +475,7 @@ function VkbdModePanel({inputMode, toolTipText}) {
                 data-key-value="input-mode-outer"
             ><title>{toolTipText.outer}</title></rect>
             <rect x="640" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-inner"
+                data-key-value="input-mode-inner" data-want-double-click="true"
             ><title>{toolTipText.inner}</title></rect>
             <rect x="800" y="65" width="130" height="130" fill="transparent"
                 data-key-value="input-mode-color" data-want-double-click="true"
