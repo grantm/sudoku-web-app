@@ -98,6 +98,7 @@ test('initialise grid cells', () => {
 
     // Expected pattern of given digits have been set up
     const cells = grid.get('cells');
+    expect(List.isList(cells)).toBe(true);
     expect(cells.size).toBe(81);
     const givenDigits = cells.filter(c => c.get('isGiven'))
         .map(c => c.get('index') + ':' + c.get('digit'))
@@ -257,6 +258,25 @@ test('move input focus', () => {
     // 'Home'
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', modelHelpers.CENTER_CELL);
     expect(grid.get('focusIndex')).toBe(40)
+
+    // Extend the selection while moving focus
+    expect(selectedCells(grid)).toBe('40');
+    grid = modelHelpers.moveFocus(grid, 1, 0, extend);
+    expect(selectedCells(grid)).toBe('40,41');
+    grid = modelHelpers.moveFocus(grid, 1, 0, extend);
+    expect(selectedCells(grid)).toBe('40,41,42');
+    grid = modelHelpers.moveFocus(grid, -1, 0, extend);
+    expect(selectedCells(grid)).toBe('40,41,42');
+    grid = modelHelpers.moveFocus(grid, -1, 0, extend);
+    expect(selectedCells(grid)).toBe('40,41,42');
+    grid = modelHelpers.moveFocus(grid, -1, 0, extend);
+    expect(selectedCells(grid)).toBe('39,40,41,42');
+    grid = modelHelpers.moveFocus(grid, 0, 1, extend);
+    expect(selectedCells(grid)).toBe('39,40,41,42,48');
+    grid = modelHelpers.moveFocus(grid, 0, -1, extend);
+    expect(selectedCells(grid)).toBe('39,40,41,42,48');
+    grid = modelHelpers.moveFocus(grid, 0, -1, extend);
+    expect(selectedCells(grid)).toBe('30,39,40,41,42,48');
 
     expect(grid.get('currentSnapshot')).toBe('');
 });
