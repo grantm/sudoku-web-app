@@ -98,3 +98,15 @@ test('Set.toArray', () => {
     const s6 = s5.add('7');
     expect(s6.toArray().sort().join(',')).toBe('2,7,9');
 });
+
+test('Set.union', () => {
+    const s1 = Set(['one', 'three']);
+    const s2 = Set(['two', 'four']);
+    const s3 = s1.union(s2);
+    expect(s1.toArray().sort().join(',')).toBe('one,three');
+    expect(s3.toArray().sort().join(',')).toBe('four,one,three,two');
+
+    const s4 = Set.union([s1, s2]);
+    expect(s1.toArray().sort().join(',')).toBe('one,three');
+    expect(s4.toArray().sort().join(',')).toBe('four,one,three,two');
+});

@@ -287,6 +287,16 @@ class NMSet {
         return this[_nm_set].hasOwnProperty(v);
     }
 
+    union(s2) {
+        const old = this[_nm_set];
+        const s = { ...old };
+        s2.toArray().forEach((v) => {
+            s[v] = true;
+        });
+
+        return this._new_set(s);
+    }
+
     toArray() {
         const s = this[_nm_set];
         return Object.keys(s).sort();
@@ -310,6 +320,14 @@ function Set(...args) {
 
 Set.isSet = o => o.constructor === NMSet;
 
+Set.union = a => {
+    a = Array.isArray(a) ? a : a.toArray();
+    let s = emptySet;
+    a.forEach((t) => {
+        s = s.union(t)
+    });
+    return s;
+}
 
 // ==========================================================================
 // Range()
