@@ -13,6 +13,7 @@ import {
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
     MODAL_TYPE_HELP,
     MODAL_TYPE_ABOUT,
+    MODAL_TYPE_QR_CODE,
 } from './modal-types';
 
 export const SETTINGS = {
@@ -618,6 +619,15 @@ export const modelHelpers = {
         return grid.set('modalState', { modalType: MODAL_TYPE_PASTE });
     },
 
+    showQRModal: (grid, args) => {
+        const { difficultyLevel } = args;
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_QR_CODE ,
+            initialDigits: grid.get('initialDigits'),
+            difficultyLevel: difficultyLevel || grid.get('difficultyLevel'),
+        });
+    },
+
     showSettingsModal: (grid) => {
         return grid.set('modalState', {
             modalType: MODAL_TYPE_SETTINGS,
@@ -643,11 +653,17 @@ export const modelHelpers = {
             window.location.search = '';
             return grid;
         }
+        else if (action === 'show-share-modal') {
+            return modelHelpers.showShareModal(grid);
+        }
         else if (action === 'retry-initial-digits') {
             return modelHelpers.retryInitialDigits(grid, args);
         }
         else if (action === 'show-paste-modal') {
             return modelHelpers.showPasteModal(grid, args);
+        }
+        else if (action === 'show-qr-modal') {
+            return modelHelpers.showQRModal(grid, args);
         }
         else if (action === 'paste-initial-digits') {
             return modelHelpers.retryInitialDigits(grid, args);
