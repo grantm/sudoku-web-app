@@ -12,6 +12,7 @@ import {
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
     MODAL_TYPE_HELP,
     MODAL_TYPE_ABOUT,
+    MODAL_TYPE_QR_CODE,
 } from '../../lib/modal-types';
 
 
@@ -25,6 +26,7 @@ import ModalPaused from './modal-paused';
 import ModalPaste from './modal-paste';
 import ModalShare from './modal-share';
 import ModalSettings from './modal-settings';
+import ModalQRCode from './modal-qr-code';
 import HelpPage from '../help/help';
 
 import "./modal.css";
@@ -74,6 +76,9 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     }
     else if (modalState.modalType === MODAL_TYPE_HELP) {
         content = <HelpPage modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === MODAL_TYPE_QR_CODE) {
+        content = <ModalQRCode modalState={modalState} modalHandler={modalHandler} />;
     }
     else {
         console.log('<Modal />: Unhandled modalState:', modalState);

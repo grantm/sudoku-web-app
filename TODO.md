@@ -4,7 +4,6 @@
 * Track progress in localStorage to allow resume after reload or back/fwd
 * Protect against accidental reload or back button with "are you sure you want
   to leave this page?"
-* Option to share via QRcode
 * Menu option to share with pencilmarks
 * Investigate honouring back button to close modal/menu (without propagating
   state when sharing current URL)
@@ -49,3 +48,4 @@
 * Sharing options via social media
 * Allow user to share difficulty level and/or solve time
 * Add modal to allow selecting from recently shared puzzles
+* Option to share via QRcode

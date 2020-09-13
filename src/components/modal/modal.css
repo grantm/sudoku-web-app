@@ -226,6 +226,12 @@ input[type=checkbox]:checked + .indicator::before {
     max-width: 18em;
 }
 
+.modal.qr canvas {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .difficulty-selector p {
     margin-bottom: 0.1em;
 }
@@ -292,7 +298,8 @@ input[type=checkbox]:checked + .indicator::before {
     margin-bottom: 0.6em;
 }
 
-.share-buttons a {
+.share-buttons a ,
+.share-buttons button {
     display: block;
     text-align: left;
     white-space: nowrap;
@@ -332,6 +339,24 @@ input[type=checkbox]:checked + .indicator::before {
 
 .share-buttons a.btn-email::before {
     background-position: 0px -50px;
+}
+
+.share-buttons button.btn-qr {
+    margin-left: 0;
+    width: 100%;
+}
+
+.share-buttons button.btn-qr::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: 0.3em;
+    vertical-align: bottom;
+    border: 1px solid transparent;
+    background-image: url(../../assets/qr-code.svg);
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 @media screen and (max-width: 500px) {
