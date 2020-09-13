@@ -226,10 +226,12 @@ input[type=checkbox]:checked + .indicator::before {
     max-width: 18em;
 }
 
-.modal.qr canvas {
+.modal.qr svg {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    max-width: 80vw;
+    max-height: 80vh;
 }
 
 .difficulty-selector p {
@@ -305,8 +307,9 @@ input[type=checkbox]:checked + .indicator::before {
     white-space: nowrap;
     background-color: #777777;
     color: #ffffff;
-    padding: 0.4em 1em 0.5em 0.4em;
+    padding: 0.4em 1em 0.5em 0.5em;
     border-radius: 0.3em;
+    font-family: var(--app-font-family); /* override browser button font */
     font-weight: bold;
 }
 
@@ -314,12 +317,13 @@ input[type=checkbox]:checked + .indicator::before {
     border: none;
 }
 
-.share-buttons a::before {
+.share-buttons a::before,
+.share-buttons button::before {
     content: '';
     display: inline-block;
     width: 24px;
     height: 24px;
-    margin-right: 0.3em;
+    margin-right: 0.4em;
     vertical-align: bottom;
     border: 1px solid transparent;
     background-image: url(../../assets/social-icons.png);
@@ -341,22 +345,13 @@ input[type=checkbox]:checked + .indicator::before {
     background-position: 0px -50px;
 }
 
+.share-buttons button.btn-qr::before {
+    background-position: 0px -75px;
+}
+
 .share-buttons button.btn-qr {
     margin-left: 0;
     width: 100%;
-}
-
-.share-buttons button.btn-qr::before {
-    content: '';
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    margin-right: 0.3em;
-    vertical-align: bottom;
-    border: 1px solid transparent;
-    background-image: url(../../assets/qr-code.svg);
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
 @media screen and (max-width: 500px) {

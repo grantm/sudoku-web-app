@@ -620,11 +620,10 @@ export const modelHelpers = {
     },
 
     showQRModal: (grid, args) => {
-        const { difficultyLevel } = args;
+        const { puzzleURL } = args;
         return grid.set('modalState', {
             modalType: MODAL_TYPE_QR_CODE ,
-            initialDigits: grid.get('initialDigits'),
-            difficultyLevel: difficultyLevel || grid.get('difficultyLevel'),
+            puzzleURL,
         });
     },
 

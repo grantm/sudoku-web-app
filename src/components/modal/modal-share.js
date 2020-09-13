@@ -2,8 +2,20 @@ import React, { useState, useCallback } from 'react';
 
 import { modelHelpers } from '../../lib/sudoku-model.js';
 import { secondsAsHMS } from '../../lib/format-utils';
-import { puzzleURL } from '../../lib/url-utils';
 
+
+function puzzleURL(initialDigits, difficulty, vector) {
+    const baseURL = window.location.toString().replace(/\?.*$/, '');
+    const params = new URLSearchParams();
+    params.set('s', initialDigits);
+    if (difficulty) {
+        params.set('d', difficulty);
+    }
+    if (vector) {
+        params.set('v', vector);
+    }
+    return baseURL + '?' + params.toString();
+}
 
 function difficultyLevelName(value) {
     if (value) {
@@ -106,7 +118,7 @@ export default function ModalShare({modalState, modalHandler, menuHandler}) {
 
     const qrHandler = () => modalHandler({
         action: 'show-qr-modal',
-        difficultyLevel: difficulty
+        puzzleURL: thisURL,
     });
 
     const changeDifficulty = useCallback(
