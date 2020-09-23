@@ -154,17 +154,17 @@ export default function ModalShare({modalState, modalHandler, menuHandler}) {
             <div className="share-buttons">
                 <ul>
                     <li>
-                        <a className="btn-facebook" target="_blank" rel="noopener noreferrer"
+                        <a className="btn btn-facebook" target="_blank" rel="noopener noreferrer"
                             href={facebookShareURL(initialDigits, difficulty)}
                         >Share on Facebook</a>
                     </li>
                     <li>
-                        <a className="btn-twitter" target="_blank" rel="noopener noreferrer"
+                        <a className="btn btn-twitter" target="_blank" rel="noopener noreferrer"
                             href={twitterShareURL(initialDigits, difficulty, shareSolveTime)}
                         >Share on Twitter</a>
                     </li>
                     <li>
-                        <a className="btn-email"
+                        <a className="btn btn-email"
                             href={emailShareURL(initialDigits, difficulty, shareSolveTime)}
                         >Share by Email</a>
                     </li>

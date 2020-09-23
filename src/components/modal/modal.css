@@ -62,6 +62,10 @@
     cursor: not-allowed;
 }
 
+.modal button:disabled:hover {
+    box-shadow: none;
+}
+
 .modal button.danger {
     color: var(--modal-button-danger-text-color);
     background-color: var(--modal-button-danger-bg-color);

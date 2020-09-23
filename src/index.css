@@ -28,6 +28,7 @@
     --modal-button-primary-bg-color: #acddfb;
     --modal-button-danger-text-color: #333333;
     --modal-button-danger-bg-color: #ff9e9e;
+    --button-hover-shadow: 0 0 1px #00000099;
     --input-toggle-bg-color: #dddddd;
     --input-toggle-inset-color: #dddddd20;
     --input-toggle-off-color: #888888;
@@ -106,6 +107,7 @@
     --modal-button-bg-color: #726c6d;
     --modal-button-danger-text-color: #cabdbd;
     --modal-button-danger-bg-color: #ce4f58;
+    --button-hover-shadow: 0 0 2px #ffffff;
     --input-toggle-bg-color: #726c6d;
     --input-toggle-inset-color: #444444d0;
     --input-toggle-off-color: #4f4747;
@@ -229,6 +231,11 @@ a:hover {
     background-color: var(--button-bg-color);
     border-radius: 0.1em;
     border: none;
+}
+
+button:hover,
+a.btn:hover {
+    box-shadow: var(--button-hover-shadow);
 }
 
 .portrait .buttons a {

@@ -512,7 +512,7 @@ function App() {
     const startButton = mode === 'enter'
         ? (
             <div className="buttons">
-                <a href={'?s=' + modelHelpers.asDigits(grid)} onClick={preStartCheck}>Start</a>
+                <a className="btn" href={'?s=' + modelHelpers.asDigits(grid)} onClick={preStartCheck}>Start</a>
             </div>
         )
         : null;
