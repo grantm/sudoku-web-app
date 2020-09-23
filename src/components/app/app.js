@@ -463,7 +463,7 @@ function App() {
     const completedDigits = grid.get('completedDigits');
     const modalState = grid.get('modalState');
     if (modalState && modalState.modalType === MODAL_TYPE_WELCOME && modalState.fetchRequired) {
-        setTimeout(() => modelHelpers.fetchRecentlyShared(grid, setGrid), FETCH_DELAY);
+        modelHelpers.fetchRecentlyShared(grid, setGrid, FETCH_DELAY);
     }
     const modalActive = modalState !== undefined;
 

@@ -156,10 +156,30 @@ export const modelHelpers = {
     },
 
     saveSettings: (grid, newSettings) => {
-        const newSettingsJSON = JSON.stringify(newSettings)
+        const newSettingsJSON = JSON.stringify(newSettings);
         window.localStorage.setItem('settings', newSettingsJSON);
         modelHelpers.syncSettingsToDom(newSettings);
         return grid.set('settings', newSettings);
+    },
+
+    loadCachedRecentlyShared: () => {
+        let cachedPuzzles;
+        try {
+            const cachedPuzzlesJSON = window.localStorage.getItem('recentlyShared') || '{}';
+            cachedPuzzles = JSON.parse(cachedPuzzlesJSON);
+        }
+        catch {
+            // ignore errors
+        };
+        return cachedPuzzles;
+    },
+
+    saveCachedRecentlyShared: (recentData) => {
+        const recentDataJSON = JSON.stringify({
+            data: recentData,
+            time: Date.now(),
+        });
+        window.localStorage.setItem('recentlyShared', recentDataJSON);
     },
 
     syncSettingsToDom: (settings) => {
@@ -259,17 +279,11 @@ export const modelHelpers = {
         }));
     },
 
-    fetchRecentlyShared: (grid, setGrid) => {
+    fetchRecentlyShared: (grid, setGrid, fetchDelay) => {
         const modalState = grid.get('modalState');
         delete modalState.fetchRequired;    // Naughty, but we don't want a re-render
-        fetch('/recently-shared')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => setGrid(grid => {
+        const setRecentlySharedData = data => {
+            setGrid(grid => {
                 const modalState = grid.get('modalState') || {};
                 if (modalState.modalType === MODAL_TYPE_WELCOME) {
                     return grid.set('modalState', {
@@ -280,20 +294,46 @@ export const modelHelpers = {
                 else {
                     return grid;    // user has moved on, silently discard response
                 }
-            }))
-            .catch(error => setGrid(grid => {
-                const modalState = grid.get('modalState') || {};
-                if (modalState.modalType === MODAL_TYPE_WELCOME) {
-                    return grid.set('modalState', {
-                        modalType: MODAL_TYPE_WELCOME,
-                        loadingFailed: true,
-                        errorMessage: error.toString(),
-                    });
+            });
+        };
+        const fetchHandler = () => {
+            fetch('/recently-shared')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    modelHelpers.saveCachedRecentlyShared(data);
+                    setRecentlySharedData(data);
+                })
+                .catch(error => setGrid(grid => {
+                    const modalState = grid.get('modalState') || {};
+                    if (modalState.modalType === MODAL_TYPE_WELCOME) {
+                        return grid.set('modalState', {
+                            modalType: MODAL_TYPE_WELCOME,
+                            loadingFailed: true,
+                            errorMessage: error.toString(),
+                        });
+                    }
+                    else {
+                        return grid;    // user has moved on, silently discard response
+                    }
+                }));
+        };
+        const cachedPuzzles = modelHelpers.loadCachedRecentlyShared();
+        if (cachedPuzzles && cachedPuzzles.data) {
+            const cacheAge = (Date.now() - cachedPuzzles.time) / 1000;
+            if (cacheAge < 3600) {
+                setRecentlySharedData(cachedPuzzles.data);
+                if (cacheAge < 60) {
+                    return;
                 }
-                else {
-                    return grid;    // user has moved on, silently discard response
-                }
-            }));
+                fetchDelay = 1;
+            }
+        }
+        setTimeout(fetchHandler, fetchDelay);
     },
 
     checkDigits: (digits) => {
