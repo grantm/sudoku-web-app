@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-    MODAL_TYPE_NO_INITIAL_DIGITS,
+    MODAL_TYPE_WELCOME,
     MODAL_TYPE_INVALID_INITIAL_DIGITS,
     MODAL_TYPE_PASTE,
     MODAL_TYPE_SHARE,
@@ -16,7 +16,7 @@ import {
 } from '../../lib/modal-types';
 
 
-import ModalNoInitialDigits from './modal-no-initial-digits';
+import ModalWelcome from './modal-welcome';
 import ModalInvalidInitialDigits from './modal-invalid-initial-digits';
 import ModalAbout from './modal-about';
 import ModalConfirmRestart from './modal-confirm-restart';
@@ -44,8 +44,8 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     if (!modalState) {
         return null;
     }
-    if (modalState.modalType === MODAL_TYPE_NO_INITIAL_DIGITS) {
-        content = <ModalNoInitialDigits modalState={modalState} modalHandler={modalHandler} />;
+    if (modalState.modalType === MODAL_TYPE_WELCOME) {
+        content = <ModalWelcome modalState={modalState} modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_INVALID_INITIAL_DIGITS) {
         content = <ModalInvalidInitialDigits modalState={modalState} modalHandler={modalHandler} />;

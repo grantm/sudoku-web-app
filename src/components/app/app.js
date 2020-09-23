@@ -11,7 +11,7 @@ import SudokuGrid from '../sudoku-grid/sudoku-grid';
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
 import ModalContainer from '../modal/modal-container';
 
-import { MODAL_TYPE_NO_INITIAL_DIGITS } from '../../lib/modal-types';
+import { MODAL_TYPE_WELCOME } from '../../lib/modal-types';
 
 const FETCH_DELAY = 1000;
 
@@ -463,7 +463,7 @@ function App() {
     const inputMode = grid.get('tempInputMode') || grid.get('inputMode');
     const completedDigits = grid.get('completedDigits');
     const modalState = grid.get('modalState');
-    if (modalState && modalState.modalType === MODAL_TYPE_NO_INITIAL_DIGITS && modalState.fetchRequired) {
+    if (modalState && modalState.modalType === MODAL_TYPE_WELCOME && modalState.fetchRequired) {
         setTimeout(() => modelHelpers.fetchRecentlyShared(grid, setGrid), FETCH_DELAY);
     }
     const modalActive = modalState !== undefined;

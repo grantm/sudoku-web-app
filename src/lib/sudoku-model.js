@@ -2,7 +2,7 @@
 import { List, Map, Range, Set } from './not-mutable';
 
 import {
-    MODAL_TYPE_NO_INITIAL_DIGITS,
+    MODAL_TYPE_WELCOME,
     MODAL_TYPE_INVALID_INITIAL_DIGITS,
     MODAL_TYPE_PASTE,
     MODAL_TYPE_SHARE,
@@ -235,7 +235,7 @@ export const modelHelpers = {
             modalState = entryPoint === 'new'
                 ? undefined
                 : {
-                    modalType: MODAL_TYPE_NO_INITIAL_DIGITS,
+                    modalType: MODAL_TYPE_WELCOME,
                     loading: true,
                     fetchRequired: true,
                 };
@@ -273,9 +273,9 @@ export const modelHelpers = {
             })
             .then(data => setGrid(grid => {
                 const modalState = grid.get('modalState') || {};
-                if (modalState.modalType === MODAL_TYPE_NO_INITIAL_DIGITS) {
+                if (modalState.modalType === MODAL_TYPE_WELCOME) {
                     return grid.set('modalState', {
-                        modalType: MODAL_TYPE_NO_INITIAL_DIGITS,
+                        modalType: MODAL_TYPE_WELCOME,
                         recentlyShared: data,
                     });
                 }
@@ -285,9 +285,9 @@ export const modelHelpers = {
             }))
             .catch(error => setGrid(grid => {
                 const modalState = grid.get('modalState') || {};
-                if (modalState.modalType === MODAL_TYPE_NO_INITIAL_DIGITS) {
+                if (modalState.modalType === MODAL_TYPE_WELCOME) {
                     return grid.set('modalState', {
-                        modalType: MODAL_TYPE_NO_INITIAL_DIGITS,
+                        modalType: MODAL_TYPE_WELCOME,
                         loadingFailed: true,
                         errorMessage: error.toString(),
                     });

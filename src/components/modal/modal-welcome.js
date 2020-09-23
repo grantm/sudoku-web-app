@@ -59,7 +59,7 @@ function RecentlyShared({modalState}) {
 }
 
 
-function ModalNoInitialDigits({modalState, modalHandler}) {
+function ModalWelcome({modalState, modalHandler}) {
     const cancelHandler = () => modalHandler('cancel');
     const showPasteHandler = () => modalHandler('show-paste-modal');
     return (
@@ -75,4 +75,4 @@ function ModalNoInitialDigits({modalState, modalHandler}) {
 }
 
 
-export default ModalNoInitialDigits;
+export default ModalWelcome;
