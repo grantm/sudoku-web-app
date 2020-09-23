@@ -232,13 +232,11 @@ export const modelHelpers = {
             : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i] || '0'));
         let modalState = undefined;
         if (initialError.noStartingDigits) {
-            modalState = entryPoint === 'new'
-                ? undefined
-                : {
-                    modalType: MODAL_TYPE_WELCOME,
-                    loading: true,
-                    fetchRequired: true,
-                };
+            modalState = {
+                modalType: MODAL_TYPE_WELCOME,
+                loading: true,
+                fetchRequired: true,
+            };
         }
         else if (initialError.insufficientDigits) {
             modalState = {
@@ -593,6 +591,14 @@ export const modelHelpers = {
         return grid.set('cells', newCells);
     },
 
+    showWelcomeModal: (grid) => {
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_WELCOME,
+            loading: true,
+            fetchRequired: true,
+        });
+    },
+
     confirmRestart: (grid) => {
         return grid.set('modalState', { modalType: MODAL_TYPE_CONFIRM_RESTART});
     },
@@ -647,6 +653,9 @@ export const modelHelpers = {
         grid = grid.set('modalState', undefined);
         if (action === 'cancel') {
             return grid;
+        }
+        if (action === 'cancel-paste') {
+            return modelHelpers.showWelcomeModal(grid);
         }
         else if (action === 'goto-main-entry') {
             window.location.search = '';

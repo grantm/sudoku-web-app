@@ -11,7 +11,7 @@ export default function ModalPaste({modalHandler}) {
     };
     const haveValidDigits = newDigits.match(/^\d{81}$/);
     const submitClass = haveValidDigits ? 'primary' : null;
-    const cancelHandler = () => modalHandler('cancel');
+    const cancelHandler = () => modalHandler('cancel-paste');
     const pasteHandler = () => {
         if (haveValidDigits) {
             modalHandler({
