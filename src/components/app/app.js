@@ -406,6 +406,9 @@ function dispatchMenuAction(action, setGrid) {
     else if (action === 'show-settings-modal') {
         setGrid((grid) => modelHelpers.showSettingsModal(grid));
     }
+    else if (action === 'show-solver-modal') {
+        setGrid((grid) => modelHelpers.showSolverModal(grid));
+    }
     else if (action === 'toggle-show-pencilmarks') {
         setGrid((grid) => modelHelpers.toggleShowPencilmarks(grid));
     }

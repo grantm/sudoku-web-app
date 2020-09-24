@@ -71,9 +71,20 @@
     background-color: var(--modal-button-danger-bg-color);
 }
 
-.modal button.primary {
+.modal button.primary,
+.modal a.btn.primary {
     color: var(--modal-button-primary-text-color);
     background-color: var(--modal-button-primary-bg-color);
+}
+
+.modal .buttons a.btn,
+.modal .buttons button {
+    font-family: var(--app-font-family); /* override browser button font */
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-left: 1em;
+    border: none;
+    border-radius: 0.15em;
 }
 
 .modal.no-initial-digits {
@@ -187,11 +198,11 @@
     padding-right: 3.5em;
 }
 
-input[type=checkbox] {
+input.toggle {
     display: none;
 }
 
-input[type=checkbox] + .indicator {
+input.toggle + .indicator {
     display: inline-block;
     position: absolute;
     right: 0;
@@ -206,7 +217,7 @@ input[type=checkbox] + .indicator {
     border-radius: 11px;
 }
 
-input[type=checkbox] + .indicator::before {
+input.toggle + .indicator::before {
     display: inline-block;
     position: absolute;
     content: '';
@@ -221,7 +232,7 @@ input[type=checkbox] + .indicator::before {
     transition: all 250ms;
 }
 
-input[type=checkbox]:checked + .indicator::before {
+input.toggle:checked + .indicator::before {
     left: 17px;
     background-color: var(--input-toggle-on-color);
 }
@@ -360,6 +371,11 @@ input[type=checkbox]:checked + .indicator::before {
 .share-buttons button.btn-qr {
     margin-left: 0;
     width: 100%;
+}
+
+.solver input[type=checkbox] {
+    margin-right: 0.6em;
+    vertical-align: text-bottom;
 }
 
 @media screen and (max-width: 500px) {

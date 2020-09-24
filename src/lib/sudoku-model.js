@@ -11,6 +11,7 @@ import {
     MODAL_TYPE_PAUSED,
     MODAL_TYPE_CONFIRM_RESTART,
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
+    MODAL_TYPE_SOLVER,
     MODAL_TYPE_HELP,
     MODAL_TYPE_ABOUT,
     MODAL_TYPE_QR_CODE,
@@ -663,6 +664,14 @@ export const modelHelpers = {
 
     showPasteModal: (grid) => {
         return grid.set('modalState', { modalType: MODAL_TYPE_PASTE });
+    },
+
+    showSolverModal: (grid) => {
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_SOLVER,
+            initialDigits: grid.get('initialDigits'),
+            allDigits: grid.get('cells').map(c => c.get('digit')).join(''),
+        });
     },
 
     showQRModal: (grid, args) => {

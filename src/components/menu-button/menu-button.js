@@ -74,10 +74,7 @@ function MenuButton ({initialDigits, startTime, endTime, showPencilmarks, menuHa
                     <a href="./" data-menu-action="save-screenshot">Save a screenshot</a>
                 </li>
                 <li className={shareLinkClass}>
-                    <a href={`https://www.sudokuwiki.org/sudoku.htm?bd=${initialDigits}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >Open in Sudokuwiki.org solver</a>
+                    <a href="./" data-menu-action="show-solver-modal">Open in SudokuWiki.org solver</a>
                 </li>
                 <li><a href="./">New puzzle</a></li>
                 <li>

@@ -10,6 +10,7 @@ import {
     MODAL_TYPE_PAUSED,
     MODAL_TYPE_CONFIRM_RESTART,
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
+    MODAL_TYPE_SOLVER,
     MODAL_TYPE_HELP,
     MODAL_TYPE_ABOUT,
     MODAL_TYPE_QR_CODE,
@@ -25,6 +26,7 @@ import ModalCheckResult from './modal-check-result';
 import ModalPaused from './modal-paused';
 import ModalPaste from './modal-paste';
 import ModalShare from './modal-share';
+import ModalSolver from './modal-solver';
 import ModalSettings from './modal-settings';
 import ModalQRCode from './modal-qr-code';
 import HelpPage from '../help/help';
@@ -73,6 +75,9 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     }
     else if (modalState.modalType === MODAL_TYPE_PAUSED) {
         content = <ModalPaused modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === MODAL_TYPE_SOLVER) {
+        content = <ModalSolver modalState={modalState} modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_HELP) {
         content = <HelpPage modalHandler={modalHandler} />;

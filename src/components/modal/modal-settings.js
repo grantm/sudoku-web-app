@@ -9,7 +9,9 @@ function CheckBoxSetting ({name, text, allSettings, setSetting}) {
         <li>
             <label>
                 {text}
-                <input type="checkbox"
+                <input
+                    className="toggle"
+                    type="checkbox"
                     checked={currValue}
                     onChange={() => setSetting(name, !currValue)}
                 />
