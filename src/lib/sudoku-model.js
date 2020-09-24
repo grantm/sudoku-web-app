@@ -25,6 +25,7 @@ export const SETTINGS = {
     autocleanPencilmarks: "autoclean-pencilmarks",
     flipNumericKeys: "flip-numeric-keys",
     playVictoryAnimation: "play-victory-animation",
+    passProgressToSolver: "pass-progress-to-solver",
 };
 
 const difficultyLevels = [
@@ -139,6 +140,7 @@ export const modelHelpers = {
         [SETTINGS.autocleanPencilmarks]: true,
         [SETTINGS.flipNumericKeys]: false,
         [SETTINGS.playVictoryAnimation]: true,
+        [SETTINGS.passProgressToSolver]: false,
     },
 
     loadSettings: () => {
@@ -667,10 +669,12 @@ export const modelHelpers = {
     },
 
     showSolverModal: (grid) => {
+        const passProgressSetting = modelHelpers.getSetting(grid, SETTINGS.passProgressToSolver);
         return grid.set('modalState', {
             modalType: MODAL_TYPE_SOLVER,
             initialDigits: grid.get('initialDigits'),
             allDigits: grid.get('cells').map(c => c.get('digit')).join(''),
+            passProgressSetting,
         });
     },
 
@@ -703,8 +707,11 @@ export const modelHelpers = {
         if (action === 'cancel') {
             return grid;
         }
-        if (action === 'cancel-paste') {
+        else if (action === 'cancel-paste') {
             return modelHelpers.showWelcomeModal(grid);
+        }
+        else if (action === 'cancel-solver') {
+            return modelHelpers.saveSolverPreferences(grid, args);
         }
         else if (action === 'goto-main-entry') {
             window.location.search = '';
@@ -770,6 +777,15 @@ export const modelHelpers = {
                 'inputMode': 'digit',
             });
         return modelHelpers.highlightErrorCells(grid);
+    },
+
+    saveSolverPreferences: (grid, args) => {
+        const allSettings = grid.get('settings');
+        if (allSettings[SETTINGS.passProgressToSolver] === args.passProgress) {
+            return grid;
+        }
+        const newSettings = { ...allSettings, [SETTINGS.passProgressToSolver]: args.passProgress }
+        return modelHelpers.saveSettings(grid, newSettings);
     },
 
     trackSnapshotsForUndo: (grid, f) => {
