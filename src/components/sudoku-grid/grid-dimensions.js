@@ -37,6 +37,17 @@ function calculateGridDimensions(cellSize, marginSize) {
             { key: 'cr', x: 80 * cellSize / 100, y: 60 * cellSize / 100 },
             { key: 'cc', x: 49 * cellSize / 100, y: 60 * cellSize / 100 },
         ],
+        simplePencilOffsets: {
+            '1': { x: 18 * cellSize / 100, y: 30 * cellSize / 100 },
+            '2': { x: 49 * cellSize / 100, y: 30 * cellSize / 100 },
+            '3': { x: 80 * cellSize / 100, y: 30 * cellSize / 100 },
+            '4': { x: 18 * cellSize / 100, y: 60 * cellSize / 100 },
+            '5': { x: 49 * cellSize / 100, y: 60 * cellSize / 100 },
+            '6': { x: 80 * cellSize / 100, y: 60 * cellSize / 100 },
+            '7': { x: 18 * cellSize / 100, y: 90 * cellSize / 100 },
+            '8': { x: 49 * cellSize / 100, y: 90 * cellSize / 100 },
+            '9': { x: 80 * cellSize / 100, y: 90 * cellSize / 100 },
+        },
     };
     return dim;
 }

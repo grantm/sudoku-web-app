@@ -20,6 +20,7 @@ import {
 export const SETTINGS = {
     darkMode: "dark-mode",
     showTimer: "show-timer",
+    simplePencilMarking: 'simple-pencil-marking',
     highlightMatches: "highlight-matches",
     highlightConflicts: "highlight-conflicts",
     autocleanPencilmarks: "autoclean-pencilmarks",
@@ -135,6 +136,7 @@ export const modelHelpers = {
     DEFAULT_SETTINGS: {
         [SETTINGS.darkMode]: false,
         [SETTINGS.showTimer]: true,
+        [SETTINGS.simplePencilMarking]: false,
         [SETTINGS.highlightMatches]: true,
         [SETTINGS.highlightConflicts]: true,
         [SETTINGS.autocleanPencilmarks]: true,

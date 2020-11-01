@@ -25,7 +25,7 @@ export default function ModalSettings({modalHandler, modalState}) {
     const [allSettings, setAllSettings] = useState(modalState.currentSettings);
     const setSetting = useCallback(
         (name, newValue) => {
-            const newSettings = Object.assign({}, allSettings, { [name]: newValue });
+            const newSettings = { ...allSettings, [name]: newValue };
             setAllSettings(newSettings);
         },
         [allSettings]
@@ -48,6 +48,12 @@ export default function ModalSettings({modalHandler, modalState}) {
                 <CheckBoxSetting
                     name={SETTINGS.showTimer}
                     text="Show timer"
+                    allSettings={allSettings}
+                    setSetting={setSetting}
+                />
+                <CheckBoxSetting
+                    name={SETTINGS.simplePencilMarking}
+                    text="“Simple” pencil marking mode"
                     allSettings={allSettings}
                     setSetting={setSetting}
                 />

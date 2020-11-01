@@ -15,7 +15,7 @@ import SudokuCellCover from './sudoku-cell-cover';
 import GridLines from './grid-lines.js';
 
 
-function layerCellBackgrounds (cells, cellSize, dim, matchDigit, showPencilmarks) {
+function layerCellBackgrounds ({cells, cellSize, dim, matchDigit, showPencilmarks}) {
     return cells.map((cell, i) => {
         const cellDim = dim.cell[i];
         return (
@@ -30,26 +30,28 @@ function layerCellBackgrounds (cells, cellSize, dim, matchDigit, showPencilmarks
     });
 }
 
-function layerCellPencilMarks (cells, cellSize, dim, outerPencilOffsets) {
+function layerCellPencilMarks ({simplePencilMarking, cells, cellSize, dim}) {
+    const pencilOffsets = simplePencilMarking ? dim.simplePencilOffsets : dim.outerPencilOffsets;
     return cells.map((cell, i) => {
         const cellDim = dim.cell[i];
         return <SudokuCellPencilMarks key={`pm${i}`}
+            simplePencilMarking={simplePencilMarking}
             cell={cell}
             dim={cellDim}
             cellSize={cellSize}
-            outerPencilOffsets={outerPencilOffsets}
+            pencilOffsets={pencilOffsets}
         />;
     });
 }
 
-function layerCellDigits (cells, cellSize, dim) {
+function layerCellDigits ({cells, cellSize, dim}) {
     return cells.map((cell, i) => {
         const cellDim = dim.cell[i];
         return <SudokuCellDigit key={`dig${i}`} cell={cell} dim={cellDim} cellSize={cellSize} />;
     });
 }
 
-function layerCellCovers (cells, cellSize, dim, mouseDownHandler, mouseOverHandler) {
+function layerCellCovers ({cells, cellSize, dim, mouseDownHandler, mouseOverHandler}) {
     return cells.map((cell, i) => {
         const cellDim = dim.cell[i];
         return <SudokuCellCover key={`cov${i}`}
@@ -62,17 +64,17 @@ function layerCellCovers (cells, cellSize, dim, mouseDownHandler, mouseOverHandl
     });
 }
 
-function layerCellPaused (cells, cellSize, dim) {
+function layerCellPaused ({cells, cellSize, dim}) {
     return cells.map((cell, i) => {
         const cellDim = dim.cell[i];
         return <SudokuCellPaused key={`pau${i}`} cell={cell} dim={cellDim} />;
     });
 }
 
-function cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks) {
-    const backgrounds = layerCellBackgrounds(cells, cellSize, dim, matchDigit, showPencilmarks);
-    const pencilMarks = showPencilmarks ? layerCellPencilMarks(cells, cellSize, dim, dim.outerPencilOffsets) : [];
-    const digits      = layerCellDigits(cells, cellSize, dim);
+function cellContentLayers({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking}) {
+    const backgrounds = layerCellBackgrounds({cells, cellSize, dim, matchDigit, showPencilmarks});
+    const pencilMarks = showPencilmarks ? layerCellPencilMarks({simplePencilMarking, cells, cellSize, dim}) : [];
+    const digits      = layerCellDigits({cells, cellSize, dim});
     return <>
         {backgrounds}
         {pencilMarks}
@@ -127,15 +129,16 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
     const marginSize = 50;
     const dim = useMemo(() => calculateGridDimensions(cellSize, marginSize), [cellSize, marginSize]);
     const settings = grid.get('settings');
+    const simplePencilMarking = settings[SETTINGS.simplePencilMarking];
     const highlightMatches = settings[SETTINGS.highlightMatches];
     const showPencilmarks = grid.get('showPencilmarks');
     const matchDigit = highlightMatches ? grid.get('matchDigit') : undefined;
-    const rawTouchHandler = useCellTouch(inputHandler);
     const cells = grid.get('cells').toArray();
     const cellContents = isPaused
-        ? layerCellPaused(cells, cellSize, dim)
-        : cellContentLayers(cells, cellSize, dim, matchDigit, showPencilmarks);
-    const cellCovers = layerCellCovers(cells, cellSize, dim, mouseDownHandler, mouseOverHandler);
+        ? layerCellPaused({cells, cellSize, dim})
+        : cellContentLayers({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking});
+    const cellCovers = layerCellCovers({cells, cellSize, dim, mouseDownHandler, mouseOverHandler});
+    const rawTouchHandler = useCellTouch(inputHandler);
     return (
         <div className="sudoku-grid"
             id={gridId || null}

@@ -48,9 +48,39 @@ function SudokuCellInnerPencilMarks({cell, dim, cellSize}) {
     );
 }
 
-export default function SudokuCellPencilMarks({cell, dim, outerPencilOffsets, cellSize}) {
-    return <>
-        <SudokuCellOuterPencilMarks cell={cell} dim={dim} cellSize={cellSize} offsets={outerPencilOffsets}/>
-        <SudokuCellInnerPencilMarks cell={cell} dim={dim} cellSize={cellSize} />
-    </>;
+function SudokuCellSimplePencilMarks({cell, dim, cellSize, offsets}) {
+    const pm = cell.get('innerPencils');
+    if (cell.get('digit') !== '0' || pm.size === 0) {
+        return null;
+    }
+    const fontSize = 26 * cellSize / 100;
+    const marks = allDigits
+        .filter(d => pm.includes(d))
+        .map((d) => {
+            const offset = offsets[d];
+            return (
+                <text
+                    key={d}
+                    x={dim.x + offset.x}
+                    y={dim.y + offset.y}
+                    fontSize={fontSize}
+                    textAnchor="middle"
+                >
+                    {d}
+                </text>
+            );
+        });
+    return <g className="outer-pencil">{marks}</g>;
+}
+
+export default function SudokuCellPencilMarks({simplePencilMarking, cell, dim, cellSize, pencilOffsets}) {
+    if (simplePencilMarking) {
+        return <SudokuCellSimplePencilMarks cell={cell} dim={dim} cellSize={cellSize} offsets={pencilOffsets}/>
+    }
+    else {
+        return <>
+            <SudokuCellOuterPencilMarks cell={cell} dim={dim} cellSize={cellSize} offsets={pencilOffsets}/>
+            <SudokuCellInnerPencilMarks cell={cell} dim={dim} cellSize={cellSize} />
+        </>;
+    }
 }
