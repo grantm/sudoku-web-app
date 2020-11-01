@@ -10,6 +10,7 @@ export default function ModalSolver({modalHandler, modalState}) {
         action: 'cancel-solver',
         passProgress
     });
+    const linkClicked = () => setTimeout(cancelHandler, 100);
     const linkDigits = passProgress ? allDigits :initialDigits;
     return (
         <div className="modal solver">
@@ -29,6 +30,7 @@ export default function ModalSolver({modalHandler, modalState}) {
                     href={`https://www.sudokuwiki.org/sudoku.htm?bd=${linkDigits}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={linkClicked}
                 >Open in solver</a>
             </div>
         </div>
