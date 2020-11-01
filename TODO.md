@@ -13,6 +13,7 @@
 * Allow copy to digit string
 * Review/playback mode with slider and step buttons
 * Allow contributed themes
+* Add native sharing implementation (https://css-tricks.com/on-the-web-share-api/)
 
 ## Things done
 * Render cell layout and text using SVG+CSS
