@@ -33,8 +33,8 @@ function calculateGridDimensions(cellSize, marginSize) {
             { key: 'br', x: 80 * cellSize / 100, y: 90 * cellSize / 100 },
             { key: 'tc', x: 49 * cellSize / 100, y: 30 * cellSize / 100 },
             { key: 'bc', x: 49 * cellSize / 100, y: 90 * cellSize / 100 },
-            { key: 'lc', x: 18 * cellSize / 100, y: 60 * cellSize / 100 },
-            { key: 'rc', x: 80 * cellSize / 100, y: 60 * cellSize / 100 },
+            { key: 'cl', x: 18 * cellSize / 100, y: 60 * cellSize / 100 },
+            { key: 'cr', x: 80 * cellSize / 100, y: 60 * cellSize / 100 },
             { key: 'cc', x: 49 * cellSize / 100, y: 60 * cellSize / 100 },
         ],
     };

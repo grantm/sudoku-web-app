@@ -46,8 +46,8 @@ test('calculateGridDimensions: normal', () => {
         { key: 'br', x: 80, y: 90 },
         { key: 'tc', x: 49, y: 30 },
         { key: 'bc', x: 49, y: 90 },
-        { key: 'lc', x: 18, y: 60 },
-        { key: 'rc', x: 80, y: 60 },
+        { key: 'cl', x: 18, y: 60 },
+        { key: 'cr', x: 80, y: 60 },
         { key: 'cc', x: 49, y: 60 },
     ]);
 });
@@ -78,8 +78,8 @@ test('calculateGridDimensions: large', () => {
         { key: 'br', x: 160, y: 180 },
         { key: 'tc', x:  98, y:  60 },
         { key: 'bc', x:  98, y: 180 },
-        { key: 'lc', x:  36, y: 120 },
-        { key: 'rc', x: 160, y: 120 },
+        { key: 'cl', x:  36, y: 120 },
+        { key: 'cr', x: 160, y: 120 },
         { key: 'cc', x:  98, y: 120 },
     ]);
 });
