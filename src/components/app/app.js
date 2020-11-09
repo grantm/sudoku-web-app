@@ -415,6 +415,9 @@ function dispatchMenuAction(action, setGrid) {
     else if (action === 'clear-pencilmarks') {
         setGrid((grid) => modelHelpers.clearPencilmarks(grid));
     }
+    else if (action === 'calculate-candidates') {
+        setGrid((grid) => modelHelpers.showCalculatedCandidates(grid));
+    }
     else if (action === 'show-help-page') {
         setGrid((grid) => modelHelpers.showHelpPage(grid));
     }
@@ -423,6 +426,9 @@ function dispatchMenuAction(action, setGrid) {
     }
     else if (action === 'save-screenshot') {
         saveScreenshot();
+    }
+    else {
+        console.log(`Unrecognised menu action: '${action}'`);
     }
 }
 

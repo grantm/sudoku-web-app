@@ -1,4 +1,4 @@
-import { modelHelpers, newSudokuModel } from './sudoku-model.js';
+import { modelHelpers, newSudokuModel } from './sudoku-model';
 
 const initialDigits =
     '000001230' +

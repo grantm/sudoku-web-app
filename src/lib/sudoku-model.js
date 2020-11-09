@@ -1,5 +1,6 @@
 // import { List, Map, Range, Set } from 'immutable';
 import { List, Map, Range, Set } from './not-mutable';
+import { SudokuHinter } from './sudoku-hinter';
 
 import {
     MODAL_TYPE_WELCOME,
@@ -37,6 +38,7 @@ const difficultyLevels = [
 ];
 
 const [cellSets, cellProp] = initCellSets();
+const emptySet = Set();
 
 function initCellSets() {
     const row = {}, col = {}, box = {}, cellProp = [];
@@ -84,8 +86,8 @@ function newCell(index, digit) {
         isGiven: digit !== '0',
         // Properties that might change and get serialised for undo/redo
         digit,
-        outerPencils: Set(),
-        innerPencils: Set(),
+        outerPencils: emptySet,
+        innerPencils: emptySet,
         colorCode: '1',
         // Cache for serialised version of above properties
         snapshot: '',
@@ -165,6 +167,11 @@ export const modelHelpers = {
         window.localStorage.setItem('settings', newSettingsJSON);
         modelHelpers.syncSettingsToDom(newSettings);
         return grid.set('settings', newSettings);
+    },
+
+    hinter: (grid) => {
+        const cells = grid.get('cells').toArray();
+        return new SudokuHinter(cells);
     },
 
     loadCachedRecentlyShared: () => {
@@ -473,13 +480,22 @@ export const modelHelpers = {
         return;
     },
 
+    pushNewSnapshot: (grid, snapshotBefore) => {
+        const snapshotAfter = modelHelpers.toSnapshotString(grid);
+        if (snapshotBefore !== snapshotAfter) {
+            grid = grid
+                .update('undoList', list => list.push(snapshotBefore))
+                .set('redoList', List());
+            grid = modelHelpers.setCurrentSnapshot(grid, snapshotAfter);
+        }
+        return grid;
+    },
+
     setCurrentSnapshot: (grid, newSnapshot) => {
-        if (grid.get('currentSnapshot') !== newSnapshot) {
-            grid = grid.set('currentSnapshot', newSnapshot);
-            const watcher = grid.get('storeCurrentSnapshot');
-            if (watcher) {
-                watcher(newSnapshot);
-            }
+        grid = grid.set('currentSnapshot', newSnapshot);
+        const watcher = grid.get('storeCurrentSnapshot');
+        if (watcher) {
+            watcher(newSnapshot);
         }
         return grid;
     },
@@ -514,7 +530,7 @@ export const modelHelpers = {
         });
     },
 
-    updateSnapshotCache: (c) => {
+    updateCellSnapshotCache: (c) => {
         const digit = c.get('digit');
         const colorCode = c.get('colorCode');
         let cs = '';
@@ -793,21 +809,14 @@ export const modelHelpers = {
     trackSnapshotsForUndo: (grid, f) => {
         const snapshotBefore = grid.get('currentSnapshot');
         grid = f(grid);
-        const snapshotAfter = modelHelpers.toSnapshotString(grid);
-        if (snapshotBefore !== snapshotAfter) {
-            grid = grid
-                .update('undoList', list => list.push(snapshotBefore))
-                .set('redoList', List());
-            grid = modelHelpers.setCurrentSnapshot(grid, snapshotAfter);
-        }
-        return grid;
+        return modelHelpers.pushNewSnapshot(grid, snapshotBefore);
     },
 
     applyClearColorHighlights: (grid) => {
         return modelHelpers.trackSnapshotsForUndo(grid, grid => {
             const cells = grid.get('cells').map(c => {
                 if (c.get('colorCode') !== '1') {
-                    c = modelHelpers.updateSnapshotCache( c.set('colorCode', '1') );
+                    c = modelHelpers.updateCellSnapshotCache( c.set('colorCode', '1') );
                 }
                 return c;
             });
@@ -887,7 +896,7 @@ export const modelHelpers = {
             .map(c => {
                 const canUpdate = (!c.get('isGiven') || opName === 'setCellColor' || opName === 'clearCell');
                 if (canUpdate && c.get('isSelected')) {
-                    return modelHelpers.updateSnapshotCache( op(c, ...args) );
+                    return modelHelpers.updateCellSnapshotCache( op(c, ...args) );
                 }
                 else {
                     return c;
@@ -916,10 +925,7 @@ export const modelHelpers = {
         else if (opName === 'clearCell') {
             grid = grid.set('matchDigit', '0');
         }
-        grid = grid
-            .update('undoList', list => list.push(snapshotBefore))
-            .set('redoList', List());
-        return modelHelpers.setCurrentSnapshot(grid, snapshotAfter);
+        return modelHelpers.pushNewSnapshot(grid, snapshotBefore);
     },
 
     setDigitAsCellOp: (c, newDigit) => {
@@ -928,8 +934,8 @@ export const modelHelpers = {
         }
         return c.merge({
             'digit': newDigit,
-            'outerPencils': Set(),
-            'innerPencils': Set(),
+            'outerPencils': emptySet,
+            'innerPencils': emptySet,
             'errorMessage': undefined,
         });
     },
@@ -939,8 +945,8 @@ export const modelHelpers = {
         ? c.set('colorCode', '1')
         : c.merge({
             digit: '0',
-            outerPencils: Set(),
-            innerPencils: Set(),
+            outerPencils: emptySet,
+            innerPencils: emptySet,
             colorCode: '1',
             errorMessage: undefined,
         });
@@ -975,7 +981,7 @@ export const modelHelpers = {
         let newInner = c.get('innerPencils').union(c.get('outerPencils'));
         return c.merge({
             'innerPencils': newInner,
-            'outerPencils': Set(),
+            'outerPencils': emptySet,
         });
     },
 
@@ -1000,7 +1006,7 @@ export const modelHelpers = {
                 const inner = c.get('innerPencils');
                 const outer = c.get('outerPencils');
                 if (inner.includes(newDigit) || outer.includes(newDigit)) {
-                    return modelHelpers.updateSnapshotCache(
+                    return modelHelpers.updateCellSnapshotCache(
                         c.merge({
                             innerPencils: inner.delete(newDigit),
                             outerPencils: outer.delete(newDigit),
@@ -1052,6 +1058,24 @@ export const modelHelpers = {
                 .join(',');
             return modelHelpers.restoreSnapshot(grid, clearSnapshot);
         });
+    },
+
+    showCalculatedCandidates: (grid) => {
+        const snapshotBefore = grid.get('currentSnapshot');
+        const hinter = modelHelpers.hinter(grid);
+        const candidates = hinter.calculateCellCandidates();
+        const cells = grid.get('cells').map((c, i) => {
+            const cellCandidates = candidates[i];
+            return cellCandidates === null
+                ? c
+                : modelHelpers.updateCellSnapshotCache(c.merge({
+                      innerPencils: Set(cellCandidates),
+                      outerPencils: emptySet,
+                  }));
+        });
+        grid = grid.set('cells', cells);
+        grid = modelHelpers.applySelectionOp(grid, 'clearSelection');
+        return modelHelpers.pushNewSnapshot(grid, snapshotBefore);
     },
 
     setGridSolved: (grid) => {
