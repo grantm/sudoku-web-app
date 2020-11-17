@@ -230,7 +230,7 @@ export const modelHelpers = {
 
     setGivenDigits: (grid, initialDigits, options) => {
         const cells = Range(0, 81).toList().map(i => newCell(i, initialDigits[i]));
-        grid = modelHelpers.highlightErrorCells(grid.merge({
+        grid = modelHelpers.checkCompletedDigits(grid.merge({
             initialDigits,
             cells,
         }));
@@ -275,7 +275,7 @@ export const modelHelpers = {
                 initialDigits: initialDigits,
             };
         }
-        return modelHelpers.highlightErrorCells(grid.merge({
+        return modelHelpers.checkCompletedDigits(grid.merge({
             initialDigits,
             modalState,
             cells,
@@ -493,7 +493,7 @@ export const modelHelpers = {
             grid = modelHelpers.restoreSnapshot(grid, snapshot)
                 .set('undoList', undoList.pop())
                 .update('redoList', list => list.push(beforeUndo));
-            return modelHelpers.highlightErrorCells(grid);
+            return modelHelpers.checkCompletedDigits(grid);
         });
     },
 
@@ -508,7 +508,7 @@ export const modelHelpers = {
             grid = modelHelpers.restoreSnapshot(grid, snapshot)
                 .set('redoList', redoList.pop())
                 .update('undoList', list => list.push(beforeRedo));
-            return modelHelpers.highlightErrorCells(grid);
+            return modelHelpers.checkCompletedDigits(grid);
         });
     },
 
@@ -776,7 +776,7 @@ export const modelHelpers = {
                 'completedDigits': {},
                 'inputMode': 'digit',
             });
-        return modelHelpers.highlightErrorCells(grid);
+        return modelHelpers.checkCompletedDigits(grid);
     },
 
     saveSolverPreferences: (grid, args) => {
@@ -853,6 +853,9 @@ export const modelHelpers = {
     },
 
     applyErrorHighlights: (grid, errorAtIndex = {}) => {
+        if (!modelHelpers.getSetting(grid, SETTINGS.highlightConflicts)) {
+            return grid;
+        }
         const cells = grid.get('cells').map((c) => {
             const index = c.get('index');
             const ok = (
@@ -896,9 +899,7 @@ export const modelHelpers = {
         if (mode === 'solve' && snapshotAfter === snapshotBefore) {
             return grid;
         }
-        if (modelHelpers.getSetting(grid, SETTINGS.highlightConflicts)) {
-            grid = modelHelpers.highlightErrorCells(grid);
-        }
+        grid = modelHelpers.checkCompletedDigits(grid);
         if (mode === 'enter' && opName === 'setDigit') {
             grid = modelHelpers.autoAdvanceFocus(grid);
         }
@@ -1009,7 +1010,7 @@ export const modelHelpers = {
         });
     },
 
-    highlightErrorCells: (grid) => {
+    checkCompletedDigits: (grid) => {
         const digits = grid.get('cells').map(c => c.get('digit')).join('');
         const result = modelHelpers.checkDigits(digits);
         grid = grid.set('completedDigits', result.completedDigits);

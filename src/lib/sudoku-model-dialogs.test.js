@@ -1,5 +1,4 @@
 import { newSudokuModel, modelHelpers } from './sudoku-model.js';
-import { List } from 'immutable';
 
 const initialDigits =
     '000008000' +
@@ -32,7 +31,7 @@ test('restart', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '3');
     grid = modelHelpers.setInputMode(grid, 'outer');
     grid = modelHelpers.restoreSnapshot(grid, wip);
-    grid = modelHelpers.highlightErrorCells(grid);
+    grid = modelHelpers.checkCompletedDigits(grid);
 
     expect(grid.get('currentSnapshot')).toBe(wip);
     expect(grid.get('modalState')).toBe(undefined);
@@ -54,7 +53,7 @@ test('restart', () => {
     grid = modelHelpers.confirmRestart(grid);
     expect(grid.get('modalState')).toStrictEqual({modalType: "confirm-restart"});
     grid = modelHelpers.applyModalAction(grid, 'restart-confirmed');
-    grid = modelHelpers.highlightErrorCells(grid);
+    grid = modelHelpers.checkCompletedDigits(grid);
 
     expect(grid.get('modalState')).toBe(undefined);
     expect(grid.get('currentSnapshot')).toBe('');

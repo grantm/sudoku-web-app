@@ -449,6 +449,81 @@ test('set multiple digits', () => {
     );
 });
 
+test('no highlict conflicts', () => {
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    const settings = grid.get('settings');
+    grid = grid.set('settings', { ...settings, [SETTINGS.highlightConflicts]: false });
+
+    expect(grid.get('currentSnapshot')).toBe('');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 47);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 57);
+    grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '2');
+
+    expect(grid.get('currentSnapshot')).toBe('63D2,74D2');
+    expect(grid.get('matchDigit')).toBe('2');
+
+    expect(digitsFromGrid(grid)).toBe(
+        '000008000' +
+        '000007000' +
+        '123456789' +
+        '000005000' +
+        '000004000' +
+        '002003000' +
+        '000202000' +
+        '000001000' +
+        '000009000'
+    );
+
+    let c47 = grid.get('cells').get(47);
+    expect(c47.get('digit')).toBe('2');
+    expect(c47.get('snapshot')).toBe('D2');
+    expect(c47.get('errorMessage')).toBe(undefined);
+    expect(c47.get('isGiven')).toBe(false);
+    expect(c47.get('isSelected')).toBe(true);
+
+    let c57 = grid.get('cells').get(57);
+    expect(c57.get('digit')).toBe('2');
+    expect(c57.get('snapshot')).toBe('D2');
+    expect(c57.get('errorMessage')).toBe(undefined);   // error message suppressed
+    expect(c57.get('isGiven')).toBe(false);
+    expect(c57.get('isSelected')).toBe(true);
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 13);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 28);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 39);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 52);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 56);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 69);
+    expect(grid.get('focusIndex')).toBe(69);
+    grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '9');
+
+    expect(digitsFromGrid(grid)).toBe(
+        '900008000' +
+        '000097000' +
+        '123456789' +
+        '090005000' +
+        '000904000' +
+        '002003090' +
+        '009202000' +
+        '000001900' +
+        '000009000'
+    );
+    expect(grid.get('currentSnapshot')).toBe('11D9,25D9,42D9,54D9,63D2,68D9,73D9,74D2,87D9');
+    expect(grid.get('matchDigit')).toBe('9');
+    expect(grid.get('completedDigits')).toStrictEqual({
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": true,
+    });
+});
+
 test('set cell color', () => {
     let grid = newSudokuModel({initialDigits, skipCheck: true});
 
