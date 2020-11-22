@@ -449,7 +449,7 @@ test('set multiple digits', () => {
     );
 });
 
-test('no highlict conflicts', () => {
+test('no highlight conflicts', () => {
     let grid = newSudokuModel({initialDigits, skipCheck: true});
     const settings = grid.get('settings');
     grid = grid.set('settings', { ...settings, [SETTINGS.highlightConflicts]: false });
@@ -633,6 +633,27 @@ test('set pencilmarks', () => {
     expect(grid.get('currentSnapshot')).toBe('11D7,14N1,15T13N1,17T2,18T2,93D7');
     grid = modelHelpers.undoOneAction(grid);
     expect(grid.get('currentSnapshot')).toBe('11D7,15T13,17T2,18T2,93D7');
+});
+
+test('simple pencil marking mode', () => {
+    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    expect(modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking)).toBe(false);
+
+    expect(grid.get('currentSnapshot')).toBe('');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 1);
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '3');
+    expect(grid.get('currentSnapshot')).toBe('11T3,12T3');
+
+    grid = newSudokuModel({initialDigits, skipCheck: true});
+    const settings = grid.get('settings');
+    grid = grid.set('settings', { ...settings, [SETTINGS.simplePencilMarking]: true });
+
+    expect(grid.get('currentSnapshot')).toBe('');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 1);
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '3');
+    expect(grid.get('currentSnapshot')).toBe('11N3,12N3');
 });
 
 test('pencilMarksToInner', () => {

@@ -882,6 +882,10 @@ export const modelHelpers = {
         if (actionsBlocked(grid)) {
             return grid;
         }
+        const isSimpleMode = modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking);
+        if (opName === 'toggleOuterPencilMark' && isSimpleMode) {
+            opName = 'toggleInnerPencilMark'
+        }
         const mode = grid.get('mode');
         const op = modelHelpers[opName + 'AsCellOp'];
         if (!op) {
