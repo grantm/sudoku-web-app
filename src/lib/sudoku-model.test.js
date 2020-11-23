@@ -645,6 +645,9 @@ test('simple pencil marking mode', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '3');
     expect(grid.get('currentSnapshot')).toBe('11T3,12T3');
 
+    grid = modelHelpers.collapseAllOuterPencilMarks(grid);
+    expect(grid.get('currentSnapshot')).toBe('11N3,12N3');
+
     grid = newSudokuModel({initialDigits, skipCheck: true});
     const settings = grid.get('settings');
     grid = grid.set('settings', { ...settings, [SETTINGS.simplePencilMarking]: true });

@@ -773,7 +773,24 @@ export const modelHelpers = {
 
     applyNewSettings: (grid, args) => {
         const {newSettings} = args;
+        // If simple pencil marking mode is being changed from 'off' to 'on' collapse
+        // all pencil marks to inner.
+        const oldSimpleMode = modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking);
+        if (!oldSimpleMode && newSettings[SETTINGS.simplePencilMarking]) {
+            grid = modelHelpers.collapseAllOuterPencilMarks(grid);
+        }
         return modelHelpers.saveSettings(grid, newSettings);
+    },
+
+    collapseAllOuterPencilMarks: (grid) => {
+        const newCells = grid.get('cells').map(c => {
+            return modelHelpers.updateCellSnapshotCache(
+                modelHelpers.pencilMarksToInnerAsCellOp(c)
+            );
+        });
+        grid = grid.set('cells', newCells);
+        const snapshotAfter = modelHelpers.toSnapshotString(grid);
+        return modelHelpers.setCurrentSnapshot(grid, snapshotAfter);
     },
 
     applyRestart: (grid) => {
@@ -978,7 +995,7 @@ export const modelHelpers = {
         return c.set('outerPencils', pencilMarks);
     },
 
-    pencilMarksToInnerAsCellOp: (c, digit) => {
+    pencilMarksToInnerAsCellOp: (c) => {
         if (c.get('digit') !== '0') {
             return c;
         }
