@@ -1,10 +1,10 @@
 import React from 'react';
 
-function cellHasPencilledDigit(cell, d) {
-    return cell.get('innerPencils').includes(d) || cell.get('outerPencils').includes(d);
+function cellHasPencilledDigit(cell, d, simplePencilMarking) {
+    return cell.get('innerPencils').includes(d) || (!simplePencilMarking && cell.get('outerPencils').includes(d));
 }
 
-export default function SudokuCellBackground({cell, dim, cellSize, matchDigit, showPencilmarks}) {
+export default function SudokuCellBackground({cell, dim, cellSize, matchDigit, showPencilmarks, simplePencilMarking}) {
     const bgColorCode = showPencilmarks ? cell.get('colorCode') : '1';
     const bgClasses = [ 'cell-bg' ];
     if (cell.get('isGiven')) {
@@ -18,7 +18,7 @@ export default function SudokuCellBackground({cell, dim, cellSize, matchDigit, s
     }
     const digit = cell.get('digit')
     if (matchDigit !== '0') {
-        if (digit === matchDigit || (showPencilmarks && cellHasPencilledDigit(cell, matchDigit))) {
+        if (digit === matchDigit || (showPencilmarks && cellHasPencilledDigit(cell, matchDigit, simplePencilMarking))) {
             bgClasses.push('matched');
         }
     }

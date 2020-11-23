@@ -15,7 +15,7 @@ import SudokuCellCover from './sudoku-cell-cover';
 import GridLines from './grid-lines.js';
 
 
-function layerCellBackgrounds ({cells, cellSize, dim, matchDigit, showPencilmarks}) {
+function layerCellBackgrounds ({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking}) {
     return cells.map((cell, i) => {
         const cellDim = dim.cell[i];
         return (
@@ -25,6 +25,7 @@ function layerCellBackgrounds ({cells, cellSize, dim, matchDigit, showPencilmark
                 cellSize={cellSize}
                 matchDigit={matchDigit}
                 showPencilmarks={showPencilmarks}
+                simplePencilMarking={simplePencilMarking}
             />
         );
     });
@@ -72,7 +73,7 @@ function layerCellPaused ({cells, cellSize, dim}) {
 }
 
 function cellContentLayers({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking}) {
-    const backgrounds = layerCellBackgrounds({cells, cellSize, dim, matchDigit, showPencilmarks});
+    const backgrounds = layerCellBackgrounds({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking});
     const pencilMarks = showPencilmarks ? layerCellPencilMarks({simplePencilMarking, cells, cellSize, dim}) : [];
     const digits      = layerCellDigits({cells, cellSize, dim});
     return <>
