@@ -562,6 +562,7 @@ function App() {
                         flipNumericKeys={settings[SETTINGS.flipNumericKeys]}
                         completedDigits={completedDigits}
                         inputHandler={inputHandler}
+                        simplePencilMarking={settings[SETTINGS.simplePencilMarking]}
                     />
                     {startButton}
                 </div>

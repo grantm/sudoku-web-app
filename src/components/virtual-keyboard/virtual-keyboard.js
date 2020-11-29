@@ -297,6 +297,16 @@ const buttonIcons = {
         );
     },
 
+    'mode-simple': (x, y, activeClass) => {
+        return (
+            <path
+                className={`mode-button-icon ${activeClass}`}
+                d="m 95.611899,18.396707 c -2.08233,0 -3.823365,0.598203 -5.223551,1.794944 -1.400187,1.184773 -2.297964,2.860595 -2.692889,5.026695 l 3.231276,0.574439 c 0.239348,-1.579698 0.777922,-2.764461 1.61564,-3.55431 0.837719,-0.789849 1.885051,-1.184929 3.141624,-1.184929 1.268546,0 2.303759,0.389022 3.105575,1.166903 0.801817,0.777882 1.202481,1.759048 1.202481,2.943821 0,1.495925 -0.55069,2.602888 -1.651692,3.320929 -1.100996,0.718045 -2.339337,1.077251 -3.715587,1.077251 -0.131642,0 -0.305426,-0.01212 -0.520837,-0.03605 l -0.358611,2.836145 c 0.909524,-0.239349 1.669391,-0.359085 2.27973,-0.359085 1.495926,0 2.728204,0.485 3.697564,1.454359 0.969358,0.957394 1.454358,2.17803 1.454358,3.66199 0,1.555761 -0.52645,2.860261 -1.579585,3.913394 -1.041166,1.053132 -2.321907,1.579589 -3.841767,1.579589 -1.280512,0 -2.369774,-0.401138 -3.26733,-1.202955 -0.885587,-0.813784 -1.513604,-2.135982 -1.884594,-3.966995 l -3.231278,0.430711 c 0.215414,2.190032 1.082903,3.973477 2.602763,5.349728 1.531827,1.37625 3.452703,2.064374 5.762413,2.064374 2.561024,0 4.679438,-0.796217 6.354878,-2.387881 1.67544,-1.603633 2.51311,-3.554324 2.51311,-5.852068 0,-1.699371 -0.43095,-3.111491 -1.29261,-4.236427 -0.86165,-1.1369 -2.07017,-1.884655 -3.625933,-2.243679 1.196743,-0.550498 2.100103,-1.29267 2.710443,-2.226127 0.61033,-0.933459 0.91549,-1.968672 0.91549,-3.105575 0,-1.19674 -0.32286,-2.327457 -0.9691,-3.392557 -0.63427,-1.065098 -1.5558,-1.902772 -2.764511,-2.51311 -1.208708,-0.622305 -2.531382,-0.933523 -3.96747,-0.933524 z m -64.327944,0.09108 c -0.562467,1.136904 -1.519878,2.310026 -2.872194,3.518734 -1.352316,1.208708 -2.931686,2.237864 -4.738764,3.087549 v 3.123126 c 1.005263,-0.37099 2.135979,-0.927261 3.392556,-1.669241 1.268546,-0.741978 2.291643,-1.484148 3.069524,-2.226128 v 20.590144 h 3.231278 V 18.487783 Z m 28.001697,32.763564 -2.549163,13.5171 3.033948,0.39466 c 0.478697,-0.753946 1.137004,-1.364265 1.974723,-1.830993 0.837718,-0.478697 1.776953,-0.717693 2.818119,-0.717693 1.675436,0 3.027927,0.532514 4.05712,1.597612 1.041166,1.065098 1.561564,2.519149 1.561564,4.36213 0,1.93872 -0.538572,3.494331 -1.615638,4.667139 -1.077067,1.172805 -2.393208,1.759367 -3.948972,1.759367 -1.292478,0 -2.399442,-0.413257 -3.320928,-1.239004 -0.909524,-0.837721 -1.490026,-2.082114 -1.741343,-3.733616 l -3.393031,0.286982 c 0.215414,2.213969 1.07732,3.991354 2.585212,5.331702 1.51986,1.34035 3.476611,2.0103 5.87009,2.0103 2.920048,0 5.223412,-1.065028 6.910817,-3.195227 1.388219,-1.735274 2.082401,-3.793585 2.082401,-6.175098 0,-2.501189 -0.789684,-4.547383 -2.369383,-6.13905 -1.579698,-1.591664 -3.518275,-2.387881 -5.816013,-2.387881 -1.735275,0 -3.392924,0.550687 -4.97262,1.651689 l 1.417834,-7.07257 h 10.501652 v -3.087549 z m -35.0215,30.51641 v 3.105574 H 37.15321 c -1.639533,1.866916 -3.18956,4.164697 -4.649586,6.893266 -1.448056,2.7166 -2.560599,5.540839 -3.33848,8.472859 -0.77788,2.93201 -1.185079,5.43339 -1.220978,7.50375 h 3.320928 c 0.179513,-2.62087 0.592291,-5.03232 1.23853,-7.23432 0.897556,-3.123494 2.166183,-6.163448 3.805716,-9.119397 1.651502,-2.955949 3.315209,-5.325482 4.990645,-7.108621 v -2.513111 z"
+                transform={`translate(${x},${y})`}
+            />
+        );
+    },
+
     'mode-color': (x, y, activeClass) => {
         return (
             <g
@@ -433,17 +443,48 @@ function VkbdButtonSet({buttonDefs, inputMode, completedDigits, toolTipText}) {
     return buttons;
 }
 
-function VkbdModePanel({inputMode, toolTipText}) {
-    const digitClass = inputMode === 'digit' ? 'active' : '';
-    const outerClass = inputMode === 'outer' ? 'active' : '';
-    const innerClass = inputMode === 'inner' ? 'active' : '';
-    const colorClass = inputMode === 'color' ? 'active' : '';
-    const activeModeX = {
-        digit: 310,
-        outer: 470,
-        inner: 630,
-        color: 790,
-    }[inputMode];
+function ModePanelButtonBackground({x, y, width, height}) {
+    return (
+        <rect className="button-bg" x={x} y={y} width={width} height={height} rx="15" />
+    );
+}
+
+function ModePanelButtonForeground({x, y, width, height, icon, action, toolTipText, isActive}) {
+    const activeClass = isActive ? 'active' : '';
+    return <>
+        <VkbdButtonIcon btn={{icon: icon, left: x, top: y, activeClass: activeClass}} />
+        <rect x={x} y={y} width={width} height={height} fill="transparent"
+            data-key-value={action}
+        ><title>{toolTipText}</title></rect>
+    </>;
+}
+
+function VkbdModePanel({modeButtons, inputMode, simplePencilMarking, toolTipText}) {
+    const btnModeMatch = (simplePencilMarking && inputMode === 'inner') ? 'simple' : inputMode;
+    const activeModeX = 790 - 160 * (modeButtons.length - modeButtons.indexOf(btnModeMatch) - 1);
+    const buttonBackgrounds = modeButtons.map((btnMode, i) => {
+        return <ModePanelButtonBackground
+            key={btnMode}
+            x={800 - 160 * (modeButtons.length - i - 1)}
+            y={65}
+            width={130}
+            height={130}
+        />;
+    });
+    const buttonForegrounds = modeButtons.map((btnMode, i) => {
+        const btnInputMode = btnMode === 'simple' ? 'inner' : btnMode;
+        return <ModePanelButtonForeground
+            key={btnMode}
+            x={800 - 160 * (modeButtons.length - i - 1)}
+            y={65}
+            width={130}
+            height={130}
+            icon={`mode-${btnMode}`}
+            action={`input-mode-${btnInputMode}`}
+            toolTipText={toolTipText[btnMode]}
+            isActive={btnMode === btnModeMatch}
+        />;
+    });
     return (
         <g className={`vkbd-mode-panel input-mode-${inputMode}`}>
             <rect className="background" x="40" y="40" width="920" height="180" rx="20" />
@@ -457,29 +498,11 @@ function VkbdModePanel({inputMode, toolTipText}) {
                 Mode:
                 <title>{toolTipText.mode}</title>
             </text>
-            <rect className="button-bg" x="320" y="65" width="130" height="130" rx="15" />
-            <rect className="button-bg" x="480" y="65" width="130" height="130" rx="15" />
-            <rect className="button-bg" x="640" y="65" width="130" height="130" rx="15" />
-            <rect className="button-bg" x="800" y="65" width="130" height="130" rx="15" />
+            {buttonBackgrounds}
             <rect className="active-mode-bg"
                 x={activeModeX} y="55" width="150" height="150" rx="15"
             />
-            <VkbdButtonIcon btn={{icon: 'mode-digit', left: 320, top: 65, activeClass: digitClass}} />
-            <VkbdButtonIcon btn={{icon: 'mode-outer', left: 480, top: 65, activeClass: outerClass}} />
-            <VkbdButtonIcon btn={{icon: 'mode-inner', left: 640, top: 65, activeClass: innerClass}} />
-            <VkbdButtonIcon btn={{icon: 'mode-color', left: 800, top: 65, activeClass: colorClass}} />
-            <rect x="320" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-digit"
-            ><title>{toolTipText.digit}</title></rect>
-            <rect x="480" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-outer"
-            ><title>{toolTipText.outer}</title></rect>
-            <rect x="640" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-inner" data-want-double-click="true"
-            ><title>{toolTipText.inner}</title></rect>
-            <rect x="800" y="65" width="130" height="130" fill="transparent"
-                data-key-value="input-mode-color" data-want-double-click="true"
-            ><title>{toolTipText.color}</title></rect>
+            {buttonForegrounds}
         </g>
     );
 }
@@ -522,7 +545,7 @@ function keyboardLayout(dimensions, flipNumericKeys) {
     return layout;
 }
 
-export default function VirtualKeyboard({dimensions, inputMode, completedDigits, flipNumericKeys, inputHandler}) {
+export default function VirtualKeyboard({dimensions, inputMode, completedDigits, flipNumericKeys, inputHandler, simplePencilMarking}) {
     const rawTouchHandler = useCallback(e => buttonTouchHandler(e, inputHandler), [inputHandler]);
     const rawClickHandler = useCallback(e => buttonClickHandler(e, inputHandler), [inputHandler]);
     const layout = keyboardLayout(dimensions, flipNumericKeys);
@@ -531,6 +554,7 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
         digit: 'Enter a digit',
         outer: 'Add an "outer" pencil-mark - Shift+Digit',
         inner: 'Add an "inner" pencil-mark - Ctrl+Digit',
+        simple: 'Add a pencil-mark - Shift+Digit',
         color: 'Colour cell background, double-click to clear',
         undo: 'Undo last change - Ctrl+Z or [',
         redo: 'Redo last change - Ctrl+Y or ]',
@@ -538,6 +562,12 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
         delete: 'Delete digits, pencil-marks & color highlights',
         check: 'Check grid for conflicting digits',
     };
+    const modeButtons = simplePencilMarking
+        ? ['digit', 'simple', 'color']
+        : ['digit', 'outer', 'inner', 'color'];
+    const currMode = (simplePencilMarking && inputMode === 'outer')
+        ? 'inner'
+        : inputMode;
     return (
         <div className="vkbd"
             onTouchStart={rawTouchHandler}
@@ -552,12 +582,14 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
             >
                 <rect className="vkbd-background" width="100%" height="100%" rx="40" />
                 <VkbdModePanel
-                    inputMode={inputMode}
+                    modeButtons={modeButtons}
+                    simplePencilMarking={simplePencilMarking}
+                    inputMode={currMode}
                     toolTipText={toolTipText}
                 />
                 <VkbdButtonSet
                     buttonDefs={layout.buttonDefs}
-                    inputMode={inputMode}
+                    inputMode={currMode}
                     completedDigits={completedDigits}
                     toolTipText={toolTipText}
                 />
