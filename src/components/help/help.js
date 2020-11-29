@@ -62,10 +62,13 @@ export default function HelpPage({modalHandler}) {
             enter a digit by double-tapping/clicking that digit on the on-screen keyboard.
             The double-click action overrides the current mode and does a normal digit entry,
             but afterwards you remain in the original pencil marking mode.</p>
-            <p>Sometimes you might enter some 'outer' pencil marks and then realise that the
+            <p>Sometimes you might enter some ‘outer’ pencil marks and then realise that the
             selected cells form a pair or a triple.  If you want to switch all the pencil marks
-            in the selected cells to 'inner' pencil marks, use the ‘.’ (dot or period) key or
+            in the selected cells to ‘inner’ pencil marks, use the ‘.’ (dot or period) key or
             double-tap/click the inner pencil marks mode button.</p>
+            <p>If you only wish to use one type of pencil mark instead of the separate ‘inner’
+            and ‘outer’ pencil marks, you can select the <b>“Simple” pencil making mode</b>
+            using the “Settings” menu option.</p>
             <p>There are also two pencil-mark-related menu options:</p>
             <ul>
                 <li><b>Hide/Show Pencilmarks</b> — can be used to temporarily hide pencil
@@ -75,9 +78,9 @@ export default function HelpPage({modalHandler}) {
             </ul>
 
             <h1>Undo / redo</h1>
-            <p>If you make a mistake, you can undo one or more steps using Ctrl-Z, or '[',
+            <p>If you make a mistake, you can undo one or more steps using Ctrl-Z, or ‘[’,
             or the undo button on the on-screen keypad.</p>
-            <p>After using undo, you can use Ctrl-Y or, or ']', or the on-screen redo button
+            <p>After using undo, you can use Ctrl-Y or, or ‘]’, or the on-screen redo button
             to replay one or more actions.</p>
             <p>You can use Delete or Backspace to remove a digit or pencil marks from
             selected cells.</p>
@@ -93,8 +96,12 @@ export default function HelpPage({modalHandler}) {
                 and lighter colours for interactive elements.  Some people will
                 find this results in less eye strain.</dd>
                 <dt>Show Timer</dt>
-                <dd>If you don't need the added pressure of a clock ticking while you’re
+                <dd>If you don’t need the added pressure of a clock ticking while you’re
                 trying to think, turn this option off.</dd>
+                <dt>“Simple” pencil marking mode</dt>
+                <dd>If you don’t wish to use two different types of pencil marks, turn this
+                option on. This will cause the pencil-marked digits to be arranged in a 3x3
+                grid within each cell.</dd>
                 <dt>Highlight matching digits</dt>
                 <dd>When you select a cell containing a digit, the app will highlight all
                 other cells that contain the same digit (either full digit or pencil mark).
@@ -149,8 +156,8 @@ export default function HelpPage({modalHandler}) {
                 arrows keys or the mouse (or touchscreen).</dd>
                 <dt>Paste a new puzzle</dt>
                 <dd>This option is useful if you have a puzzle in the form of a string of 81 digits
-                ('0' for empty cells).  You could enter that string directly in the URL, but the
-                URL bar is not always available on mobile devices when you've saved this site to
+                (‘0’ for empty cells).  You could enter that string directly in the URL, but the
+                URL bar is not always available on mobile devices when you’ve saved this site to
                 your home screen.</dd>
                 <dt>Browse “recently shared”</dt>
                 <dd>This option allows you to select puzzles that other users have shared recently
