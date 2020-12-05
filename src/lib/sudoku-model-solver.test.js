@@ -139,14 +139,14 @@ test('check initialDigits', () => {
     grid = newSudokuModel({initialDigits: initialDigitsNonUnique});
     expect(grid.get('modalState')).toStrictEqual({
         "modalType": "check-result",
-        "warning": true,
+        "icon": "warning",
         "errorMessage": "This arrangement does not have a unique solution",
     });
 
     grid = newSudokuModel({initialDigits: initialDigitsNoSolution});
     expect(grid.get('modalState')).toStrictEqual({
         "modalType": "check-result",
-        "warning": true,
+        "icon": "warning",
         "errorMessage": "This arrangement does not have a solution",
     });
 });

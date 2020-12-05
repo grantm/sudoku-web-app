@@ -251,7 +251,7 @@ export const modelHelpers = {
         if (!result.uniqueSolution) {
             grid = grid.set('modalState', {
                 modalType: MODAL_TYPE_CHECK_RESULT,
-                warning: true,
+                icon: 'warning',
                 errorMessage: result.error,
             });
         }
@@ -851,6 +851,7 @@ export const modelHelpers = {
             grid = modelHelpers.applyErrorHighlights(grid, result.errorAtIndex);
             grid = grid.set('modalState', {
                 modalType: MODAL_TYPE_CHECK_RESULT,
+                icon: 'error',
                 errorMessage: 'Errors found in highlighted cells',
             });
         }
@@ -860,12 +861,14 @@ export const modelHelpers = {
             if (result.uniqueSolution) {
                 grid = grid.set('modalState', {
                     modalType: MODAL_TYPE_CHECK_RESULT,
-                    errorMessage: 'Looks good - this arrangement does have unique solution',
+                    icon: 'ok',
+                    errorMessage: 'Looks good - this arrangement has a unique solution',
                 });
             }
             else {
                 grid = grid.set('modalState', {
                     modalType: MODAL_TYPE_CHECK_RESULT,
+                    icon: 'warning',
                     errorMessage: result.error,
                 });
             }
@@ -874,6 +877,7 @@ export const modelHelpers = {
             const s = result.incompleteCount === 1 ? '' : 's';
             grid = grid.set('modalState', {
                 modalType: MODAL_TYPE_CHECK_RESULT,
+                icon: 'ok',
                 errorMessage: `No conflicting digits were found, but ${result.incompleteCount} cell${s} not yet filled`,
             });
         }
