@@ -43,7 +43,10 @@ test('restart', () => {
 
     // Pop up the Restart dialog and cancel
     grid = modelHelpers.confirmRestart(grid);
-    expect(grid.get('modalState')).toStrictEqual({modalType: "confirm-restart"});
+    expect(grid.get('modalState')).toStrictEqual({
+        modalType: "confirm-restart",
+        "escapeAction": "close"
+    });
     grid = modelHelpers.applyModalAction(grid, 'cancel');
 
     expect(grid.get('modalState')).toBe(undefined);
@@ -51,7 +54,10 @@ test('restart', () => {
 
     // Do it again, but confirm this time
     grid = modelHelpers.confirmRestart(grid);
-    expect(grid.get('modalState')).toStrictEqual({modalType: "confirm-restart"});
+    expect(grid.get('modalState')).toStrictEqual({
+        modalType: "confirm-restart",
+        "escapeAction": "close"
+    });
     grid = modelHelpers.applyModalAction(grid, 'restart-confirmed');
     grid = modelHelpers.checkCompletedDigits(grid);
 
@@ -74,7 +80,10 @@ test('clear colours', () => {
 
     // Pop up the Clear colours dialog and cancel
     grid = modelHelpers.confirmClearColorHighlights(grid);
-    expect(grid.get('modalState')).toStrictEqual({modalType: "confirm-clear-color-highlights"});
+    expect(grid.get('modalState')).toStrictEqual({
+        modalType: "confirm-clear-color-highlights",
+        "escapeAction": "close"
+    });
     grid = modelHelpers.applyModalAction(grid, 'cancel');
 
     expect(grid.get('modalState')).toBe(undefined);
@@ -82,7 +91,10 @@ test('clear colours', () => {
 
     // Do it again, but confirm this time
     grid = modelHelpers.confirmClearColorHighlights(grid);
-    expect(grid.get('modalState')).toStrictEqual({modalType: "confirm-clear-color-highlights"});
+    expect(grid.get('modalState')).toStrictEqual({
+        modalType: "confirm-clear-color-highlights",
+        "escapeAction": "close"
+    });
     grid = modelHelpers.applyModalAction(grid, 'restart-confirmed');
 
     expect(grid.get('modalState')).toBe(undefined);

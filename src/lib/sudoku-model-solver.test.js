@@ -141,6 +141,7 @@ test('check initialDigits', () => {
         "modalType": "check-result",
         "icon": "warning",
         "errorMessage": "This arrangement does not have a unique solution",
+        "escapeAction": "close",
     });
 
     grid = newSudokuModel({initialDigits: initialDigitsNoSolution});
@@ -148,5 +149,6 @@ test('check initialDigits', () => {
         "modalType": "check-result",
         "icon": "warning",
         "errorMessage": "This arrangement does not have a solution",
+        "escapeAction": "close",
     });
 });
