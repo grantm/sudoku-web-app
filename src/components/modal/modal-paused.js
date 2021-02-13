@@ -6,7 +6,7 @@ export default function ModalPaused({modalHandler}) {
         <div className="modal paused">
             <p>The game is paused</p>
             <div className="buttons">
-                <button className="primary" onClick={resumeHandler}>Resume</button>
+                <button className="primary" onClick={resumeHandler} autoFocus>Resume</button>
             </div>
         </div>
     )

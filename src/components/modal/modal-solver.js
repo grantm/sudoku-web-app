@@ -25,7 +25,7 @@ export default function ModalSolver({modalHandler, modalState}) {
 
             </p>
             <div className="buttons">
-                <button className="cancel" onClick={cancelHandler}>Cancel</button>
+                <button className="cancel" onClick={cancelHandler} autoFocus>Cancel</button>
                 <a className="btn primary"
                     href={`https://www.sudokuwiki.org/sudoku.htm?bd=${linkDigits}`}
                     target="_blank"

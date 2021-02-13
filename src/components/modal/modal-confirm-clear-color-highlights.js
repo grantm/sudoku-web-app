@@ -9,7 +9,7 @@ export default function ModalConfirmClearColorHighlights({modalHandler}) {
             <p>Are you sure you wish to remove the colour highlighting from all cells?</p>
             <div className="buttons">
                 <button className="cancel" onClick={cancelHandler}>Cancel</button>
-                <button className="danger" onClick={restartHandler}>OK</button>
+                <button className="danger" onClick={restartHandler} autoFocus>OK</button>
             </div>
         </div>
     )

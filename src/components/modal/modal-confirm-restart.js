@@ -10,7 +10,7 @@ export default function ModalConfirmRestart({modalHandler}) {
             you've entered?</p>
             <div className="buttons">
                 <button className="cancel" onClick={cancelHandler}>Cancel</button>
-                <button className="danger" onClick={restartHandler}>Restart</button>
+                <button className="danger" onClick={restartHandler} autoFocus>Restart</button>
             </div>
         </div>
     )

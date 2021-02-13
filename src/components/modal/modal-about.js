@@ -17,7 +17,7 @@ export default function ModalAbout({modalHandler}) {
             <a href="https://github.com/grantm/sudoku-web-app">https://github.com/grantm/sudoku-web-app</a>.</p>
             <p>Copyright © 2020 Grant McLean</p>
             <div className="buttons">
-                <button className="primary" onClick={closeHandler}>OK</button>
+                <button className="primary" onClick={closeHandler} autoFocus>OK</button>
             </div>
         </div>
     )

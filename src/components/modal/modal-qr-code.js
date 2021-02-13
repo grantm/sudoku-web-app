@@ -11,7 +11,7 @@ export default function ModalQRCode({modalHandler, modalState}) {
         <div className="modal qr">
             <QRCode value={puzzleURL} renderAs="svg" includeMargin={true} size={320} />
             <div className="buttons">
-                <button onClick={backHandler}>Back</button>
+                <button onClick={backHandler} autoFocus>Back</button>
                 <button onClick={closeHandler}>Close</button>
             </div>
         </div>

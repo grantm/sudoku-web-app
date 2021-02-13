@@ -15,7 +15,7 @@ export default function ModalCheckResult({modalState, modalHandler}) {
                 <div className="message">{errorMessage}</div>
             </div>
             <div className="buttons">
-                <button className="cancel" onClick={cancelHandler}>OK</button>
+                <button className="primary" onClick={cancelHandler} autoFocus>OK</button>
             </div>
         </div>
     )
