@@ -9,12 +9,13 @@ function ModePanelButtonBackground({x, y, width, height}) {
     );
 }
 
-function ModePanelButtonForeground({x, y, width, height, icon, action, toolTipText, isActive}) {
+function ModePanelButtonForeground({x, y, width, height, icon, action, toolTipText, isActive, wantDoubleClick}) {
     const activeClass = isActive ? 'active' : '';
     return <>
         <VkbdButtonIcon btn={{icon: icon, left: x, top: y, activeClass: activeClass}} />
         <rect x={x} y={y} width={width} height={height} fill="transparent"
             data-key-value={action}
+            data-want-double-click={wantDoubleClick}
         ><title>{toolTipText}</title></rect>
     </>;
 }
@@ -43,6 +44,7 @@ export default function VkbdModePanel({modeButtons, inputMode, simplePencilMarki
             action={`input-mode-${btnInputMode}`}
             toolTipText={toolTipText[btnMode]}
             isActive={btnMode === btnModeMatch}
+            wantDoubleClick={btnMode === 'color'}
         />;
     });
     return (
