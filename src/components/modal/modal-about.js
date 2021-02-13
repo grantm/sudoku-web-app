@@ -4,6 +4,7 @@ import {version} from '../../../package.json';
 
 export default function ModalAbout({modalHandler}) {
     const closeHandler = () => modalHandler('cancel');
+    const thisYear = (new Date()).getFullYear();
     return (
         <div className="modal about">
             <h1>About this app</h1>
@@ -15,7 +16,7 @@ export default function ModalAbout({modalHandler}) {
             GNU Affero General Public License version 3 (<a href="https://opensource.org/licenses/AGPL-3.0"
             >AGPLV3</a>). The source code is available at:<br />
             <a href="https://github.com/grantm/sudoku-web-app">https://github.com/grantm/sudoku-web-app</a>.</p>
-            <p>Copyright © 2020 Grant McLean</p>
+            <p>Copyright © 2020{thisYear > 2020 ? `-${thisYear}` : ''} Grant McLean</p>
             <div className="buttons">
                 <button className="primary" onClick={closeHandler} autoFocus>OK</button>
             </div>
