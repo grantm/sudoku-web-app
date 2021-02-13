@@ -253,6 +253,7 @@ export const modelHelpers = {
                 modalType: MODAL_TYPE_CHECK_RESULT,
                 icon: 'warning',
                 errorMessage: result.error,
+                escapeAction: 'close',
             });
         }
         return grid;
@@ -661,13 +662,19 @@ export const modelHelpers = {
     },
 
     confirmRestart: (grid) => {
-        return grid.set('modalState', { modalType: MODAL_TYPE_CONFIRM_RESTART});
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_CONFIRM_RESTART,
+            escapeAction: 'close',
+        });
     },
 
     confirmClearColorHighlights: (grid) => {
         const coloredCount = grid.get('cells').count(c => c.get('colorCode') !== '1')
         if (coloredCount > 0) {
-            return grid.set('modalState', { modalType: MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS});
+            return grid.set('modalState', {
+                modalType: MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
+                escapeAction: 'close',
+            });
         }
         return grid;
     },
@@ -679,11 +686,15 @@ export const modelHelpers = {
             difficultyLevel: grid.get('difficultyLevel'),
             startTime: grid.get('startTime'),
             endTime: grid.get('endTime'),
+            escapeAction: 'close',
         });
     },
 
     showPasteModal: (grid) => {
-        return grid.set('modalState', { modalType: MODAL_TYPE_PASTE });
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_PASTE,
+            escapeAction: 'cancel-paste',
+        });
     },
 
     showSolverModal: (grid) => {
@@ -693,6 +704,7 @@ export const modelHelpers = {
             initialDigits: grid.get('initialDigits'),
             allDigits: grid.get('cells').map(c => c.get('digit')).join(''),
             passProgressSetting,
+            escapeAction: 'close',
         });
     },
 
@@ -701,6 +713,7 @@ export const modelHelpers = {
         return grid.set('modalState', {
             modalType: MODAL_TYPE_QR_CODE ,
             puzzleURL,
+            escapeAction: 'show-share-modal',
         });
     },
 
@@ -708,15 +721,22 @@ export const modelHelpers = {
         return grid.set('modalState', {
             modalType: MODAL_TYPE_SETTINGS,
             currentSettings: grid.get('settings'),
+            escapeAction: 'close',
         });
     },
 
     showHelpPage: (grid) => {
-        return grid.set('modalState', { modalType: MODAL_TYPE_HELP });
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_HELP,
+            escapeAction: 'close',
+        });
     },
 
     showAboutModal: (grid) => {
-        return grid.set('modalState', { modalType: MODAL_TYPE_ABOUT });
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_ABOUT,
+            escapeAction: 'close',
+         });
     },
 
     applyModalAction: (grid, args) => {
@@ -853,6 +873,7 @@ export const modelHelpers = {
                 modalType: MODAL_TYPE_CHECK_RESULT,
                 icon: 'error',
                 errorMessage: 'Errors found in highlighted cells',
+                escapeAction: 'close',
             });
         }
         else if (grid.get('mode') === 'enter') {
@@ -863,6 +884,7 @@ export const modelHelpers = {
                     modalType: MODAL_TYPE_CHECK_RESULT,
                     icon: 'ok',
                     errorMessage: 'Looks good - this arrangement has a unique solution',
+                    escapeAction: 'close',
                 });
             }
             else {
@@ -870,6 +892,7 @@ export const modelHelpers = {
                     modalType: MODAL_TYPE_CHECK_RESULT,
                     icon: 'warning',
                     errorMessage: result.error,
+                    escapeAction: 'close',
                 });
             }
         }
@@ -879,6 +902,7 @@ export const modelHelpers = {
                 modalType: MODAL_TYPE_CHECK_RESULT,
                 icon: 'ok',
                 errorMessage: `No conflicting digits were found, but ${result.incompleteCount} cell${s} not yet filled`,
+                escapeAction: 'close',
             });
         }
         return grid;
@@ -1057,7 +1081,10 @@ export const modelHelpers = {
     pauseTimer: (grid) => {
         return grid.merge({
             pausedAt: Date.now(),
-            modalState: { modalType: MODAL_TYPE_PAUSED},
+            modalState: {
+                modalType: MODAL_TYPE_PAUSED,
+                escapeAction: 'resume-timer',
+            },
         });
     },
 

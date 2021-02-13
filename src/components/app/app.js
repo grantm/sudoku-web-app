@@ -127,7 +127,13 @@ function cellMouseOverHandler (e, setGrid) {
 }
 
 function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
-    if (solved || modalActive) {
+    if (solved) {
+        return;
+    }
+    if (modalActive) {
+        if (e.key === 'Escape') {
+            escapeFromModal(setGrid);
+        }
         return;
     }
     if (e.altKey) {
@@ -262,6 +268,16 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         return;
     }
     // else { console.log('keydown event:', e); }
+}
+
+function escapeFromModal(setGrid) {
+    setGrid((grid) => {
+        const modalState = grid.get('modalState');
+        if (modalState && modalState.escapeAction) {
+            grid = modelHelpers.applyModalAction(grid, modalState.escapeAction);
+        }
+        return grid;
+    });
 }
 
 function docKeyUpHandler(e, modalActive, setGrid) {
