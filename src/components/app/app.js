@@ -200,7 +200,10 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     }
     else if (e.key === "ArrowUp" || e.keyCode === KEYCODE.W) {
         setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, shiftOrCtrl));
-        e.preventDefault();
+        // Don't prevent Cmd-W closing the window (#32)
+        if (!(ctrlOrMeta && e.keyCode === KEYCODE.W)) {
+            e.preventDefault();
+        }
         return;
     }
     else if (e.key === "ArrowDown" || e.keyCode === KEYCODE.S) {

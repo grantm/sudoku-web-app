@@ -53,10 +53,10 @@ export default function HelpPage({modalHandler}) {
             to an uncoloured state, you can double-click the colour mode button.</p>
             <p>You can also switch modes from your keyboard with the following hot keys:</p>
             <ul>
-                <li>Z - Normal digits</li>
-                <li>X - Outer pencil marks</li>
-                <li>C - Inner pencil marks</li>
-                <li>Z - Cell colours</li>
+                <li><b>Z</b> - Normal digits</li>
+                <li><b>X</b> - Outer pencil marks</li>
+                <li><b>C</b> - Inner pencil marks</li>
+                <li><b>V</b> - Cell colours</li>
             </ul>
             <p>If you have switched to a pencil marking mode (inner or outer), you can still
             enter a digit by double-tapping/clicking that digit on the on-screen keyboard.
@@ -76,6 +76,21 @@ export default function HelpPage({modalHandler}) {
                 <li><b>Clear all pencil marks</b> — will permanently discard all pencil
                 marks and cell colouring you have added to the grid.</li>
             </ul>
+
+            <h2>Alternate cursor movement keys</h2>
+
+            <p>In addition to the arrow keys, the 'WASD' keys may be used as follows:</p>
+
+            <ul>
+                <li><b>W</b> - Up</li>
+                <li><b>A</b> - Left</li>
+                <li><b>S</b> - Down</li>
+                <li><b>D</b> - Right</li>
+            </ul>
+
+            <p>These keys can be combined with Ctrl or Shift to extend the selection,
+            however be warned that Ctrl-W is commonly used as a hot key to close the current
+            browser tab and that function cannot be intercepted on all browsers.</p>
 
             <h1>Undo / redo</h1>
             <p>If you make a mistake, you can undo one or more steps using Ctrl-Z, or ‘[’,
