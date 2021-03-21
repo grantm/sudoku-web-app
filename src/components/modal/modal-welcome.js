@@ -67,14 +67,18 @@ function RecentlyShared({modalState}) {
 function ModalWelcome({modalState, modalHandler}) {
     const cancelHandler = () => modalHandler('cancel');
     const showPasteHandler = () => modalHandler('show-paste-modal');
+    const twitterUrl = "https://twitter.com/SudokuExchange";
     return (
-        <div className="modal no-initial-digits">
+        <div className="modal welcome">
             <h1>Welcome to SudokuExchange</h1>
             <p>You can get started by entering a new puzzle into a blank grid:</p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={cancelHandler}>Enter a new puzzle</button></p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={showPasteHandler}>Paste a new puzzle</button></p>
             <p>Or you can select a recently shared puzzle:</p>
             <RecentlyShared modalState={modalState} />
+            <div id="welcome-footer">
+                <p>Follow <a href={twitterUrl} target="_blank" rel="noreferrer">@SudokuExchange</a> on Twitter for updates.</p>
+            </div>
         </div>
     );
 }

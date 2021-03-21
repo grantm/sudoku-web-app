@@ -102,19 +102,18 @@
     border-radius: 0.15em;
 }
 
-.modal.no-initial-digits {
+.modal.welcome {
     max-width: 30em;
-    padding-bottom: 1.2em;
 }
 
-.modal.no-initial-digits .loading-failed {
+.modal.welcome .loading-failed {
     color: var(--error-text-color);
     font-style: italic;
     opacity: 0.8;
     margin: 1.5em 1.5em 2em;
 }
 
-.no-initial-digits .spinner {
+modal.welcome .spinner {
     margin: 70px auto;
 }
 
@@ -179,6 +178,18 @@
 .recently-shared a:hover {
     border: 2px solid var(--link-hover-text-color);
     background-color: transparent;
+}
+
+#welcome-footer {
+    margin-top: 2em;
+    border-top: 1px solid var(--modal-text-color);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+#welcome-footer p {
+    margin: 0.3em 0 0 0;
+    padding-bottom: 1.5em;
 }
 
 .modal button.new-puzzle {
