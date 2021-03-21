@@ -5,20 +5,34 @@ import './sudoku-grid.css';
 import GridLines from './grid-lines.js';
 
 
-function DifficultyIndicator ({difficulty}) {
+function DifficultyIndicator ({difficulty, showRatings}) {
     if (difficulty === undefined) {
         return null;
     }
-    const barWidth = Math.min(difficulty, 10) * 90;
+    const barHeight = showRatings ? 90 : 25;
+    const textContent = showRatings
+        ? (
+            <text
+                className="difficulty-rating"
+                x={58}
+                y={1062}
+                fontSize={70}
+                textAnchor="start"
+            >{difficulty}</text>
+        )
+        : null;
+    const barWidth = Math.max(120, Math.min(difficulty, 10) * 90);
+
     return <g>
-        <rect className="difficulty-bar" x="50" y="990" width={barWidth} height="15" />
-        <rect x="50" y="970" width={barWidth} height="50" fill="transparent">
+        <rect className="difficulty-bar" x="50" y="990" width={barWidth} height={barHeight} />
+        {textContent}
+        <rect x="50" y="970" width={barWidth + 10} height={barHeight + 125} fill="transparent">
             <title>Difficulty rating: {difficulty}</title>
         </rect>
     </g>;
 }
 
-function SudokuMiniGrid({puzzle, size='120px'}) {
+function SudokuMiniGrid({puzzle, size='120px', showRatings}) {
     const cellSize = 100;
     const marginSize = 50;
     const digits = typeof(puzzle) === 'string' ? puzzle : puzzle.digits;
@@ -45,13 +59,13 @@ function SudokuMiniGrid({puzzle, size='120px'}) {
     return (
         <div className="sudoku-grid mini" style={{width: size}}>
             <svg version="1.1"
-                viewBox="0 0 1000 1040"
+                viewBox="0 0 1000 1100"
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="grid-bg" width="100%" height="100%" />
                 {givenDigits}
                 <GridLines cellSize={cellSize} marginSize={marginSize} />
-                <DifficultyIndicator difficulty={difficulty} />
+                <DifficultyIndicator difficulty={difficulty} showRatings={showRatings} />
             </svg>
         </div>
     );

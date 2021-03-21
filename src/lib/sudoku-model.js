@@ -28,6 +28,7 @@ export const SETTINGS = {
     flipNumericKeys: "flip-numeric-keys",
     playVictoryAnimation: "play-victory-animation",
     passProgressToSolver: "pass-progress-to-solver",
+    showRatings: "show-ratings",
 };
 
 const difficultyLevels = [
@@ -145,6 +146,7 @@ export const modelHelpers = {
         [SETTINGS.flipNumericKeys]: false,
         [SETTINGS.playVictoryAnimation]: true,
         [SETTINGS.passProgressToSolver]: false,
+        [SETTINGS.showRatings]: false,
     },
 
     loadSettings: () => {
@@ -269,6 +271,7 @@ export const modelHelpers = {
                 modalType: MODAL_TYPE_WELCOME,
                 loading: true,
                 fetchRequired: true,
+                showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
             };
         }
         else if (initialError.insufficientDigits) {
@@ -302,6 +305,7 @@ export const modelHelpers = {
                     return grid.set('modalState', {
                         modalType: MODAL_TYPE_WELCOME,
                         recentlyShared: data,
+                        showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
                     });
                 }
                 else {

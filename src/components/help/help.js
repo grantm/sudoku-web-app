@@ -4,6 +4,7 @@ import './help.css';
 
 export default function HelpPage({modalHandler}) {
     const closeHandler = () => modalHandler('cancel');
+    const difficultyRatingsURL = "https://github.com/SudokuMonster/SukakuExplainer/wiki/Difficulty-Ratings-in-Sukaku-Explainer-v1.17.8";
     return <div className="help-page">
         <div className="content">
             <button className="close-button" onClick={closeHandler}>×</button>
@@ -131,6 +132,14 @@ export default function HelpPage({modalHandler}) {
                 <dd>When you enter a digit, the app will remove that digit from any pencil
                 marks in the same row, column or 3x3 box.  If you don’t want your pencil
                 marks to be cleaned up automatically, turn this option off.</dd>
+                <dt>Show puzzle rating numbers</dt>
+                <dd>The “recently shared puzzle” section, includes a yellow bar under each
+                puzzle to give you an idea of its difficulty.  The longer the bar, the more
+                difficult the puzzle.  With this option turned on, the bar will also show
+                the <a href={difficultyRatingsURL} target="_blank" rel="noreferrer">difficulty
+                rating number</a> - which might be useful if you're looking for a puzzle to
+                practice a specific technique. Some people might consider showing the precise
+                rating number to be a “spoiler”, so this option is off by default.</dd>
                 <dt>Flip on-screen keyboard digits</dt>
                 <dd>The default layout for the on-screen keyboard is like a phone dialler
                 with 1-2-3 across the top. This option allows you to flip the rows so that

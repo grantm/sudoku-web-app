@@ -9,7 +9,7 @@ function stopPropagation (e) {
     e.stopPropagation();
 }
 
-function RecentlySharedSection ({level, puzzles}) {
+function RecentlySharedSection ({level, puzzles, showRatings}) {
     const [collapsed, setCollapsed] = useState(true);
     const levelName = modelHelpers.difficultyLevelName(level);
     if (!levelName || !puzzles || puzzles.length < 1) {
@@ -19,7 +19,7 @@ function RecentlySharedSection ({level, puzzles}) {
         return (
             <li key={i}>
                 <a href={`./?s=${puzzle.digits || puzzle}&d=${level}&i=${i+1}`} onClick={stopPropagation}>
-                    <SudokuMiniGrid puzzle={puzzle} />
+                    <SudokuMiniGrid puzzle={puzzle} showRatings={showRatings} />
                 </a>
             </li>
         );
@@ -49,7 +49,12 @@ function RecentlyShared({modalState}) {
     }
     const {recentlyShared} = modalState;
     const sections = ['1', '2', '3', '4'].map(level => {
-        return <RecentlySharedSection key={level} level={level} puzzles={recentlyShared[level]} />;
+        return <RecentlySharedSection
+            key={level}
+            level={level}
+            puzzles={recentlyShared[level]}
+            showRatings={modalState.showRatings}
+        />;
     });
     return (
         <div className="recently-shared">

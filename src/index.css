@@ -41,6 +41,8 @@
     --grid-line-color: #777777;
     --grid-line-color-bold: #333333;
     --mini-grid-line-color: #aaaaaa;
+    --mini-grid-bar-color: #fff1a3;
+    --mini-grid-bar-text-color: #333333;
     --given-digit-color: #333333;
     --visited-digit-color: #aaaaaa;
     --paused-digit-color: #00000033;
@@ -120,6 +122,8 @@
     --grid-line-color: #7b7878;
     --grid-line-color-bold: #a6a4a4;
     --mini-grid-line-color: #a6a6a6;
+    --mini-grid-bar-color: #dbcf90;
+    --mini-grid-bar-text-color: #222222;
     --given-digit-color: #9d9a9a;
     --visited-digit-color: #666666;
     --paused-digit-color: #7b7272;

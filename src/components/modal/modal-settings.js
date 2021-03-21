@@ -76,6 +76,12 @@ export default function ModalSettings({modalHandler, modalState}) {
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
+                    name={SETTINGS.showRatings}
+                    text="Show puzzle rating numbers"
+                    allSettings={allSettings}
+                    setSetting={setSetting}
+                />
+                <CheckBoxSetting
                     name={SETTINGS.flipNumericKeys}
                     text="Flip on-screen keyboard digits"
                     allSettings={allSettings}
