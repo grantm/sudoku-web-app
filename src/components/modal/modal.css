@@ -113,8 +113,8 @@
     margin: 1.5em 1.5em 2em;
 }
 
-modal.welcome .spinner {
-    margin: 70px auto;
+.modal.welcome .spinner {
+    margin: 4.3em auto;
 }
 
 .recently-shared .section {
