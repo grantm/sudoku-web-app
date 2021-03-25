@@ -12,6 +12,7 @@ import {
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
     MODAL_TYPE_SOLVER,
     MODAL_TYPE_HELP,
+    MODAL_TYPE_HINT,
     MODAL_TYPE_ABOUT,
     MODAL_TYPE_QR_CODE,
 } from '../../lib/modal-types';
@@ -29,6 +30,7 @@ import ModalShare from './modal-share';
 import ModalSolver from './modal-solver';
 import ModalSettings from './modal-settings';
 import ModalQRCode from './modal-qr-code';
+import ModalHint from './modal-hint';
 import HelpPage from '../help/help';
 
 import "./modal.css";
@@ -78,6 +80,9 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     }
     else if (modalState.modalType === MODAL_TYPE_SOLVER) {
         content = <ModalSolver modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === MODAL_TYPE_HINT) {
+        content = <ModalHint modalState={modalState} modalHandler={modalHandler} menuHandler={menuHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_HELP) {
         content = <HelpPage modalHandler={modalHandler} />;

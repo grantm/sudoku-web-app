@@ -11,9 +11,11 @@ import SudokuGrid from '../sudoku-grid/sudoku-grid';
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
 import ModalContainer from '../modal/modal-container';
 
-import { MODAL_TYPE_WELCOME } from '../../lib/modal-types';
+import { MODAL_TYPE_WELCOME, MODAL_TYPE_HINT } from '../../lib/modal-types';
 
 const FETCH_DELAY = 1000;
+const RETRY_INTERVAL = 3000;
+const MAX_RETRIES = 10;
 
 // Keycode definitions (independent of shift/ctrl/etc)
 const KEYCODE = {
@@ -447,6 +449,9 @@ function dispatchMenuAction(action, setGrid) {
     else if (action === 'save-screenshot') {
         saveScreenshot();
     }
+    else if (action === 'show-hint-modal') {
+        setGrid((grid) => modelHelpers.showHintModal(grid));
+    }
     else {
         console.log(`Unrecognised menu action: '${action}'`);
     }
@@ -491,8 +496,13 @@ function App() {
     const inputMode = grid.get('tempInputMode') || grid.get('inputMode');
     const completedDigits = grid.get('completedDigits');
     const modalState = grid.get('modalState');
-    if (modalState && modalState.modalType === MODAL_TYPE_WELCOME && modalState.fetchRequired) {
-        modelHelpers.fetchRecentlyShared(grid, setGrid, FETCH_DELAY);
+    if (modalState && modalState.fetchRequired) {
+        if (modalState.modalType === MODAL_TYPE_WELCOME) {
+            modelHelpers.fetchRecentlyShared(grid, setGrid, FETCH_DELAY);
+        }
+        else if (modalState.modalType === MODAL_TYPE_HINT) {
+            modelHelpers.fetchExplainPlan(grid, setGrid, RETRY_INTERVAL, MAX_RETRIES);
+        }
     }
     const modalActive = modalState !== undefined;
 

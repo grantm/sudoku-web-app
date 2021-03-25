@@ -2,6 +2,7 @@
 import { List, Map, Range, Set } from './not-mutable';
 import { SudokuHinter } from './sudoku-hinter';
 import { cellSet, cellProp } from './sudoku-cell-sets';
+import SudokuExplainer from './sudoku-explainer';
 
 import {
     MODAL_TYPE_WELCOME,
@@ -14,6 +15,7 @@ import {
     MODAL_TYPE_CONFIRM_RESTART,
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
     MODAL_TYPE_SOLVER,
+    MODAL_TYPE_HINT,
     MODAL_TYPE_HELP,
     MODAL_TYPE_ABOUT,
     MODAL_TYPE_QR_CODE,
@@ -333,6 +335,85 @@ export const modelHelpers = {
             }
         }
         setTimeout(fetchHandler, fetchDelay);
+    },
+
+    fetchExplainPlan: (grid, setGrid, retryInterval, maxRetries) => {
+        const modalState = grid.get('modalState');
+        delete modalState.fetchRequired;    // Naughty, but we don't want a re-render
+        const explainURL = '/explain/' + grid.get('initialDigits');
+        let retryCount = 0;
+        const setNewModalState = ({analysis, errorMessage}) => {
+            setGrid(grid => {
+                const modalState = grid.get('modalState');
+                if (!modalState || modalState.modalType !== MODAL_TYPE_HINT) {
+                    return grid;  // user has moved on, so don't change anything
+                }
+                const newModalState = {
+                    modalType: MODAL_TYPE_HINT,
+                    escapeAction: 'close',
+                };
+                if (analysis) {
+                    try {
+                        const explainer = new SudokuExplainer(analysis);  // might throw exception
+                        grid = grid.set("explainer", explainer);
+                        newModalState.hint = modelHelpers.findNextHint(grid);
+                    }
+                    catch (error) {
+                        errorMessage = error.toString();
+                    }
+                }
+                if (errorMessage) {
+                    newModalState.loadingFailed = true;
+                    newModalState.errorMessage = errorMessage;
+                }
+                return grid.set('modalState', newModalState);
+            });
+        };
+        const tryRequest = () => {
+            let userWaiting = true;
+            setGrid(grid => {
+                const modalState = grid.get('modalState');
+                if (!modalState || modalState.modalType !== MODAL_TYPE_HINT) {
+                    userWaiting = false;
+                }
+                return grid;
+            })
+            if (!userWaiting) {
+                return;
+            }
+            if (retryCount++ > maxRetries) {
+                setNewModalState({errorMessage: "Timed out waiting for hints from server."})
+                return;
+            }
+            fetch(explainURL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(analysis => {
+                    if (analysis && analysis.ss) {
+                        setNewModalState({analysis});
+                    }
+                    else {
+                        setTimeout(tryRequest, retryInterval);
+                    }
+                })
+                .catch(error => {
+                    setNewModalState({errorMessage: error.toString});
+                });
+        };
+        tryRequest();
+    },
+
+    findNextHint: (grid) => {
+        const explainer = grid.get("explainer");
+        const currDigits = grid.get('cells').map(c => c.get('digit')).toArray();
+        const currCandidates = grid.get("cells").map(c => {
+            return c.get("innerPencils").union(c.get("outerPencils")).toArray().join('');
+        }).toArray();
+        return explainer.findNextStep(currDigits, currCandidates);
     },
 
     checkDigits: (digits, finalDigits) => {
@@ -718,6 +799,47 @@ export const modelHelpers = {
             currentSettings: grid.get('settings'),
             escapeAction: 'close',
         });
+    },
+
+    showHintModal: (grid) => {
+        // Alert user of any error first if there are any
+        grid = modelHelpers.gameOverCheck(grid);
+        const modalState = grid.get('modalState');
+        if (modalState && modalState.icon !== 'ok') {
+            return grid;
+        }
+        grid = grid.set('modalState', undefined);
+
+        // Make sure we have hints available
+        const explainer = grid.get('explainer');
+        if (!explainer) {
+            return grid.set('modalState', {
+                modalType: MODAL_TYPE_HINT,
+                fetchRequired: true,
+                loading: true,
+                retries: 10,
+            });
+        }
+        const currDigits = grid.get('cells').map(c => c.get('digit')).toArray();
+        const currCandidates = grid.get("cells").map(c => {
+            return c.get("innerPencils").union(c.get("outerPencils")).toArray().join('');
+        }).toArray();
+        const hint = explainer.findNextStep(currDigits, currCandidates);
+        if (hint) {
+            grid = grid.set('modalState', {
+                modalType: MODAL_TYPE_HINT,
+                escapeAction: 'close',
+                hint: hint,
+            });
+        }
+        else {
+            grid = grid.set('modalState', {
+                modalType: MODAL_TYPE_HINT,
+                escapeAction: 'close',
+                noHint: true,
+            });
+        }
+        return grid;
     },
 
     showHelpPage: (grid) => {

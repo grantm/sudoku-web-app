@@ -404,6 +404,35 @@ input.toggle:checked + .indicator::before {
     vertical-align: text-bottom;
 }
 
+.modal.hint {
+    max-width: 85%;
+}
+
+.portrait .modal.hint {
+    max-width: 96%;
+    max-height: 90%;
+}
+
+.landscape .hint-layout {
+    display: flex;
+}
+
+.landscape .sudoku-grid.hint svg {
+    width: 60vh;
+    max-width: 40vw;
+    margin-right: 1.2em;
+}
+
+.portrait .sudoku-grid.hint svg {
+    height: 50vh;
+    max-height: 80vw;
+    margin-bottom: 1.2em;
+}
+
+.hint-text p {
+    margin: 0 0 1.2em 0;
+}
+
 @media screen and (max-width: 500px) {
     .modal {
         max-width: 94%;

@@ -66,6 +66,13 @@
     --solved-given-digit-color: #333333;
     --solved-fill-color: #b9ffb9;
     --error-selected-fill-color: #ff8c8c;
+    --hint-target-fill-color: #caf9ca;
+    --hint-highlight-fill-color: #ffffd3;
+    --hint-new-digit-fill-color: #ffffff;
+    --hint-new-digit-bg-color: #0c9500;
+    --hint-eliminations-fill-color: #fbc4c7;
+    --hint-elimination-bg-color: #ff0000;
+    --hint-elimination-fill-color: #ffffff;
     --button-bg-color: #acddfb;
     --button-text-color: #333333;
     --grid-line-width: 2;
@@ -147,6 +154,13 @@
     --solved-given-digit-color: #595959;
     --solved-fill-color: #77e877;
     --error-selected-fill-color: #ff8c8c;
+    --hint-target-fill-color: #2f6a2f;
+    --hint-highlight-fill-color: #796c03;
+    --hint-new-digit-fill-color: #973838;
+    --hint-new-digit-bg-color: #fbb6b6;
+    --hint-eliminations-fill-color: #973838;
+    --hint-elimination-bg-color: #fbb6b6;
+    --hint-elimination-fill-color: #d70000;
     --button-bg-color: #acddfb;
     --button-text-color: #333333;
     --grid-line-width: 2;

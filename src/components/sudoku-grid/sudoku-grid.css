@@ -105,9 +105,46 @@ a:visited:hover .mini text.digit {
 }
 
 text.inner-pencil,
-.outer-pencil text {
+.outer-pencil text,
+.simple-pencil text {
     fill: var(--pencil-mark-color);
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.sudoku-grid.hint .cell-bg {
+    fill: transparent;
+}
+
+.sudoku-grid.hint .cell-bg.hint-target {
+    fill: var(--hint-target-fill-color);
+}
+
+.sudoku-grid.hint .cell-bg.hint-highlight {
+    fill: var(--hint-highlight-fill-color);
+}
+
+.sudoku-grid.hint .cell-bg.hint-eliminations {
+    fill: var(--hint-eliminations-fill-color);
+}
+
+.sudoku-grid.hint text {
+    fill: var(--given-digit-color);
+}
+
+.sudoku-grid.hint text.new-digit-bg {
+    fill: var(--hint-new-digit-bg-color);
+}
+
+.sudoku-grid.hint text.new-digit {
+    fill: var(--hint-new-digit-fill-color);
+}
+
+.sudoku-grid.hint text.elimination-bg {
+    fill: var(--hint-elimination-bg-color);
+}
+
+.sudoku-grid.hint text.elimination {
+    fill: var(--hint-elimination-fill-color);
 }
 
 .animate .solved .cell-bg[data-ring="5"] .cell-select-match-overlay { animation: 1600ms linear 0ms 1 running rainbow; }

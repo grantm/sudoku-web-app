@@ -3,6 +3,7 @@ import React from 'react';
 import TimerWithPause from '../timer-with-pause/timer-with-pause';
 import MenuButton from '../menu-button/menu-button';
 import SettingsButton from '../settings-button/settings-button';
+import HintButton from '../hint-button/hint-button';
 import FullscreenButton from '../fullscreen-button/fullscreen-button';
 
 import SiteDomainImg from '../../assets/site-domain.svg';
@@ -39,6 +40,7 @@ function StatusBar ({showTimer, startTime, endTime, pausedAt, showPencilmarks, m
             <SiteLink />
             {timer}
             <FullscreenButton />
+            <HintButton menuHandler={menuHandler} />
             <SettingsButton menuHandler={menuHandler} />
             <MenuButton
                 initialDigits={initialDigits}
