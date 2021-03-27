@@ -1,6 +1,7 @@
 // import { List, Map, Range, Set } from 'immutable';
 import { List, Map, Range, Set } from './not-mutable';
 import { SudokuHinter } from './sudoku-hinter';
+import { cellSet, cellProp } from './sudoku-cell-sets';
 
 import {
     MODAL_TYPE_WELCOME,
@@ -38,29 +39,7 @@ const difficultyLevels = [
     { value: "4", name: "Diabolical" },
 ];
 
-const [cellSets, cellProp] = initCellSets();
 const emptySet = Set();
-
-function initCellSets() {
-    const row = {}, col = {}, box = {}, cellProp = [];
-    Range(1, 10).forEach((i) => {
-        row[i] = [];
-        col[i] = [];
-        box[i] = [];
-    });
-    Range(0, 81).forEach((i) => {
-        const r = Math.floor(i / 9) + 1;
-        const c = (i % 9) + 1;
-        const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
-        cellProp[i] = { row: r, col: c, box: b };
-        row[r].push(i);
-        col[c].push(i);
-        box[b].push(i);
-    });
-    return [ {row, col, box}, cellProp ];
-}
-
-
 const charCodeOne = '1'.charCodeAt(0);
 
 function indexFromRC (rc) {
@@ -419,7 +398,7 @@ export const modelHelpers = {
         const r = Math.floor(i / 9) + 1;
         const c = (i % 9) + 1;
         const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
-        [ cellSets.row[r], cellSets.col[c], cellSets.box[b] ].flat().forEach(j => {
+        [ cellSet.row[r], cellSet.col[c], cellSet.box[b] ].flat().forEach(j => {
             const d = digits[j] || '0';
             if (d !== '0') {
                 const index = d.charCodeAt(0) - digitBase;
@@ -1092,9 +1071,9 @@ export const modelHelpers = {
         cells.forEach(c => {
             if (c.get('isSelected') && !c.get('isGiven')) {
                 [
-                    cellSets.row[c.get('row')],
-                    cellSets.col[c.get('col')],
-                    cellSets.box[c.get('box')],
+                    cellSet.row[c.get('row')],
+                    cellSet.col[c.get('col')],
+                    cellSet.box[c.get('box')],
                 ].flat().forEach(i => isEliminated[i] = true);
             }
         });
