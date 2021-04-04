@@ -2,7 +2,7 @@ import { newSudokuModel, modelHelpers, SETTINGS } from './sudoku-model.js';
 // import { List } from 'immutable';
 import { List } from './not-mutable';
 
-const initialDigits =
+const initialDigitsPartial =
     '000008000' +
     '000007000' +
     '123456789' +
@@ -12,6 +12,28 @@ const initialDigits =
     '000002000' +
     '000001000' +
     '000009000';
+
+const initialDigitsComplete =
+    '000001230' +
+    '123008040' +
+    '804007650' +
+    '765000000' +
+    '000000000' +
+    '000000123' +
+    '012300804' +
+    '080400765' +
+    '076500000';
+
+const finalDigitsComplete =
+    '657941238' +
+    '123658947' +
+    '894237651' +
+    '765123489' +
+    '231894576' +
+    '948765123' +
+    '512376894' +
+    '389412765' +
+    '476589312';
 
 function mapPropNames (map) {
     // Not sure why map.keys() doesn't work
@@ -30,8 +52,8 @@ function pencilDigits (set) {
     return set.toArray().join('');
 }
 
-test('initialise grid', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+test('initialise grid (partial)', () => {
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     const propNames = mapPropNames(grid);
     expect(propNames).toStrictEqual([
@@ -58,7 +80,7 @@ test('initialise grid', () => {
         "undoList",
     ]);
 
-    expect(digitsFromGrid(grid)).toBe(initialDigits);
+    expect(digitsFromGrid(grid)).toBe(initialDigitsPartial);
     expect(grid.get('completedDigits')).toStrictEqual({
         "1": false,
         "2": false,
@@ -73,10 +95,11 @@ test('initialise grid', () => {
     expect(grid.get('currentSnapshot')).toBe('');
     expect(grid.get('endTime')).toBe(undefined);
     expect(grid.get('focusIndex')).toBe(null);
-    expect(grid.get('initialDigits')).toBe(initialDigits);
+    expect(grid.get('initialDigits')).toBe(initialDigitsPartial);
     expect(grid.get('inputMode')).toBe('digit');
     expect(grid.get('matchDigit')).toBe('0');
     expect(grid.get('modalState')).toBe(undefined);
+    expect(grid.get('finalDigits')).toBe(undefined);    // Not set due to skipCheck
     expect(grid.get('mode')).toBe('solve');
     expect(grid.get('pausedAt')).toBe(undefined);
     expect(grid.get('redoList').size).toBe(0);
@@ -93,8 +116,14 @@ test('initialise grid', () => {
     expect(settingsKeys).toBe(expectedKeys);
 });
 
+test('initialise grid (complete)', () => {
+    let grid = newSudokuModel({initialDigits: initialDigitsComplete});   // no skipCheck
+    expect(grid.get('modalState')).toBe(undefined);
+    expect(grid.get('finalDigits')).toBe(finalDigitsComplete);
+});
+
 test('initialise grid cells', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     // Expected pattern of given digits have been set up
     const cells = grid.get('cells');
@@ -191,7 +220,7 @@ test('initialise grid cells', () => {
 });
 
 test('move input focus', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
     const move = false;     // No ctrl or shift
     const extend = true;    // Ctrl/shift + move
 
@@ -253,7 +282,7 @@ test('move input focus', () => {
 });
 
 test('extend selection', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
     expect(selectedCells(grid)).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 40);
     expect(selectedCells(grid)).toBe('40');
@@ -272,7 +301,7 @@ test('extend selection', () => {
 });
 
 test('input mode', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     const inputMode = (grid) => {
         return grid.get('tempInputMode') || grid.get('inputMode');
@@ -298,7 +327,7 @@ test('input mode', () => {
 });
 
 test('set one digit', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 2);
@@ -338,7 +367,7 @@ test('set one digit', () => {
 });
 
 test('attempt overwrite of given digit', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
 
@@ -358,11 +387,11 @@ test('attempt overwrite of given digit', () => {
     expect(c41.get('isGiven')).toBe(true);
 
     expect(grid.get('currentSnapshot')).toBe('');
-    expect(digitsFromGrid(grid)).toBe(initialDigits);
+    expect(digitsFromGrid(grid)).toBe(initialDigitsPartial);
 });
 
 test('set multiple digits', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 47);
@@ -450,7 +479,7 @@ test('set multiple digits', () => {
 });
 
 test('no highlight conflicts', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
     const settings = grid.get('settings');
     grid = grid.set('settings', { ...settings, [SETTINGS.highlightConflicts]: false });
 
@@ -525,7 +554,7 @@ test('no highlight conflicts', () => {
 });
 
 test('set cell color', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     expect(grid.get('inputMode')).toBe('digit');
 
@@ -564,7 +593,7 @@ test('set cell color', () => {
 });
 
 test('set pencilmarks', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
@@ -714,7 +743,7 @@ test('defaultDigitOpForSelection', () => {
 });
 
 test('simple pencil marking mode', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
     expect(modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking)).toBe(false);
 
     expect(grid.get('currentSnapshot')).toBe('');
@@ -726,7 +755,7 @@ test('simple pencil marking mode', () => {
     grid = modelHelpers.collapseAllOuterPencilMarks(grid);
     expect(grid.get('currentSnapshot')).toBe('11N3,12N3');
 
-    grid = newSudokuModel({initialDigits, skipCheck: true});
+    grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
     const settings = grid.get('settings');
     grid = grid.set('settings', { ...settings, [SETTINGS.simplePencilMarking]: true });
 
@@ -739,7 +768,7 @@ test('simple pencil marking mode', () => {
 
 test('pencilMarksToInner', () => {
     const extend = true;
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
     expect(grid.get('showPencilmarks')).toBe(true);
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 63);
     grid = modelHelpers.moveFocus(grid, 0, 1, extend);
@@ -752,7 +781,7 @@ test('pencilMarksToInner', () => {
 });
 
 test('show/hide pencilmarks', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
     expect(grid.get('showPencilmarks')).toBe(true);
     grid = modelHelpers.toggleShowPencilmarks(grid)
     expect(grid.get('showPencilmarks')).toBe(false);
@@ -761,8 +790,8 @@ test('show/hide pencilmarks', () => {
 });
 
 test('autoclean pencilmarks', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
-    expect(digitsFromGrid(grid)).toBe(initialDigits);
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
+    expect(digitsFromGrid(grid)).toBe(initialDigitsPartial);
     let startingSnapshot = '14N39,15N39,45N17,65N17,71T3,74N35,89T3,91T34,93T4,99T3';
     expect(grid.get('currentSnapshot')).toBe('');
     grid = modelHelpers.restoreSnapshot(grid, startingSnapshot)
@@ -784,8 +813,8 @@ test('autoclean pencilmarks', () => {
 });
 
 test('clear all colours', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
-    expect(digitsFromGrid(grid)).toBe(initialDigits);
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
+    expect(digitsFromGrid(grid)).toBe(initialDigitsPartial);
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 4);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 5);
@@ -915,6 +944,66 @@ test('check digits', () => {
             "7": false,
             "8": false,
             "9": false,
+        },
+    });
+
+    result = modelHelpers.checkDigits(
+        '000901230' +
+        '123008940' +
+        '894007650' +
+        '765000009' +
+        '000090000' +
+        '900000123' +
+        '012300894' +
+        '089400765' +
+        '076509000',
+        finalDigitsComplete
+    );
+    expect(result).toStrictEqual({
+        isSolved: false,
+        incompleteCount: 40,
+        completedDigits: {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "6": false,
+            "7": false,
+            "8": false,
+            "9": true,
+        },
+    });
+
+    result = modelHelpers.checkDigits(
+        '500901230' +
+        '123008940' +
+        '894007650' +
+        '765000009' +
+        '000090000' +
+        '900000123' +
+        '012300894' +
+        '089400765' +
+        '076509001',
+        finalDigitsComplete
+    );
+    expect(result).toStrictEqual({
+        isSolved: false,
+        hasErrors: true,
+        errorAtIndex: {
+            "0": "Incorrect digit",
+            "80": "Incorrect digit",
+        },
+        completedDigits: {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "6": false,
+            "7": false,
+            "8": false,
+            "9": true,
         },
     });
 

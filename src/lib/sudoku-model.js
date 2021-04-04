@@ -250,7 +250,10 @@ export const modelHelpers = {
         }
         const digits = initialDigits.split('');
         const result = modelHelpers.findSolutions(digits);
-        if (!result.uniqueSolution) {
+        if (result.uniqueSolution) {
+            grid = grid.set('finalDigits', result.finalDigits);
+        }
+        else {
             grid = grid.set('modalState', {
                 modalType: MODAL_TYPE_CHECK_RESULT,
                 icon: 'warning',
@@ -353,7 +356,7 @@ export const modelHelpers = {
         setTimeout(fetchHandler, fetchDelay);
     },
 
-    checkDigits: (digits) => {
+    checkDigits: (digits, finalDigits) => {
         const result = {
             isSolved: false,
         };
@@ -388,7 +391,15 @@ export const modelHelpers = {
             c[d] = (digitTally[d] === 9);
             return c;
         }, {});
-        const errorCount = Object.keys(errorAtIndex).length;
+        let errorCount = Object.keys(errorAtIndex).length;
+        if (finalDigits && errorCount === 0) {
+            for (let i = 0; i < 81; i++) {
+                if(digits[i] !== '0' && digits[i] !== finalDigits[i]) {
+                    errorAtIndex[i] = 'Incorrect digit';
+                    errorCount++;
+                }
+            }
+        }
         if (errorCount > 0) {
             result.hasErrors = true;
             result.errorAtIndex = errorAtIndex;
@@ -442,6 +453,7 @@ export const modelHelpers = {
         };
         if (solutions.length === 1  && !state.timedOut) {
             result.uniqueSolution = true;
+            result.finalDigits = solutions[0];
         }
         else if (solutions.length > 1 ) {
             result.error = 'This arrangement does not have a unique solution';
@@ -870,7 +882,8 @@ export const modelHelpers = {
 
     gameOverCheck: (grid) => {
         const digits = grid.get('cells').map(c => c.get('digit')).join('');
-        const result = modelHelpers.checkDigits(digits);
+        const finalDigits = grid.get('finalDigits');
+        const result = modelHelpers.checkDigits(digits, finalDigits);
         if (result.hasErrors) {
             grid = modelHelpers.applyErrorHighlights(grid, result.errorAtIndex);
             grid = grid.set('modalState', {
