@@ -1,5 +1,9 @@
 
-function calculateGridDimensions(cellSize, marginSize) {
+function calculateGridDimensions(cellSize, marginSize, fontSize) {
+    const scaledFontSize = fontSize * cellSize / 100;
+    // A weird bit of linear algebra that seems to be necessary to vertically centre
+    // text of different sizes in the default sans-serif font on my dev platform :-/
+    const scaledTextOffset = Math.floor(cellSize * (51 + (fontSize * -8) / 12) / 100);
     const cells = [...Array(81).keys()].map((v, index) => {
         const row = Math.floor(index / 9) + 1;
         const col = (index % 9) + 1;
@@ -17,12 +21,13 @@ function calculateGridDimensions(cellSize, marginSize) {
             x,
             y,
             textX: x + (cellSize / 2),
-            textY: y + (75 * cellSize / 100),
+            textY: y + scaledFontSize + scaledTextOffset,
         };
     });
     const dim = {
         cellSize,
         marginSize,
+        fontSize: scaledFontSize,
         width: (marginSize * 2) + (cellSize * 9),
         height: (marginSize * 2) + (cellSize * 9),
         cell: cells,

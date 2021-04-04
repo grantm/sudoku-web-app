@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function SudokuCellDigit({cell, dim, cellSize}) {
+export default function SudokuCellDigit({cell, dim, fontSize}) {
     const digit = cell.get('digit');
     if (digit === '0') {
         return null;
@@ -12,7 +12,6 @@ export default function SudokuCellDigit({cell, dim, cellSize}) {
     if (cell.get('errorMessage') !== undefined) {
         classes.push('error');
     }
-    const fontSize = 72 * cellSize / 100;
     return (
         <text
             className={classes.join(' ')}

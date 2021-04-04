@@ -45,10 +45,10 @@ function layerCellPencilMarks ({simplePencilMarking, cells, cellSize, dim}) {
     });
 }
 
-function layerCellDigits ({cells, cellSize, dim}) {
+function layerCellDigits ({cells, dim}) {
     return cells.map((cell, i) => {
         const cellDim = dim.cell[i];
-        return <SudokuCellDigit key={`dig${i}`} cell={cell} dim={cellDim} cellSize={cellSize} />;
+        return <SudokuCellDigit key={`dig${i}`} cell={cell} dim={cellDim} fontSize={dim.fontSize} />;
     });
 }
 
@@ -128,7 +128,8 @@ function useCellTouch (inputHandler) {
 function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouseOverHandler, inputHandler}) {
     const cellSize = 100;
     const marginSize = 50;
-    const dim = useMemo(() => calculateGridDimensions(cellSize, marginSize), [cellSize, marginSize]);
+    const fontSize = 72;
+    const dim = useMemo(() => calculateGridDimensions(cellSize, marginSize, fontSize), [cellSize, marginSize, fontSize]);
     const settings = grid.get('settings');
     const simplePencilMarking = settings[SETTINGS.simplePencilMarking];
     const highlightMatches = settings[SETTINGS.highlightMatches];
