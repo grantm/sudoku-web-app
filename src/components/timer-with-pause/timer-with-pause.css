@@ -1,18 +1,18 @@
+#timer {
+    display: flex;
+}
 
 .elapsed-time {
     display: inline-block;
     min-width: 2.8em;
-    margin: 1.8vh 0.4vh 0 2vh;
+    margin: 2vh 0.4vh 0 2vh;
     opacity: 0.6;
+    line-height: 1;
 }
 
 .solved .elapsed-time {
     color: var(--solved-text-color);
     font-weight: bold;
-}
-
-#pause-btn {
-    margin-top: 0.8vh;
 }
 
 .solved #pause-btn {

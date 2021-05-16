@@ -12,3 +12,4 @@ export const MODAL_TYPE_HELP = 'help';
 export const MODAL_TYPE_HINT = 'hint';
 export const MODAL_TYPE_ABOUT = 'about';
 export const MODAL_TYPE_QR_CODE = 'qr-code';
+export const MODAL_TYPE_FEATURES = 'features';

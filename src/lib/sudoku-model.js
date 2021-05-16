@@ -19,6 +19,7 @@ import {
     MODAL_TYPE_HELP,
     MODAL_TYPE_ABOUT,
     MODAL_TYPE_QR_CODE,
+    MODAL_TYPE_FEATURES,
 } from './modal-types';
 
 export const SETTINGS = {
@@ -33,6 +34,14 @@ export const SETTINGS = {
     passProgressToSolver: "pass-progress-to-solver",
     showRatings: "show-ratings",
 };
+
+export const AVAILABLE_FEATURE_FLAGS = [
+    {
+        name: "hints",
+        description: "Add a hint button. Note: the hint 'server' is still being debugged.",
+        issueNumber: 34,
+    }
+];
 
 const difficultyLevels = [
     { value: "1", name: "Easy" },
@@ -84,10 +93,12 @@ export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnap
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
+    const featureFlags = modelHelpers.loadFeatureFlags();
     const grid = Map({
         solved: false,
         mode,
         settings,
+        featureFlags,
         difficultyLevel: (difficultyLevel || '').replace(/[^1-4]/g, ''),
         inputMode: 'digit',
         tempInputMode: undefined,
@@ -140,7 +151,7 @@ export const modelHelpers = {
         catch {
             // ignore errors
         };
-        const settings = Object.assign({}, defaults, savedSettings);
+        const settings = {...defaults, ...savedSettings};
         modelHelpers.syncSettingsToDom(settings);
         return settings;
     },
@@ -150,6 +161,34 @@ export const modelHelpers = {
         window.localStorage.setItem('settings', newSettingsJSON);
         modelHelpers.syncSettingsToDom(newSettings);
         return grid.set('settings', newSettings);
+    },
+
+    loadFeatureFlags: () => {
+        let savedFeatureFlags = {};
+        try {
+            const savedFeatureFlagsJSON = window.localStorage.getItem('featureFlags') || '{}';
+            savedFeatureFlags = JSON.parse(savedFeatureFlagsJSON);
+        }
+        catch {
+            // ignore errors
+        };
+        const flags = {};
+        AVAILABLE_FEATURE_FLAGS.forEach((f) => {
+            if (savedFeatureFlags[f.name]) {
+                flags[f.name] = true;
+            }
+        });
+        return flags;
+    },
+
+    saveFeatureFlags: (grid, newFeatureFlags) => {
+        const newFeatureFlagsJSON = JSON.stringify(newFeatureFlags);
+        window.localStorage.setItem("featureFlags", newFeatureFlagsJSON);
+        return grid.set("featureFlags", newFeatureFlags);
+    },
+
+    featureIsEnabled: (grid, featureName) => {
+        return (grid.get("featureFlags") || {})[featureName] === true;
     },
 
     hinter: (grid) => {
@@ -490,7 +529,7 @@ export const modelHelpers = {
     },
 
     findSolutions: (digits, userOpt) => {
-        const opt = Object.assign({findAll: false}, userOpt);
+        const opt = {findAll: false, ...userOpt};
         const state = {
             findAll: opt.findAll,
             solutions: [],
@@ -784,8 +823,7 @@ export const modelHelpers = {
         });
     },
 
-    showQRModal: (grid, args) => {
-        const { puzzleURL } = args;
+    showQRModal: (grid, puzzleURL) => {
         return grid.set('modalState', {
             modalType: MODAL_TYPE_QR_CODE ,
             puzzleURL,
@@ -856,6 +894,15 @@ export const modelHelpers = {
          });
     },
 
+    showFeaturesModal: (grid) => {
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_FEATURES,
+            availableFeatures: AVAILABLE_FEATURE_FLAGS,
+            enabledFeatures: grid.get("featureFlags"),
+            escapeAction: 'goto-main-entry',
+         });
+    },
+
     applyModalAction: (grid, args) => {
         const action = args.action || args;
         grid = grid.set('modalState', undefined);
@@ -866,29 +913,32 @@ export const modelHelpers = {
             return modelHelpers.showWelcomeModal(grid);
         }
         else if (action === 'cancel-solver') {
-            return modelHelpers.saveSolverPreferences(grid, args);
+            return modelHelpers.saveSolverPreferences(grid, args.passProgress);
         }
         else if (action === 'goto-main-entry') {
-            window.location.search = '';
+            window.location.href = window.location.href.replace(/[?#].*$/, "");
             return grid;
         }
         else if (action === 'show-share-modal') {
             return modelHelpers.showShareModal(grid);
         }
         else if (action === 'retry-initial-digits') {
-            return modelHelpers.retryInitialDigits(grid, args);
+            return modelHelpers.retryInitialDigits(grid, args.digits);
         }
         else if (action === 'show-paste-modal') {
-            return modelHelpers.showPasteModal(grid, args);
+            return modelHelpers.showPasteModal(grid);
         }
         else if (action === 'show-qr-modal') {
-            return modelHelpers.showQRModal(grid, args);
+            return modelHelpers.showQRModal(grid, args.puzzleURL);
         }
         else if (action === 'paste-initial-digits') {
-            return modelHelpers.retryInitialDigits(grid, args);
+            return modelHelpers.retryInitialDigits(grid, args.digits);
         }
         else if (action === 'save-settings') {
-            return modelHelpers.applyNewSettings(grid, args);
+            return modelHelpers.applyNewSettings(grid, args.newSettings);
+        }
+        else if (action === 'save-feature-flags') {
+            return modelHelpers.applyNewFeatureFlags(grid, args.newFeatureFlags);
         }
         else if (action === 'restart-confirmed') {
             return modelHelpers.applyRestart(grid);
@@ -902,14 +952,12 @@ export const modelHelpers = {
         return grid;
     },
 
-    retryInitialDigits: (grid, args) => {
-        const digits = args.digits;
+    retryInitialDigits: (grid, digits) => {
         window.location.search = `s=${digits}`;
         return grid;
     },
 
-    applyNewSettings: (grid, args) => {
-        const {newSettings} = args;
+    applyNewSettings: (grid, newSettings) => {
         // If simple pencil marking mode is being changed from 'off' to 'on' collapse
         // all pencil marks to inner.
         const oldSimpleMode = modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking);
@@ -917,6 +965,12 @@ export const modelHelpers = {
             grid = modelHelpers.collapseAllOuterPencilMarks(grid);
         }
         return modelHelpers.saveSettings(grid, newSettings);
+    },
+
+    applyNewFeatureFlags: (grid, newFeatureFlags) => {
+        grid = modelHelpers.saveFeatureFlags(grid, newFeatureFlags);
+        window.location.href = window.location.href.replace(/[?#].*$/, "");
+        return grid;
     },
 
     collapseAllOuterPencilMarks: (grid) => {
@@ -951,12 +1005,12 @@ export const modelHelpers = {
         return modelHelpers.checkCompletedDigits(grid);
     },
 
-    saveSolverPreferences: (grid, args) => {
+    saveSolverPreferences: (grid, passProgress) => {
         const allSettings = grid.get('settings');
-        if (allSettings[SETTINGS.passProgressToSolver] === args.passProgress) {
+        if (allSettings[SETTINGS.passProgressToSolver] === passProgress) {
             return grid;
         }
-        const newSettings = { ...allSettings, [SETTINGS.passProgressToSolver]: args.passProgress }
+        const newSettings = { ...allSettings, [SETTINGS.passProgressToSolver]: passProgress }
         return modelHelpers.saveSettings(grid, newSettings);
     },
 

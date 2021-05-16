@@ -62,6 +62,7 @@ test('initialise grid (partial)', () => {
         "currentSnapshot",
         "difficultyLevel",
         "endTime",
+        "featureFlags",
         "focusIndex",
         "hasErrors",
         "initialDigits",

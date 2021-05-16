@@ -263,6 +263,40 @@ input.toggle:checked + .indicator::before {
     background-color: var(--input-toggle-on-color);
 }
 
+.modal-container  .modal.features {
+    max-width: min(26em, 94vw);
+}
+
+.feature-list {
+    margin: 0 1em 0 0.6em;
+}
+
+.feature-list th {
+    text-align: left;
+    border-bottom: 1px solid var(--modal-heading-underline-color);
+}
+
+.feature-list td {
+    vertical-align: top;
+}
+
+.feature-list .checkbox-wrapper {
+    display: block;
+    position: relative;
+    width: 2em;
+    margin-top: 0.25em;
+    padding: 0;
+}
+
+.feature-list .description {
+    padding: 0.2em 0.4em;
+}
+
+.feature-list .issue {
+    text-align: right;
+    padding-right: 0.6em;
+}
+
 .modal.about p {
     max-width: 23em;
 }
@@ -431,6 +465,10 @@ input.toggle:checked + .indicator::before {
 
 .hint-text p {
     margin: 0 0 1.2em 0;
+}
+
+.modal.features .no-features {
+    font-style: italic;
 }
 
 @media screen and (max-width: 500px) {

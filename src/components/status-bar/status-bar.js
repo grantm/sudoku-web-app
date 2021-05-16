@@ -24,7 +24,7 @@ function SiteLink () {
 }
 
 
-function StatusBar ({showTimer, startTime, endTime, pausedAt, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
+function StatusBar ({showTimer, startTime, endTime, pausedAt, showHints, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
     const timer = showTimer
         ? (
             <TimerWithPause
@@ -39,16 +39,22 @@ function StatusBar ({showTimer, startTime, endTime, pausedAt, showPencilmarks, m
         <div className="status-bar" onMouseDown={stopPropagation}>
             <SiteLink />
             {timer}
-            <FullscreenButton />
-            <HintButton menuHandler={menuHandler} />
-            <SettingsButton menuHandler={menuHandler} />
-            <MenuButton
-                initialDigits={initialDigits}
-                startTime={startTime}
-                endTime={endTime}
-                showPencilmarks={showPencilmarks}
-                menuHandler={menuHandler}
-            />
+            <div className="status-bar-buttons">
+                <FullscreenButton />
+                {
+                    showHints
+                        ? <HintButton menuHandler={menuHandler} />
+                        : null
+                }
+                <SettingsButton menuHandler={menuHandler} />
+                <MenuButton
+                    initialDigits={initialDigits}
+                    startTime={startTime}
+                    endTime={endTime}
+                    showPencilmarks={showPencilmarks}
+                    menuHandler={menuHandler}
+                />
+            </div>
         </div>
     );
 }

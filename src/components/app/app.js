@@ -56,11 +56,14 @@ const inputModeFromHotKey = {
 
 function initialGridFromURL () {
     const params = new URLSearchParams(window.location.search);
-    const grid = newSudokuModel({
+    let grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
         storeCurrentSnapshot: sn => document.body.dataset.currentSnapshot = sn,
     });
+    if (window.location.hash === "#features") {
+        grid = modelHelpers.showFeaturesModal(grid);
+    }
     document.body.dataset.initialDigits = grid.get('initialDigits');
     return grid;
 }
@@ -505,6 +508,7 @@ function App() {
         }
     }
     const modalActive = modalState !== undefined;
+    const showHints = modelHelpers.featureIsEnabled(grid, 'hints') && mode === 'solve';
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
@@ -570,6 +574,7 @@ function App() {
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}
                 pausedAt={pausedAt}
+                showHints={showHints}
                 showPencilmarks={grid.get('showPencilmarks')}
                 menuHandler={menuHandler}
                 pauseHandler={pauseHandler}
