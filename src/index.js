@@ -4,11 +4,10 @@ import './index.css';
 import App from './components/app/app';
 import * as serviceWorker from './serviceWorker';
 
-window.addEventListener('beforeunload', function (e) { // consider changing this logic as beforeunload not recommended, and add logic to save the current snapshot to local storage
+window.addEventListener('beforeunload', function (e) {
     // If a puzzle is in progress, allow user to cancel page unload
-    const currentSnapshot = document.body.dataset.currentSnapshot;
-    const solved = document.querySelector('.sudoku-app.solved');
-    if (currentSnapshot && !solved) {
+    const {grid} = JSON.parse(document.body.dataset.gameState || '{}');
+    if (grid && grid.currentSnapshot && !grid.solved) {
         e.preventDefault();     // Sufficient for Firefox
         e.returnValue = '';     // Needed by Chrome
     }
@@ -17,19 +16,9 @@ window.addEventListener('beforeunload', function (e) { // consider changing this
 
 document.addEventListener("visibilitychange", function() {
     if (document.visibilityState === "hidden") {
-        const gameState = document.body.dataset;
-        const solved = document.querySelector('.sudoku-app.solved');
-        if (solved) {
-            localStorage.removeItem("gamestate");
-        }
-        else if (gameState) {
-            const toSave = {
-                snapshot: gameState.currentSnapshot || '',
-                initialDigits: gameState.initialDigits,
-                lastPlayedTime: new Date()
-            };
-    
-            localStorage.setItem("gamestate", JSON.stringify(toSave));
+        const {grid} = JSON.parse(document.body.dataset.gameState || '{}');
+        if (grid && grid.currentSnapshot && !grid.solved) {
+            localStorage.setItem("gamestate", document.body.dataset.gameState);
         }
     }
 

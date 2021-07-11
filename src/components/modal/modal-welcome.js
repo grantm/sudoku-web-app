@@ -68,14 +68,15 @@ function RestoreLocalSession({modalHandler}) {
     if (!gameStateJson) {
         return null;
     }
-    const {initialDigits, snapshot, lastPlayedTime} = JSON.parse(gameStateJson);
-    if (!snapshot) {
+    const {grid, lastUpdatedTime: lastUpdatedTimeString} = JSON.parse(gameStateJson);
+    if (!grid || !grid.currentSnapshot || grid.solved) {
         return null;
     }
+    const lastUpdatedTime = new Date(lastUpdatedTimeString);
     const restoreLocalSessionHandler = () => modalHandler({
         action: 'restore-local-session',
-        snapshot,
-        initialDigits
+        grid,
+        lastUpdatedTime
     });
     
     return (
@@ -85,7 +86,7 @@ function RestoreLocalSession({modalHandler}) {
           onClick={restoreLocalSessionHandler}
         >
           Continue unfinished game from{" "}
-          {new Date(lastPlayedTime).toLocaleDateString("en-US", {
+          {lastUpdatedTime.toLocaleDateString("en-US", {
             weekday: "short",
             month: "short",
             day: "numeric",

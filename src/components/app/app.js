@@ -57,10 +57,32 @@ function initialGridFromURL () {
     const grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
-        storeCurrentSnapshot: sn => document.body.dataset.currentSnapshot = sn, // update here to save to local storage (also?)
+        onSnapshotChange: persistSudokuModel, // update here to save to local storage (also?)
     });
     document.body.dataset.initialDigits = grid.get('initialDigits');
     return grid;
+}
+
+function persistSudokuModel(grid) {
+    const gameStateJSON = JSON.stringify({
+        grid: {
+            solved: grid.get('solved'),
+            mode: grid.get('mode'),
+            difficultyLevel: grid.get('difficultyLevel'),
+            inputMode: grid.get('inputMode'),
+            startTime: grid.get('startTime'),
+            endTime: grid.get('endTime'),
+            pausedAt: grid.get('pausedAt'),
+            // undoList: grid.get('undoList').toArray(),
+            // redoList: grid.get('redoList').toArray(),
+            currentSnapshot: grid.get('currentSnapshot'),
+            focusIndex: grid.get('focusIndex'),
+            matchDigit: grid.get('matchDigit'),
+            initialDigits: grid.get('initialDigits')
+        },
+        lastUpdatedTime: new Date()
+    });
+    document.body.dataset.gameState = gameStateJSON;
 }
 
 function saveScreenshot () {
@@ -410,7 +432,7 @@ function vkbdKeyPressHandler(e, setGrid, inputMode) {
 function dispatchModalAction(action, setGrid) {
     if (action.action === 'paste-initial-digits') {
         // Suppress onpageunload handling when user clicks 'Start' after pasting a puzzle
-        delete document.body.dataset.currentSnapshot;
+        delete document.body.dataset.gameState;
     }
     setGrid((grid) => modelHelpers.applyModalAction(grid, action));
 }
@@ -457,7 +479,7 @@ function pauseTimer(setGrid) {
 
 function preStartCheck() {
     // Suppress onpageunload handling when user clicks 'Start' after entering a puzzle
-    delete document.body.dataset.currentSnapshot;
+    delete document.body.dataset.gameState;
 }
 
 function getDimensions(winSize) {

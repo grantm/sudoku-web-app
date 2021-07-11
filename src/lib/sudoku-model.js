@@ -98,7 +98,7 @@ function newCell(index, digit) {
     });
 }
 
-export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnapshot, entryPoint, skipCheck}) {
+export function newSudokuModel({initialDigits, difficultyLevel, onSnapshotChange, entryPoint, skipCheck}) {
     initialDigits = (initialDigits || '').replace(/[_.-]/g, '0').replace(/\D/g, '');
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
@@ -116,7 +116,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, storeCurrentSnap
         undoList: List(),
         redoList: List(),
         currentSnapshot: '',
-        storeCurrentSnapshot: storeCurrentSnapshot,
+        onSnapshotChange: onSnapshotChange,
         cells: List(),
         showPencilmarks: true,
         hasErrors: false,
@@ -498,9 +498,9 @@ export const modelHelpers = {
 
     setCurrentSnapshot: (grid, newSnapshot) => {
         grid = grid.set('currentSnapshot', newSnapshot);
-        const watcher = grid.get('storeCurrentSnapshot');
+        const watcher = grid.get('onSnapshotChange');
         if (watcher) {
-            watcher(newSnapshot);
+            watcher(grid);
         }
         return grid;
     },
@@ -787,8 +787,13 @@ export const modelHelpers = {
             return modelHelpers.resumeTimer(grid);
         }
         else if (action === 'restore-local-session') {
-            const tempGrid = modelHelpers.setGivenDigits(grid, args.initialDigits, { skipCheck: false });
-            return modelHelpers.restoreSnapshot(tempGrid, args.snapshot)
+            // const playTime = args.grid.startTime - args.lastUpdatedTime;
+            let g = grid.merge(args.grid)
+            g = modelHelpers.setGivenDigits(g, args.grid.initialDigits, {});
+            g = modelHelpers.restoreSnapshot(g, args.grid.currentSnapshot);
+            // const adjustedStartTime = new Date(Date.now() - playTime);
+            // g.set('startTime', new Date())
+            return modelHelpers.checkCompletedDigits(g);
         }
         return grid;
     },
