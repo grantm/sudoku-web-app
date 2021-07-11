@@ -786,6 +786,10 @@ export const modelHelpers = {
         else if (action === 'resume-timer') {
             return modelHelpers.resumeTimer(grid);
         }
+        else if (action === 'restore-local-session') {
+            const tempGrid = modelHelpers.setGivenDigits(grid, args.initialDigits, { skipCheck: false });
+            return modelHelpers.restoreSnapshot(tempGrid, args.snapshot)
+        }
         return grid;
     },
 

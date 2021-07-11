@@ -57,7 +57,7 @@ function initialGridFromURL () {
     const grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
-        storeCurrentSnapshot: sn => document.body.dataset.currentSnapshot = sn,
+        storeCurrentSnapshot: sn => document.body.dataset.currentSnapshot = sn, // update here to save to local storage (also?)
     });
     document.body.dataset.initialDigits = grid.get('initialDigits');
     return grid;
@@ -481,7 +481,7 @@ function getDimensions(winSize) {
     return dim;
 }
 
-function App() {
+function App() { // edit this component to prompt user whether they want to resume their last session
     const [grid, setGrid] = useState(initialGridFromURL);
     const settings = grid.get('settings');
     const pausedAt = grid.get('pausedAt');

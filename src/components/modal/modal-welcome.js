@@ -63,6 +63,40 @@ function RecentlyShared({modalState}) {
     );
 }
 
+function RestoreLocalSession({modalHandler}) {
+    const gameStateJson = localStorage.getItem('gamestate');
+    if (!gameStateJson) {
+        return null;
+    }
+    const {initialDigits, snapshot, lastPlayedTime} = JSON.parse(gameStateJson);
+    if (!snapshot) {
+        return null;
+    }
+    const restoreLocalSessionHandler = () => modalHandler({
+        action: 'restore-local-session',
+        snapshot,
+        initialDigits
+    });
+    
+    return (
+      <p style={{textAlign: 'center'}}>
+        <button
+          className="primary"
+          onClick={restoreLocalSessionHandler}
+        >
+          Continue unfinished game from{" "}
+          {new Date(lastPlayedTime).toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })}
+        </button>
+      </p>
+    );
+}
+
 
 function ModalWelcome({modalState, modalHandler}) {
     const cancelHandler = () => modalHandler('cancel');
@@ -74,6 +108,7 @@ function ModalWelcome({modalState, modalHandler}) {
             <p>You can get started by entering a new puzzle into a blank grid:</p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={cancelHandler}>Enter a new puzzle</button></p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={showPasteHandler}>Paste a new puzzle</button></p>
+            <RestoreLocalSession modalHandler={modalHandler} />
             <p>Or you can select a recently shared puzzle:</p>
             <RecentlyShared modalState={modalState} />
             <div id="welcome-footer">
