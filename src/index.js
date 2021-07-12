@@ -4,16 +4,6 @@ import './index.css';
 import App from './components/app/app';
 import * as serviceWorker from './serviceWorker';
 
-window.addEventListener('beforeunload', function (e) {
-    // If a puzzle is in progress, allow user to cancel page unload
-    const {grid} = JSON.parse(document.body.dataset.gameState || '{}');
-    if (grid && grid.currentSnapshot && !grid.solved) {
-        e.preventDefault();     // Sufficient for Firefox
-        e.returnValue = '';     // Needed by Chrome
-    }
-    // otherwise leave page unload to proceed unhindered
-});
-
 document.addEventListener("visibilitychange", function() {
     if (document.visibilityState === "hidden") {
         const {grid} = JSON.parse(document.body.dataset.gameState || '{}');
@@ -21,7 +11,6 @@ document.addEventListener("visibilitychange", function() {
             localStorage.setItem("gamestate", document.body.dataset.gameState);
         }
     }
-
 });
 
 ReactDOM.render(<App />, document.getElementById('root'));
