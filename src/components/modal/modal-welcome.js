@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
-import { modelHelpers } from '../../lib/sudoku-model.js';
+import { modelHelpers } from '../../lib/sudoku-model';
 
 import SudokuMiniGrid from '../sudoku-grid/sudoku-mini-grid';
 import Spinner from '../spinner/spinner';
+import { List } from '../../lib/not-mutable';
 
 function stopPropagation (e) {
     e.stopPropagation();
@@ -68,9 +69,14 @@ function RestoreLocalSession({modalHandler}) {
     if (!gameStateJson) {
         return null;
     }
-    const {grid, lastUpdatedTime: lastUpdatedTimeString} = JSON.parse(gameStateJson);
-    if (!grid || !grid.currentSnapshot || grid.solved) {
+    const {grid: serialisedGrid, lastUpdatedTime: lastUpdatedTimeString} = JSON.parse(gameStateJson);
+    if (!serialisedGrid || !serialisedGrid.currentSnapshot || serialisedGrid.solved) {
         return null;
+    }
+    const grid = {
+        ...serialisedGrid,
+        undoList: List(serialisedGrid.undoList),
+        redoList: List(serialisedGrid.redoList)
     }
     const lastUpdatedTime = new Date(lastUpdatedTimeString);
     const restoreLocalSessionHandler = () => modalHandler({
