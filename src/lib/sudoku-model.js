@@ -440,7 +440,7 @@ export const modelHelpers = {
                     }
                 })
                 .catch(error => {
-                    setNewModalState({errorMessage: error.toString});
+                    setNewModalState({errorMessage: error.toString()});
                 });
         };
         tryRequest();

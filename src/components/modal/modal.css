@@ -19,6 +19,7 @@
 }
 
 .modal {
+    position: relative;
     box-sizing: border-box;
     max-width: 50%;
     max-height: 90%;
@@ -31,9 +32,9 @@
     box-shadow: var(--modal-box-shadow);
 }
 
-.modal > h1 {
+.modal h1 {
     margin-top: 0.2em;
-    line-height: 100%;
+    line-height: 1.3;
     font-size: 150%;
     padding-bottom: 0.16em;
     border-bottom: 2px solid var(--modal-heading-underline-color);
@@ -100,6 +101,13 @@
     margin-left: 1em;
     border: none;
     border-radius: 0.15em;
+}
+
+.portrait .modal .buttons a.btn,
+.portrait .modal .buttons button {
+    margin: 0 0 0.5em 0.5em;
+    min-width: 4em;
+    padding: 0.4em 0.6em;
 }
 
 .modal.welcome {
@@ -439,7 +447,36 @@ input.toggle:checked + .indicator::before {
 }
 
 .modal.hint {
-    max-width: 85%;
+    height: 100%;
+    max-width: 85vw;
+    max-height: 90vh;
+    padding: 0;
+    overflow-y: hidden;
+}
+
+.hint-layout {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1.8rem;
+}
+
+.hint-body {
+    overflow-y: auto;
+    padding: 0 1rem;
+}
+
+.modal .hint-footer {
+    background-color: var(--hint-footer-bg-color);
+    width: 100%;
+    text-align: center;
+}
+
+.hint-footer span {
+    font-size: 1rem;
+    display: inline-block;
+    padding: 0.2em;
 }
 
 .portrait .modal.hint {
@@ -447,7 +484,7 @@ input.toggle:checked + .indicator::before {
     max-height: 90%;
 }
 
-.landscape .hint-layout {
+.landscape .hint-body-layout {
     display: flex;
 }
 
@@ -459,8 +496,12 @@ input.toggle:checked + .indicator::before {
 
 .portrait .sudoku-grid.hint svg {
     height: 50vh;
-    max-height: 80vw;
+    max-height: 88vw;
     margin-bottom: 1.2em;
+}
+
+.hint-text {
+    max-width: 40em;
 }
 
 .hint-text p {

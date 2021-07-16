@@ -156,7 +156,7 @@ class SudokuExplainer {
                 candidatesStep: {
                     needCandidates: true,
                     title: "Enter candidates",
-                    html: "<p>Enter all possible candidates in the highlighted cells</p>",
+                    html: "<p>Enter all possible candidates in the highlighted cells.</p>",
                     highlightCell: candidatesNeeded,
                     digits: currDigits,
                     candidates: currCandidates,

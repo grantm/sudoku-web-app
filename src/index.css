@@ -66,6 +66,7 @@
     --solved-given-digit-color: #333333;
     --solved-fill-color: #b9ffb9;
     --error-selected-fill-color: #ff8c8c;
+    --hint-footer-bg-color: #f0f0f0;
     --hint-target-fill-color: #caf9ca;
     --hint-highlight-fill-color: #ffffd3;
     --hint-new-digit-fill-color: #ffffff;
@@ -154,10 +155,11 @@
     --solved-given-digit-color: #595959;
     --solved-fill-color: #77e877;
     --error-selected-fill-color: #ff8c8c;
-    --hint-target-fill-color: #2f6a2f;
+    --hint-footer-bg-color: #312e2e;
+    --hint-target-fill-color: #796827;
     --hint-highlight-fill-color: #796c03;
-    --hint-new-digit-fill-color: #973838;
-    --hint-new-digit-bg-color: #fbb6b6;
+    --hint-new-digit-fill-color: #2cff2c;
+    --hint-new-digit-bg-color: #3c3637;
     --hint-eliminations-fill-color: #973838;
     --hint-elimination-bg-color: #fbb6b6;
     --hint-elimination-fill-color: #d70000;
