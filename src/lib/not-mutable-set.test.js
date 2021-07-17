@@ -2,6 +2,11 @@ import { Set } from './not-mutable';
 // import { Set } from 'immutable';
 
 test('Set()', () => {
+    expect(Set.isSet(null)).toBe(false);
+    expect(Set.isSet(undefined)).toBe(false);
+    expect(Set.isSet({})).toBe(false);
+    expect(Set.isSet([])).toBe(false);
+
     const s1 = Set();
     expect(typeof s1).toBe('object');
     expect(Set.isSet(s1)).toBe(true);

@@ -2,6 +2,11 @@ import { List } from './not-mutable';
 // import { List } from 'immutable';
 
 test('List()', () => {
+    expect(List.isList(null)).toBe(false);
+    expect(List.isList(undefined)).toBe(false);
+    expect(List.isList({})).toBe(false);
+    expect(List.isList([])).toBe(false);
+
     const l1 = List();
     expect(typeof l1).toBe('object');
     expect(List.isList(l1)).toBe(true);

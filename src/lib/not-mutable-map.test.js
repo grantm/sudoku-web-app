@@ -2,6 +2,11 @@ import { Map } from './not-mutable';
 // import { Map } from 'immutable';
 
 test('Map()', () => {
+    expect(Map.isMap(null)).toBe(false);
+    expect(Map.isMap(undefined)).toBe(false);
+    expect(Map.isMap({})).toBe(false);
+    expect(Map.isMap([])).toBe(false);
+
     const m1 = Map();
     expect(typeof m1).toBe('object');
     expect(Map.isMap(m1)).toBe(true);
