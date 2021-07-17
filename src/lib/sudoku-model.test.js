@@ -588,6 +588,19 @@ test('set pencilmarks', () => {
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
     expect(grid.get('matchDigit')).toBe('2');
 
+    expect(grid.get('currentSnapshot')).toBe('11D7,15T123,17T2,18T2,93D7');
+
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
+
+    expect(grid.get('currentSnapshot')).toBe('11D7,15T13,93D7');
+
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
+
+    expect(grid.get('currentSnapshot')).toBe('11D7,15T123,17T2,18T2,93D7');
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 4);
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
+
     expect(grid.get('currentSnapshot')).toBe('11D7,15T13,17T2,18T2,93D7');
 
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
@@ -602,6 +615,25 @@ test('set pencilmarks', () => {
     expect(pencilDigits(c4.get('innerPencils'))).toBe('13');
     let c6 = grid.get('cells').get(6);
     expect(pencilDigits(c6.get('outerPencils'))).toBe('2');
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 12);
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '3');
+
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,24N3,93D7');
+
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '3');
+
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N1,15T13N13,17T2,18T2,93D7');
+
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '3');
+
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,24N3,93D7');
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 12);
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '3');
+
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,93D7');
 
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 13);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 14);
@@ -630,9 +662,9 @@ test('set pencilmarks', () => {
     grid = modelHelpers.undoOneAction(grid);
     expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,93D7');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('11D7,14N1,15T13N1,17T2,18T2,93D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N13,15T13N13,17T2,18T2,24N3,93D7');
     grid = modelHelpers.undoOneAction(grid);
-    expect(grid.get('currentSnapshot')).toBe('11D7,15T13,17T2,18T2,93D7');
+    expect(grid.get('currentSnapshot')).toBe('11D7,14N1,15T13N13,17T2,18T2,93D7');
 });
 
 test('defaultDigitOpForSelection', () => {
@@ -665,6 +697,20 @@ test('defaultDigitOpForSelection', () => {
         '000001000' +
         '050009000'
     );
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
+    expect(grid.get('currentSnapshot')).toBe('11D5,14T2,24D5,57D5,63D5,92D5');
+
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 4);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 5);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 12);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 13);
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
+    expect(grid.get('currentSnapshot')).toBe('11D5,14T2,15T2,24D5,25T2,57D5,63D5,92D5');
+
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
+    expect(grid.get('currentSnapshot')).toBe('11D5,24D5,57D5,63D5,92D5');
 });
 
 test('simple pencil marking mode', () => {

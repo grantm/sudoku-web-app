@@ -944,6 +944,11 @@ export const modelHelpers = {
         return sameRegion ? 'toggleOuterPencilMark' : 'setDigit';
     },
 
+    selectionHasMatch: (grid, testFunc) => {
+        const selection = grid.get("cells").filter((c) => c.get("isSelected"));
+        return !!(selection.find(testFunc));
+    },
+
     updateSelectedCells: (grid, opName, ...args) => {
         if (actionsBlocked(grid)) {
             return grid;
@@ -951,6 +956,16 @@ export const modelHelpers = {
         const isSimpleMode = modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking);
         if (opName === 'toggleOuterPencilMark' && isSimpleMode) {
             opName = 'toggleInnerPencilMark'
+        }
+        if (opName === 'toggleInnerPencilMark' || opName === 'toggleOuterPencilMark') {
+            const [digit] = args;
+            const setName = opName === 'toggleInnerPencilMark' ? 'innerPencils' : 'outerPencils'
+            const setMode = modelHelpers.selectionHasMatch(grid, c => {
+                return c.get('digit') !== '0'
+                        ? false  // ignore full digits in selection
+                        : !c.get(setName).includes(digit);
+            });
+            args = [digit, setMode];
         }
         const mode = grid.get('mode');
         const op = modelHelpers[opName + 'AsCellOp'];
@@ -1022,25 +1037,25 @@ export const modelHelpers = {
         });
     },
 
-    toggleInnerPencilMarkAsCellOp: (c, digit) => {
+    toggleInnerPencilMarkAsCellOp: (c, digit, setMode) => {
         if (c.get('digit') !== '0') {
             return c;
         }
         let pencilMarks = c.get('innerPencils');
-        pencilMarks = pencilMarks.includes(digit)
-            ? pencilMarks.delete(digit)
-            : pencilMarks.add(digit);
+        pencilMarks = setMode
+            ? pencilMarks.add(digit)
+            : pencilMarks.delete(digit);
         return c.set('innerPencils', pencilMarks);
     },
 
-    toggleOuterPencilMarkAsCellOp: (c, digit) => {
+    toggleOuterPencilMarkAsCellOp: (c, digit, setMode) => {
         if (c.get('digit') !== '0') {
             return c;
         }
         let pencilMarks = c.get('outerPencils');
-        pencilMarks = pencilMarks.includes(digit)
-            ? pencilMarks.delete(digit)
-            : pencilMarks.add(digit);
+        pencilMarks = setMode
+            ? pencilMarks.add(digit)
+            : pencilMarks.delete(digit);
         return c.set('outerPencils', pencilMarks);
     },
 
