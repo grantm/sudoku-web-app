@@ -256,3 +256,21 @@ test('List.toArray', () => {
     expect(List.isList(a2[0])).toBe(true);
     expect(List.isList(a2[1])).toBe(true);
 });
+
+test('List.find', () => {
+    const l1 = List([1, 1, 2, 3, 5, 8, 13, 21]);
+    expect(l1.size).toBe(8);
+
+    // find no match
+    expect(l1.find(n => {
+        return false;
+    })).toBe(undefined);
+
+    // find first, don't examine elements after match
+    expect(l1.find(n => {
+        if (n > 8) {
+            throw new Error("List.find should not be examining elements after first match");
+        }
+        return n > 7;
+    })).toBe(8);
+});

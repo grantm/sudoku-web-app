@@ -109,6 +109,11 @@ class NMList {
         return l.length;
     }
 
+    find(f) {
+        const l = this[_nm_list];
+        return l.find(f);
+    }
+
     toList () {
         return this;
     }
