@@ -153,19 +153,20 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     }
     if (digit !== undefined) {
         setGrid((grid) => {
-            const selectedCellCount = grid.get("cells").count((c) => c.get("isSelected"));
+            let cellOp;
             if ((e.shiftKey && ctrlOrMeta) || inputMode === 'color') {
-                return modelHelpers.updateSelectedCells(grid, 'setCellColor', digit);
+                cellOp = 'setCellColor';
             }
             else if (ctrlOrMeta || inputMode === 'inner') {
-                return modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit);
+                cellOp = 'toggleInnerPencilMark';
             }
-            else if (e.shiftKey || inputMode === 'outer' || selectedCellCount > 1) {
-                return modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', digit);
+            else if (e.shiftKey || inputMode === 'outer') {
+                cellOp = 'toggleOuterPencilMark';
             }
             else {
-                return modelHelpers.updateSelectedCells(grid, 'setDigit', digit);
+                cellOp = modelHelpers.defaultDigitOpForSelection(grid);
             }
+            return modelHelpers.updateSelectedCells(grid, cellOp, digit);
         });
         e.preventDefault();
         return;

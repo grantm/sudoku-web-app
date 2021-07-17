@@ -927,6 +927,23 @@ export const modelHelpers = {
         return grid.set('cells', cells);
     },
 
+    defaultDigitOpForSelection: (grid) => {
+        const selection = grid.get("cells").filter((c) => c.get("isSelected"));
+        if (selection.size < 2) {
+            return 'setDigit';
+        }
+        const seen = {};
+        const sameRegion = selection.find(c => {
+            return ["row", "col", "box"].find(rType => {
+                const region = rType + c.get(rType);
+                const wasSeen = seen[region];
+                seen[region] = true;
+                return wasSeen;
+            })
+        })
+        return sameRegion ? 'toggleOuterPencilMark' : 'setDigit';
+    },
+
     updateSelectedCells: (grid, opName, ...args) => {
         if (actionsBlocked(grid)) {
             return grid;

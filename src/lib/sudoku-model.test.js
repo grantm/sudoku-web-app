@@ -635,6 +635,38 @@ test('set pencilmarks', () => {
     expect(grid.get('currentSnapshot')).toBe('11D7,15T13,17T2,18T2,93D7');
 });
 
+test('defaultDigitOpForSelection', () => {
+    let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
+    expect(modelHelpers.defaultDigitOpForSelection(grid)).toBe('setDigit');
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
+    expect(modelHelpers.defaultDigitOpForSelection(grid)).toBe('setDigit');
+
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 1);
+    expect(modelHelpers.defaultDigitOpForSelection(grid)).toBe('toggleOuterPencilMark');
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 0);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 12);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 42);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 73);
+    grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 47);
+    const operation = modelHelpers.defaultDigitOpForSelection(grid);
+    expect(operation).toBe('setDigit');
+
+    grid = modelHelpers.updateSelectedCells(grid, operation, '5');
+    expect(digitsFromGrid(grid)).toBe(
+        '500008000' +
+        '000507000' +
+        '123456789' +
+        '000005000' +
+        '000004500' +
+        '005003000' +
+        '000002000' +
+        '000001000' +
+        '050009000'
+    );
+});
+
 test('simple pencil marking mode', () => {
     let grid = newSudokuModel({initialDigits, skipCheck: true});
     expect(modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking)).toBe(false);
