@@ -50,6 +50,13 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     if (!modalState) {
         return null;
     }
+    const containerClickHandler = (e) => {
+        if (e.target === e.currentTarget) {
+            if (modalState.escapeAction) {
+                modalHandler(modalState.escapeAction);
+            }
+        }
+    }
     if (modalState.modalType === MODAL_TYPE_WELCOME) {
         content = <ModalWelcome modalState={modalState} modalHandler={modalHandler} />;
     }
@@ -101,7 +108,7 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     if (content) {
         return <>
             <ModalBackdrop />
-            <div className="modal-container" onMouseDown={stopPropagation}>
+            <div className="modal-container" onClick={containerClickHandler} onMouseDown={stopPropagation}>
                 {content}
             </div>
         </>;
