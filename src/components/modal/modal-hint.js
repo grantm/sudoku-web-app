@@ -3,6 +3,8 @@ import React from 'react';
 import Spinner from '../spinner/spinner';
 import SudokuHintGrid from '../sudoku-grid/sudoku-hint-grid.js';
 
+import { classList } from '../../lib/string-utils';
+
 const solverURL = "https://github.com/SudokuMonster/SukakuExplainer/";
 
 
@@ -28,6 +30,10 @@ function HintBody({hint}) {
 export default function ModalHint({modalState, modalHandler, menuHandler}) {
     const {loading, loadingFailed, errorMessage, hint} = modalState;
 
+    const modalClasses = classList(
+        "modal hint",
+        loading && "loading",
+    );
     const closeHandler = () => modalHandler('cancel');
     const candidatesHandler = () => {
         menuHandler("calculate-candidates");
@@ -61,7 +67,7 @@ export default function ModalHint({modalState, modalHandler, menuHandler}) {
         modalContent = <HintBody hint={hint} />;
     }
     return (
-        <div className="modal hint">
+        <div className={modalClasses}>
             <div className="hint-layout">
                 <div className="hint-body">
                     <h1>{title}</h1>

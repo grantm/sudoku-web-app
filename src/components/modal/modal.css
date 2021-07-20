@@ -454,6 +454,10 @@ input.toggle:checked + .indicator::before {
     overflow-y: hidden;
 }
 
+.modal.hint.loading {
+    max-height: 20rem;
+}
+
 .hint-layout {
     height: 100%;
     width: 100%;
