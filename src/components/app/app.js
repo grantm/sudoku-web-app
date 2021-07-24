@@ -424,7 +424,7 @@ function vkbdKeyPressHandler(e, setGrid, inputMode) {
 function dispatchModalAction(action, setGrid) {
     if (action.action === 'paste-initial-digits') {
         // Suppress onpageunload handling when user clicks 'Start' after pasting a puzzle
-        delete document.body.dataset.gameState;
+        delete document.body.dataset.currentSnapshot;
     }
     setGrid((grid) => modelHelpers.applyModalAction(grid, action));
 }
@@ -471,7 +471,7 @@ function pauseTimer(setGrid) {
 
 function preStartCheck() {
     // Suppress onpageunload handling when user clicks 'Start' after entering a puzzle
-    delete document.body.dataset.gameState;
+    delete document.body.dataset.currentSnapshot;
 }
 
 function getDimensions(winSize) {
