@@ -795,22 +795,58 @@ export const modelHelpers = {
             return modelHelpers.resumeTimer(grid);
         }
         else if (action === 'restore-local-session') {
-            let g = grid.merge(args.grid)
 
-            g = modelHelpers.setGivenDigits(g, args.grid.initialDigits, {});
-            g = modelHelpers.restoreSnapshot(g, args.grid.currentSnapshot);
-
-            const playTime = args.lastUpdatedTime - (args.grid.pausedAt || args.grid.startTime);
-            g.merge({
-                'pausedAt': undefined,
-                'startTime': Date.now() - playTime,
-            });
-
-            g = modelHelpers.checkCompletedDigits(g);
-            modelHelpers.notifyGamestateChange(g)
-            return g;
         }
         return grid;
+    },
+
+    persistGamestate: (grid) => {
+        const currentSnapshot = grid.get('currentSnapshot');
+        const solved = grid.get('solved');
+        if (currentSnapshot && !solved) {
+            const gameStateJson = JSON.stringify({
+                grid: {
+                    solved,
+                    mode: grid.get('mode'),
+                    difficultyLevel: grid.get('difficultyLevel'),
+                    inputMode: grid.get('inputMode'),
+                    startTime: grid.get('startTime'),
+                    endTime: grid.get('endTime'),
+                    pausedAt: grid.get('pausedAt'),
+                    undoList: grid.get('undoList').toArray(),
+                    redoList: grid.get('redoList').toArray(),
+                    currentSnapshot,
+                    focusIndex: grid.get('focusIndex'),
+                    matchDigit: grid.get('matchDigit'),
+                    initialDigits: grid.get('initialDigits')
+                },
+                lastUpdatedTime: Date.now()
+            });
+    
+            localStorage.setItem("gamestate", gameStateJson);
+        }
+        else {
+            localStorage.removeItem("gamestate");
+        }
+    },
+
+    restoreFromGamestate: (grid, gamestate) => {
+        const {grid: rawGrid, lastUpdatedTime} = gamestate;
+
+        let elapsed = (rawGrid.pausedAt ? rawGrid.pausedAt : lastUpdatedTime) - rawGrid.startTime;
+        let g = grid.merge({
+            ...rawGrid,
+            undoList: List(rawGrid.undoList),
+            redoList: List(rawGrid.redoList),
+            'pausedAt': undefined,
+            'startTime': Date.now() - elapsed,
+        })
+
+        g = modelHelpers.setGivenDigits(g, rawGrid.initialDigits, {});
+        g = modelHelpers.restoreSnapshot(g, rawGrid.currentSnapshot);
+        g = modelHelpers.checkCompletedDigits(g);
+        modelHelpers.notifyGamestateChange(g)
+        return g;
     },
 
     retryInitialDigits: (grid, args) => {
@@ -1107,21 +1143,25 @@ export const modelHelpers = {
     },
 
     pauseTimer: (grid) => {
-        return grid.merge({
+        const g = grid.merge({
             pausedAt: Date.now(),
             modalState: {
                 modalType: MODAL_TYPE_PAUSED,
                 escapeAction: 'resume-timer',
             },
         });
+        modelHelpers.notifyGamestateChange(g);
+        return g;
     },
 
     resumeTimer: (grid) => {
         const elapsed = grid.get('pausedAt') - grid.get('startTime');
-        return grid.merge({
+        const g = grid.merge({
             pausedAt: undefined,
             startTime: Date.now() - elapsed,
         });
+        modelHelpers.notifyGamestateChange(g);
+        return g;
     },
 
     toggleShowPencilmarks: (grid) => {

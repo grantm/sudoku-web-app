@@ -47,13 +47,13 @@ test('initialise grid', () => {
         "matchDigit",
         "modalState",
         "mode",
+        "onGamestateChange",
         "pausedAt",
         "redoList",
         "settings",
         "showPencilmarks",
         "solved",
         "startTime",
-        "storeCurrentSnapshot",
         "tempInputMode",
         "undoList",
     ]);
@@ -82,7 +82,7 @@ test('initialise grid', () => {
     expect(grid.get('redoList').size).toBe(0);
     expect(grid.get('solved')).toBe(false);
     expect(grid.get('startTime')/1000).toBeCloseTo(Date.now()/1000, 0);
-    expect(grid.get('storeCurrentSnapshot')).toBe(undefined);
+    expect(grid.get('onGamestateChange')).toBe(undefined);
     expect(grid.get('tempInputMode')).toBe(undefined);
     expect(grid.get('undoList').size).toBe(0);
 

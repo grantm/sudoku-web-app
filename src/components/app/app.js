@@ -52,48 +52,29 @@ const inputModeFromHotKey = {
     v: 'color',
 }
 
-function initialGridFromURL () {
+function determineInitialGrid () {
     const params = new URLSearchParams(window.location.search);
-    const grid = newSudokuModel({
+    let grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
-        onGamestateChange: persistSudokuModel,
+        onGamestateChange: grid => {
+            // we must persist this for use by bookmarklets
+            document.body.dataset.currentSnapshot = grid.get('currentSnapshot');
+            modelHelpers.persistGamestate(grid);
+        }
     });
+
+    if (params.get('r') === "1") {
+        const gameStateJson = localStorage.getItem('gamestate');
+        const gameState = gameStateJson && JSON.parse(gameStateJson);
+        const gridObject = gameState && gameState.grid;
+        if (gridObject && gridObject.currentSnapshot && !gridObject.solved) {
+            grid = modelHelpers.restoreFromGamestate(grid, gameState);
+        }
+    }
+
     document.body.dataset.initialDigits = grid.get('initialDigits');
     return grid;
-}
-
-function persistSudokuModel (grid) {
-    const currentSnapshot = grid.get('currentSnapshot');
-    const solved = grid.get('solved');
-    if (currentSnapshot && !solved) {
-        const gameStateJSON = JSON.stringify({
-            grid: {
-                solved,
-                mode: grid.get('mode'),
-                difficultyLevel: grid.get('difficultyLevel'),
-                inputMode: grid.get('inputMode'),
-                startTime: grid.get('startTime'),
-                endTime: grid.get('endTime'),
-                pausedAt: grid.get('pausedAt'),
-                undoList: grid.get('undoList').toArray(),
-                redoList: grid.get('redoList').toArray(),
-                currentSnapshot,
-                focusIndex: grid.get('focusIndex'),
-                matchDigit: grid.get('matchDigit'),
-                initialDigits: grid.get('initialDigits')
-            },
-            lastUpdatedTime: new Date()
-        });
-
-        localStorage.setItem("gamestate", gameStateJSON);
-    }
-    else {
-        localStorage.removeItem("gamestate");
-    }
-
-    // we must persist this for use by bookmarklets
-    document.body.dataset.currentSnapshot = currentSnapshot;
 }
 
 function saveScreenshot () {
@@ -515,7 +496,7 @@ function getDimensions(winSize) {
 }
 
 function App() {
-    const [grid, setGrid] = useState(initialGridFromURL);
+    const [grid, setGrid] = useState(determineInitialGrid);
     const settings = grid.get('settings');
     const pausedAt = grid.get('pausedAt');
     const solved = grid.get('solved');

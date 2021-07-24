@@ -4,7 +4,6 @@ import { modelHelpers } from '../../lib/sudoku-model';
 
 import SudokuMiniGrid from '../sudoku-grid/sudoku-mini-grid';
 import Spinner from '../spinner/spinner';
-import { List } from '../../lib/not-mutable';
 
 function stopPropagation (e) {
     e.stopPropagation();
@@ -64,32 +63,20 @@ function RecentlyShared({modalState}) {
     );
 }
 
-function RestoreLocalSession({modalHandler}) {
+function RestoreLocalSession() {
     const gameStateJson = localStorage.getItem('gamestate');
     if (!gameStateJson) {
         return null;
     }
-    const {grid: serialisedGrid, lastUpdatedTime: lastUpdatedTimeString} = JSON.parse(gameStateJson);
+    const {grid: serialisedGrid, lastUpdatedTime} = JSON.parse(gameStateJson);
     if (!serialisedGrid || !serialisedGrid.currentSnapshot || serialisedGrid.solved) {
         return null;
     }
-    const grid = {
-        ...serialisedGrid,
-        undoList: List(serialisedGrid.undoList),
-        redoList: List(serialisedGrid.redoList)
+
+    const restoreLocalSessionHandler = () => {
+        const level = modelHelpers.difficultyLevelName(serialisedGrid.difficultyLevel);
+        window.location.search = `s=${serialisedGrid.initialDigits}&d=${level}&r=1`
     }
-    const lastUpdatedTime = new Date(lastUpdatedTimeString);
-    const restoreLocalSessionHandler = (e) => {
-        // const level = modelHelpers.difficultyLevelName(serialisedGrid.difficultyLevel);
-        // window.location.href = `./?s=${serialisedGrid.initialDigits}&d=${level}`
-        // e.stopPropagation();
-        modalHandler({
-            action: 'restore-local-session',
-            grid,
-            lastUpdatedTime
-        });
-    }
-    
     return (
       <p style={{textAlign: 'center'}}>
         <button
@@ -97,7 +84,7 @@ function RestoreLocalSession({modalHandler}) {
           onClick={restoreLocalSessionHandler}
         >
           Continue unfinished game from{" "}
-          {lastUpdatedTime.toLocaleDateString("en-US", {
+          {new Date(lastUpdatedTime).toLocaleDateString("en-US", {
             weekday: "short",
             month: "short",
             day: "numeric",
@@ -120,7 +107,7 @@ function ModalWelcome({modalState, modalHandler}) {
             <p>You can get started by entering a new puzzle into a blank grid:</p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={cancelHandler}>Enter a new puzzle</button></p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={showPasteHandler}>Paste a new puzzle</button></p>
-            <RestoreLocalSession modalHandler={modalHandler} />
+            <RestoreLocalSession />
             <p>Or you can select a recently shared puzzle:</p>
             <RecentlyShared modalState={modalState} />
             <div id="welcome-footer">
