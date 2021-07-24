@@ -794,9 +794,6 @@ export const modelHelpers = {
         else if (action === 'resume-timer') {
             return modelHelpers.resumeTimer(grid);
         }
-        else if (action === 'restore-local-session') {
-
-        }
         return grid;
     },
 
