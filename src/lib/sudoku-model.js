@@ -98,7 +98,7 @@ function newCell(index, digit) {
     });
 }
 
-export function newSudokuModel({initialDigits, difficultyLevel, onSnapshotChange, entryPoint, skipCheck}) {
+export function newSudokuModel({initialDigits, difficultyLevel, onGamestateChange, entryPoint, skipCheck}) {
     initialDigits = (initialDigits || '').replace(/[_.-]/g, '0').replace(/\D/g, '');
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
@@ -116,7 +116,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, onSnapshotChange
         undoList: List(),
         redoList: List(),
         currentSnapshot: '',
-        onSnapshotChange: onSnapshotChange,
+        onGamestateChange: onGamestateChange,
         cells: List(),
         showPencilmarks: true,
         hasErrors: false,
@@ -498,40 +498,48 @@ export const modelHelpers = {
 
     setCurrentSnapshot: (grid, newSnapshot) => {
         grid = grid.set('currentSnapshot', newSnapshot);
-        const watcher = grid.get('onSnapshotChange');
-        if (watcher) {
-            watcher(grid);
-        }
+        modelHelpers.notifyGamestateChange(grid);
         return grid;
     },
 
+    notifyGamestateChange: (grid) => {
+        const watcher = grid.get('onGamestateChange');
+        if (watcher) {
+            watcher(grid);
+        }
+    },
+
     undoOneAction: (grid) => {
-        return modelHelpers.retainSelection(grid, (grid) => {
-            const undoList = grid.get('undoList');
-            if (actionsBlocked(grid) || undoList.size < 1) {
-                return grid;
+        return modelHelpers.retainSelection(grid, (g) => {
+            const undoList = g.get('undoList');
+            if (actionsBlocked(g) || undoList.size < 1) {
+                return g;
             }
-            const beforeUndo = grid.get('currentSnapshot');
+            const beforeUndo = g.get('currentSnapshot');
             const snapshot = undoList.last();
-            grid = modelHelpers.restoreSnapshot(grid, snapshot)
+            g = modelHelpers.restoreSnapshot(g, snapshot)
                 .set('undoList', undoList.pop())
                 .update('redoList', list => list.push(beforeUndo));
-            return modelHelpers.checkCompletedDigits(grid);
+            g = modelHelpers.checkCompletedDigits(g);
+            modelHelpers.notifyGamestateChange(g);
+            return g;
         });
     },
 
     redoOneAction: (grid) => {
-        return modelHelpers.retainSelection(grid, (grid) => {
-            const redoList = grid.get('redoList');
-            if (actionsBlocked(grid) || redoList.size < 1) {
-                return grid;
+        return modelHelpers.retainSelection(grid, (g) => {
+            const redoList = g.get('redoList');
+            if (actionsBlocked(g) || redoList.size < 1) {
+                return g;
             }
-            const beforeRedo = grid.get('currentSnapshot');
+            const beforeRedo = g.get('currentSnapshot');
             const snapshot = redoList.last();
-            grid = modelHelpers.restoreSnapshot(grid, snapshot)
+            g = modelHelpers.restoreSnapshot(g, snapshot)
                 .set('redoList', redoList.pop())
                 .update('undoList', list => list.push(beforeRedo));
-            return modelHelpers.checkCompletedDigits(grid);
+            g = modelHelpers.checkCompletedDigits(g);
+            modelHelpers.notifyGamestateChange(g);
+            return g;
         });
     },
 
@@ -787,13 +795,20 @@ export const modelHelpers = {
             return modelHelpers.resumeTimer(grid);
         }
         else if (action === 'restore-local-session') {
-            // const playTime = args.grid.startTime - args.lastUpdatedTime;
             let g = grid.merge(args.grid)
+
             g = modelHelpers.setGivenDigits(g, args.grid.initialDigits, {});
             g = modelHelpers.restoreSnapshot(g, args.grid.currentSnapshot);
-            // const adjustedStartTime = new Date(Date.now() - playTime);
-            // g.set('startTime', new Date())
-            return modelHelpers.checkCompletedDigits(g);
+
+            const playTime = args.lastUpdatedTime - (args.grid.pausedAt || args.grid.startTime);
+            g.merge({
+                'pausedAt': undefined,
+                'startTime': Date.now() - playTime,
+            });
+
+            g = modelHelpers.checkCompletedDigits(g);
+            modelHelpers.notifyGamestateChange(g)
+            return g;
         }
         return grid;
     },
@@ -1144,9 +1159,11 @@ export const modelHelpers = {
     },
 
     setGridSolved: (grid) => {
-        return modelHelpers.applySelectionOp(grid, 'clearSelection')
+        grid = modelHelpers.applySelectionOp(grid, 'clearSelection')
             .set('solved', true)
             .set('endTime', Date.now());
+        modelHelpers.notifyGamestateChange(grid);
+        return grid;
     },
 
     applySelectionOp: (grid, opName, ...args) => {

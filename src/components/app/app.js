@@ -57,32 +57,43 @@ function initialGridFromURL () {
     const grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
-        onSnapshotChange: persistSudokuModel,
+        onGamestateChange: persistSudokuModel,
     });
     document.body.dataset.initialDigits = grid.get('initialDigits');
     return grid;
 }
 
-function persistSudokuModel(grid) {
-    const gameStateJSON = JSON.stringify({
-        grid: {
-            solved: grid.get('solved'),
-            mode: grid.get('mode'),
-            difficultyLevel: grid.get('difficultyLevel'),
-            inputMode: grid.get('inputMode'),
-            startTime: grid.get('startTime'),
-            endTime: grid.get('endTime'),
-            pausedAt: grid.get('pausedAt'),
-            undoList: grid.get('undoList').toArray(),
-            redoList: grid.get('redoList').toArray(),
-            currentSnapshot: grid.get('currentSnapshot'),
-            focusIndex: grid.get('focusIndex'),
-            matchDigit: grid.get('matchDigit'),
-            initialDigits: grid.get('initialDigits')
-        },
-        lastUpdatedTime: new Date()
-    });
-    document.body.dataset.gameState = gameStateJSON;
+function persistSudokuModel (grid) {
+    const currentSnapshot = grid.get('currentSnapshot');
+    const solved = grid.get('solved');
+    if (currentSnapshot && !solved) {
+        const gameStateJSON = JSON.stringify({
+            grid: {
+                solved,
+                mode: grid.get('mode'),
+                difficultyLevel: grid.get('difficultyLevel'),
+                inputMode: grid.get('inputMode'),
+                startTime: grid.get('startTime'),
+                endTime: grid.get('endTime'),
+                pausedAt: grid.get('pausedAt'),
+                undoList: grid.get('undoList').toArray(),
+                redoList: grid.get('redoList').toArray(),
+                currentSnapshot,
+                focusIndex: grid.get('focusIndex'),
+                matchDigit: grid.get('matchDigit'),
+                initialDigits: grid.get('initialDigits')
+            },
+            lastUpdatedTime: new Date()
+        });
+
+        localStorage.setItem("gamestate", gameStateJSON);
+    }
+    else {
+        localStorage.removeItem("gamestate");
+    }
+
+    // we must persist this for use by bookmarklets
+    document.body.dataset.currentSnapshot = currentSnapshot;
 }
 
 function saveScreenshot () {

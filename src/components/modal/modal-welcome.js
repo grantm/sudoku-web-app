@@ -79,11 +79,16 @@ function RestoreLocalSession({modalHandler}) {
         redoList: List(serialisedGrid.redoList)
     }
     const lastUpdatedTime = new Date(lastUpdatedTimeString);
-    const restoreLocalSessionHandler = () => modalHandler({
-        action: 'restore-local-session',
-        grid,
-        lastUpdatedTime
-    });
+    const restoreLocalSessionHandler = (e) => {
+        // const level = modelHelpers.difficultyLevelName(serialisedGrid.difficultyLevel);
+        // window.location.href = `./?s=${serialisedGrid.initialDigits}&d=${level}`
+        // e.stopPropagation();
+        modalHandler({
+            action: 'restore-local-session',
+            grid,
+            lastUpdatedTime
+        });
+    }
     
     return (
       <p style={{textAlign: 'center'}}>
