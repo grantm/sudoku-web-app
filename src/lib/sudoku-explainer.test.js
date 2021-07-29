@@ -71,7 +71,7 @@ test("constructor", () => {
     expect(steps.length).toBe(analysisPartial.ss.length);
 
     expect(steps[0].title).toBe("Hidden Single: r7c5: 8 in block");
-    expect(steps[0].rating).toBe("1.2");
+    expect(steps[0].stepRating).toBe("1.2");
     expect(steps[0].digitIndex).toBe(58);
     expect(steps[0].digitValue).toBe('8');
     expect(typeof steps[0].html).toBe("string");
@@ -81,7 +81,7 @@ test("constructor", () => {
     expect(steps[0].candidates.join(',')).toBe(explainer.initialCandidates.join(','));
 
     expect(steps[1].title).toBe("Direct Hidden Pair: Cells r2c8,r6c8: 4,8 in column");
-    expect(steps[1].rating).toBe("2.0");
+    expect(steps[1].stepRating).toBe("2.0");
     expect(steps[1].digitIndex).toBe(61);
     expect(steps[1].digitValue).toBe("5");
     expect(steps[1].highlightCell).toStrictEqual({16: true, 52: true});
@@ -102,7 +102,7 @@ test("constructor", () => {
     ]);
 
     expect(steps[2].title).toBe("Pointing: Cells r2c4,r2c5: 1 in block and row");
-    expect(steps[2].rating).toBe("2.6");
+    expect(steps[2].stepRating).toBe("2.6");
     expect(steps[2].digitIndex).toBe(undefined);
     expect(steps[2].digitValue).toBe(undefined);
     expect(steps[2].highlightCell).toStrictEqual({12: true, 13: true});
@@ -123,7 +123,7 @@ test("constructor", () => {
     ]);
 
     expect(steps[3].title).toBe("X-Wing: Cells r5c6,r5c9,r8c6,r8c9: 1 in 2 columns and 2 rows");
-    expect(steps[3].rating).toBe("3.2");
+    expect(steps[3].stepRating).toBe("3.2");
     expect(steps[3].digitIndex).toBe(undefined);
     expect(steps[3].digitValue).toBe(undefined);
     expect(steps[3].highlightCell).toStrictEqual({41: true, 44: true, 68: true, 71: true});
@@ -148,7 +148,7 @@ test("constructor", () => {
     ]);
 
     expect(steps[4].title).toBe("Hidden Single: r9c2: 1 in block");
-    expect(steps[4].rating).toBe("1.2");
+    expect(steps[4].stepRating).toBe("1.2");
     expect(steps[4].digitIndex).toBe(73);
     expect(steps[4].digitValue).toBe("1");
     expect(steps[4].highlightCell).toBe(undefined);

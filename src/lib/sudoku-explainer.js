@@ -50,7 +50,7 @@ class SudokuExplainer {
             const step = {
                 digits: digits,
                 candidates: candidates,
-                rating: s.rt,
+                stepRating: s.rt,
                 title: s.sd,
                 html: s.ht,
             };
@@ -97,6 +97,7 @@ class SudokuExplainer {
                         ...s,
                         digits: currDigits,
                         candidates: candidates,
+                        puzzleRating: this.rating,
                     };
                 }
             }
@@ -110,6 +111,7 @@ class SudokuExplainer {
                         ...s,
                         digits: currDigits,
                         candidates: currCandidates,
+                        puzzleRating: this.rating,
                     };
                 }
             }
