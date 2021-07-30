@@ -86,7 +86,7 @@ class SudokuExplainer {
     findNextStep(currDigits, currCandidates) {
         for(let i = 0; i < this.steps.length; i++) {
             const s = this.steps[i];
-            if (typeof(s.digitIndex) === 'number') {
+            if (s.digitValue) {
                 if (currDigits[s.digitIndex] === '0') {
                     const candidates = currCandidates.map((cc, i) => {
                         return (i === s.digitIndex && cc === "")

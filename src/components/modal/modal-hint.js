@@ -27,14 +27,41 @@ function HintBody({hint}) {
     );
 }
 
-export default function ModalHint({modalState, modalHandler, menuHandler}) {
-    const {loading, loadingFailed, errorMessage, hint} = modalState;
+function modalHintContent ({loading, loadingFailed, errorMessage, hint}) {
+    if (loading) {
+        return {
+            title: "Loading hints",
+            modalContent: <Spinner />,
+            primaryButtonText: "Cancel",
+        }
+    }
+    else if (loadingFailed) {
+        const description = errorMessage === "Error: 400 Bad Request"
+            ? (
+                <p>The server was unable to provide hints for this puzzle.</p>
+            )
+            : (
+                <p>An error occurred while requesting hints from the server.
+                You may wish to try again later.</p>
+            );
+        return {
+            title: "Failed to load hints",
+            modalContent: description,
+            primaryButtonText: "Cancel",
+        }
+    }
+    else if (hint) {
+        return {
+            title: hint.title.replace(/,/g, ',\u200B'),
+            modalContent: <HintBody hint={hint} />,
+            primaryButtonText: "OK",
+        }
+    }
+}
 
-    const modalClasses = classList(
-        "modal hint",
-        loading && "loading",
-    );
+function HintButtons({hint, modalHandler, menuHandler, children}) {
     const closeHandler = () => modalHandler('cancel');
+
     const candidatesHandler = () => {
         menuHandler("calculate-candidates");
         modalHandler('cancel');
@@ -43,39 +70,41 @@ export default function ModalHint({modalState, modalHandler, menuHandler}) {
         ? <button onClick={candidatesHandler}>Auto Fill Candidates</button>
         : null;
 
-    let title, modalContent;
-    let buttonText = "OK";
-    if (loading) {
-        title = "Loading hints";
-        modalContent = <Spinner />
-        buttonText = "Cancel";
+    const applyHintHandler = () => {
+        modalHandler({action: 'apply-hint', hint});
     }
-    else if (loadingFailed) {
-        title = "Failed to load hints";
-        modalContent = errorMessage === "Error: 400 Bad Request"
-            ? (
-                <p>The server was unable to provide hints for this puzzle.</p>
-            )
-            : (
-                <p>An error occurred while requesting hints from the server.
-                You may wish to try again later.</p>
-            );
-        buttonText = "Cancel";
-    }
-    else if (hint) {
-        title = hint.title.replace(/,/g, ',\u200B');
-        modalContent = <HintBody hint={hint} />;
-    }
+    const applyHintButton = candidatesButton
+        ? null
+        : <button onClick={applyHintHandler}>Apply Hint</button>;
+
+    return (
+        <div className="buttons">
+            {candidatesButton}
+            {applyHintButton}
+            <button className="primary" onClick={closeHandler}>{children}</button>
+        </div>
+    );
+}
+
+export default function ModalHint({modalState, modalHandler, menuHandler}) {
+    const modalClasses = classList(
+        "modal hint",
+        modalState.loading && "loading",
+    );
+
+    const {title, modalContent, primaryButtonText} = modalHintContent(modalState);
+
     return (
         <div className={modalClasses}>
             <div className="hint-layout">
                 <div className="hint-body">
                     <h1>{title}</h1>
                     {modalContent}
-                    <div className="buttons">
-                        {candidatesButton}
-                        <button className="primary" onClick={closeHandler}>{buttonText}</button>
-                    </div>
+                    <HintButtons
+                        hint={modalState.hint}
+                        modalHandler={modalHandler}
+                        menuHandler={menuHandler}
+                    >{primaryButtonText}</HintButtons>
                 </div>
                 <div className="hint-footer">
                     <span>Hints by: <a target="_blank" rel="noopener noreferrer" href={solverURL}>Sukaku Explainer</a></span>

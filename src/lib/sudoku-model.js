@@ -906,7 +906,7 @@ export const modelHelpers = {
     applyModalAction: (grid, args) => {
         const action = args.action || args;
         grid = grid.set('modalState', undefined);
-        if (action === 'cancel') {
+        if (action === 'cancel' || action === 'close') {
             return grid;
         }
         else if (action === 'cancel-paste') {
@@ -948,6 +948,12 @@ export const modelHelpers = {
         }
         else if (action === 'resume-timer') {
             return modelHelpers.resumeTimer(grid);
+        }
+        else if (action === 'apply-hint') {
+            return modelHelpers.applyHint(grid, args.hint);
+        }
+        else {
+            console.log(`Unhandled modal action '${action}', args =`, args);
         }
         return grid;
     },
@@ -1003,6 +1009,60 @@ export const modelHelpers = {
                 'inputMode': 'digit',
             });
         return modelHelpers.checkCompletedDigits(grid);
+    },
+
+    applyHint: (grid, hint) => {
+        grid = hint.digitValue
+            ? modelHelpers.applyNewDigitHint(grid, hint)
+            : modelHelpers.applyCandidateEliminationHint(grid, hint);
+        grid = modelHelpers.checkCompletedDigits(grid);
+        return grid;
+    },
+
+    applyNewDigitHint: (grid, hint) => {
+        grid = modelHelpers.applySelectionOp(grid, 'setSelection', hint.digitIndex);
+        return modelHelpers.updateSelectedCells(grid, 'setDigit', hint.digitValue);
+    },
+
+    applyCandidateEliminationHint: (grid, hint) => {
+        const eliminations = hint.eliminationsByCell;
+        let matchDigit;
+        if (eliminations) {
+            const snapshotBefore = grid.get('currentSnapshot');
+            const cells = grid.get('cells').map(c => {
+                const i = c.get('index');
+                const ce = eliminations[i];
+                if (ce) {
+                    let innerPencils = c.get('innerPencils');
+                    let outerPencils = c.get('outerPencils');
+                    Object.keys(ce).forEach(d => {
+                        matchDigit = d;
+                        if (innerPencils.includes(d)) {
+                            innerPencils = innerPencils.delete(d);
+                        }
+                        if (outerPencils.includes(d)) {
+                            outerPencils = outerPencils.delete(d);
+                        }
+                    });
+                    c = c.merge({
+                        'innerPencils': innerPencils,
+                        'outerPencils': outerPencils,
+                    });
+                    c = modelHelpers.updateCellSnapshotCache(c);
+                }
+                return c;
+            });
+            grid = grid.merge({
+                'cells': cells,
+                'matchDigit': matchDigit,
+            });
+            grid = modelHelpers.clearSelection(grid);
+            const snapshotAfter = modelHelpers.toSnapshotString(grid);
+            if (snapshotBefore !== snapshotAfter) {
+                grid = modelHelpers.pushNewSnapshot(grid, snapshotBefore);
+            }
+        }
+        return grid;
     },
 
     saveSolverPreferences: (grid, passProgress) => {
