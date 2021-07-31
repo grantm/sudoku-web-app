@@ -172,8 +172,7 @@ export default function HelpPage({modalHandler}) {
                 <dt>SudokuWiki.org solver</dt>
                 <dd>If you get stuck, there’s a menu option to open the puzzle in the sudoku solver
                 on <a href="https://www.sudokuwiki.org/sudoku.htm">sudokuwiki.org</a>.  This option
-                automates opening the solver page and pasting in the starting digits of the puzzle.
-                Note, none of the digits you have entered so far are copied across.</dd>
+                automates opening the solver page and pasting in the starting digits of the puzzle.</dd>
                 <dt>Enter a new puzzle</dt>
                 <dd>Allows you to take a puzzle from somewhere else (e.g.: a newspaper or magazine)
                 and type the starting digits directly into the grid.  Move between cells using the
