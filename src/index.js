@@ -19,8 +19,10 @@ document.addEventListener("visibilitychange", function() {
     // Ensure that we accurately keep track of how long the user has been working on the puzzle 
     // so we display time correctly if they resume.
     if (document.visibilityState === "hidden") {
+        const params = new URLSearchParams(window.location.search);
         const gamestate = localStorage.getItem("gamestate");
-        if (gamestate) {
+        // Only bump the time if we were working on the puzzle - NOTE: This is a best-effort heuristic.
+        if (params.has("s") && gamestate) {
             localStorage.setItem("gamestate", JSON.stringify({
                 ...JSON.parse(gamestate),
                 lastUpdatedTime: Date.now(),
