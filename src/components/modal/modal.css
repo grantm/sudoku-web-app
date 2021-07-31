@@ -504,12 +504,67 @@ input.toggle:checked + .indicator::before {
     margin-bottom: 1.2em;
 }
 
-.hint-text {
+.hint-text-wrapper {
     max-width: 40em;
 }
 
 .hint-text p {
     margin: 0 0 1.2em 0;
+}
+
+.difficulty-indicator {
+    float: right;
+    margin: 0 0 0.3em 0.8em;
+    border-radius: 0.25em;
+    background-color: var(--difficulty-indicator-bg-color);
+    border: 1px solid var(--difficulty-indicator-border-color);
+    display: grid;
+    grid-template-areas:
+        "title title"
+        "value1 value2"
+        "label1 label2";
+}
+
+.difficulty-indicator > * {
+    line-height: 1;
+    text-align: center;
+    color: var(--difficulty-indicator-label-color);
+}
+
+.difficulty-indicator .title {
+    grid-area: title;
+    font-size: 75%;
+    padding: 0.25em;
+}
+
+.difficulty-indicator .rating-value {
+    font-size: 95%;
+    font-weight: 600;
+    color: var(--difficulty-indicator-text-color);
+}
+
+.difficulty-indicator .rating-value.for-step {
+    grid-area: value1;
+    padding: 0.06em 0.25em 0 0.4em;
+}
+
+.difficulty-indicator .rating-value.for-puzzle {
+    grid-area: value2;
+    padding: 0.06em 0.3em 0 0.25em;
+}
+
+.difficulty-indicator .rating-label {
+    font-size: 62%;
+}
+
+.difficulty-indicator .rating-label.for-step {
+    grid-area: label1;
+    padding: 0.15em 0.25em 0.3em 0.5em;
+}
+
+.difficulty-indicator .rating-label.for-puzzle {
+    grid-area: label2;
+    padding: 0.15em 0.5em 0.3em 0.25em;
 }
 
 .modal.features .no-features {

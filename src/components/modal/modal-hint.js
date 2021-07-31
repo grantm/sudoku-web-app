@@ -8,6 +8,21 @@ import { classList } from '../../lib/string-utils';
 const solverURL = "https://github.com/SudokuMonster/SukakuExplainer/";
 
 
+function DifficultyIndicator({hint}) {
+    if (!hint.stepRating) {
+        return null;
+    }
+    return (
+        <div className="difficulty-indicator">
+            <div className="title">Difficulty</div>
+            <div className="rating-value for-step">{hint.stepRating}</div>
+            <div className="rating-value for-puzzle">{hint.puzzleRating}</div>
+            <div className="rating-label for-step">Step</div>
+            <div className="rating-label for-puzzle">Puzzle</div>
+        </div>
+    );
+}
+
 function HintBody({hint}) {
     const digits = hint.digits;
     const candidates = hint.candidates;
@@ -22,7 +37,10 @@ function HintBody({hint}) {
                 highlightCell={hint.highlightCell || {}}
                 eliminationsByCell={hint.eliminationsByCell || {}}
             />
-            <div className="hint-text" dangerouslySetInnerHTML={{ __html: hint.html }} />
+            <div className="hint-text-wrapper">
+                <DifficultyIndicator hint={hint} />
+                <div className="hint-text" dangerouslySetInnerHTML={{ __html: hint.html }} />
+            </div>
         </div>
     );
 }
