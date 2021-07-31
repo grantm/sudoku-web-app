@@ -963,7 +963,10 @@ export const modelHelpers = {
     persistGamestate: (grid) => {
         const currentSnapshot = grid.get('currentSnapshot');
         const solved = grid.get('solved');
-        if (currentSnapshot && !solved) {
+        if (solved) {
+            localStorage.removeItem("gamestate");
+        } 
+        else {
             const gameStateJson = JSON.stringify({
                 grid: {
                     solved,
@@ -985,9 +988,6 @@ export const modelHelpers = {
     
             localStorage.setItem("gamestate", gameStateJson);
         }
-        else {
-            localStorage.removeItem("gamestate");
-        }
     },
 
     restoreFromGamestate: (grid, gamestate) => {
@@ -998,8 +998,8 @@ export const modelHelpers = {
             ...rawGrid,
             undoList: List(rawGrid.undoList),
             redoList: List(rawGrid.redoList),
-            'pausedAt': undefined,
-            'startTime': Date.now() - elapsed,
+            pausedAt: undefined,
+            startTime: Date.now() - elapsed,
         })
 
         g = modelHelpers.setGivenDigits(g, rawGrid.initialDigits, {});
