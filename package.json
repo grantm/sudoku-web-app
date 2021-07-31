@@ -1,6 +1,6 @@
 {
   "name": "sudoku-web-app",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "A web application for solving & sharing Sudoku puzzles. Created for SudokuExchange.com",
   "author": {
     "name": "Grant McLean",
@@ -15,14 +15,14 @@
   ],
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "5.11.9",
-    "@testing-library/react": "11.2.5",
-    "@testing-library/user-event": "12.7.1",
-    "immutable": "^4.0.0-rc.12",
+    "@testing-library/jest-dom": "5.14.1",
+    "@testing-library/react": "12.0.0",
+    "@testing-library/user-event": "13.1.9",
+    "immutable": "^4.0.0-rc.14",
     "qrcode.react": "^1.0.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "^4.0.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
     "save-svg-as-png": "^1.4.17"
   },
   "scripts": {

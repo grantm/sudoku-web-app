@@ -11,9 +11,11 @@ import SudokuGrid from '../sudoku-grid/sudoku-grid';
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
 import ModalContainer from '../modal/modal-container';
 
-import { MODAL_TYPE_WELCOME } from '../../lib/modal-types';
+import { MODAL_TYPE_WELCOME, MODAL_TYPE_HINT } from '../../lib/modal-types';
 
 const FETCH_DELAY = 1000;
+const RETRY_INTERVAL = 3000;
+const MAX_RETRIES = 10;
 
 // Keycode definitions (independent of shift/ctrl/etc)
 const KEYCODE = {
@@ -63,6 +65,11 @@ function determineInitialGrid () {
             modelHelpers.persistGamestate(grid);
         }
     });
+    
+    if (window.location.hash === "#features") {
+        grid = modelHelpers.showFeaturesModal(grid);
+    }
+
 
     if (params.get('r') === "1") {
         const gameStateJson = localStorage.getItem('gamestate');
@@ -167,19 +174,20 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     }
     if (digit !== undefined) {
         setGrid((grid) => {
-            const selectedCellCount = grid.get("cells").count((c) => c.get("isSelected"));
+            let cellOp;
             if ((e.shiftKey && ctrlOrMeta) || inputMode === 'color') {
-                return modelHelpers.updateSelectedCells(grid, 'setCellColor', digit);
+                cellOp = 'setCellColor';
             }
             else if (ctrlOrMeta || inputMode === 'inner') {
-                return modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', digit);
+                cellOp = 'toggleInnerPencilMark';
             }
-            else if (e.shiftKey || inputMode === 'outer' || selectedCellCount > 1) {
-                return modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', digit);
+            else if (e.shiftKey || inputMode === 'outer') {
+                cellOp = 'toggleOuterPencilMark';
             }
             else {
-                return modelHelpers.updateSelectedCells(grid, 'setDigit', digit);
+                cellOp = modelHelpers.defaultDigitOpForSelection(grid);
             }
+            return modelHelpers.updateSelectedCells(grid, cellOp, digit);
         });
         e.preventDefault();
         return;
@@ -460,6 +468,9 @@ function dispatchMenuAction(action, setGrid) {
     else if (action === 'save-screenshot') {
         saveScreenshot();
     }
+    else if (action === 'show-hint-modal') {
+        setGrid((grid) => modelHelpers.showHintModal(grid));
+    }
     else {
         console.log(`Unrecognised menu action: '${action}'`);
     }
@@ -504,10 +515,16 @@ function App() {
     const inputMode = grid.get('tempInputMode') || grid.get('inputMode');
     const completedDigits = grid.get('completedDigits');
     const modalState = grid.get('modalState');
-    if (modalState && modalState.modalType === MODAL_TYPE_WELCOME && modalState.fetchRequired) {
-        modelHelpers.fetchRecentlyShared(grid, setGrid, FETCH_DELAY);
+    if (modalState && modalState.fetchRequired) {
+        if (modalState.modalType === MODAL_TYPE_WELCOME) {
+            modelHelpers.fetchRecentlyShared(grid, setGrid, FETCH_DELAY);
+        }
+        else if (modalState.modalType === MODAL_TYPE_HINT) {
+            modelHelpers.fetchExplainPlan(grid, setGrid, RETRY_INTERVAL, MAX_RETRIES);
+        }
     }
     const modalActive = modalState !== undefined;
+    const showHints = modelHelpers.featureIsEnabled(grid, 'hints') && mode === 'solve';
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
@@ -573,6 +590,7 @@ function App() {
                 startTime={grid.get('startTime')}
                 endTime={grid.get('endTime')}
                 pausedAt={pausedAt}
+                showHints={showHints}
                 showPencilmarks={grid.get('showPencilmarks')}
                 menuHandler={menuHandler}
                 pauseHandler={pauseHandler}

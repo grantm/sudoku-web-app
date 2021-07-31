@@ -16,7 +16,8 @@
     position: absolute;
     right: 10px;
     top: 1.8em;
-    max-width: 94vw;
+    width: 11em;
+    max-width: 92vw;
     max-height: 90vh;
     overflow-y: auto;
     padding: 2px;

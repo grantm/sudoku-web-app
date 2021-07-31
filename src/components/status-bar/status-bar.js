@@ -3,6 +3,7 @@ import React from 'react';
 import TimerWithPause from '../timer-with-pause/timer-with-pause';
 import MenuButton from '../menu-button/menu-button';
 import SettingsButton from '../settings-button/settings-button';
+import HintButton from '../hint-button/hint-button';
 import FullscreenButton from '../fullscreen-button/fullscreen-button';
 
 import SiteDomainImg from '../../assets/site-domain.svg';
@@ -23,7 +24,7 @@ function SiteLink () {
 }
 
 
-function StatusBar ({showTimer, startTime, endTime, pausedAt, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
+function StatusBar ({showTimer, startTime, endTime, pausedAt, showHints, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
     const timer = showTimer
         ? (
             <TimerWithPause
@@ -38,15 +39,22 @@ function StatusBar ({showTimer, startTime, endTime, pausedAt, showPencilmarks, m
         <div className="status-bar" onMouseDown={stopPropagation}>
             <SiteLink />
             {timer}
-            <FullscreenButton />
-            <SettingsButton menuHandler={menuHandler} />
-            <MenuButton
-                initialDigits={initialDigits}
-                startTime={startTime}
-                endTime={endTime}
-                showPencilmarks={showPencilmarks}
-                menuHandler={menuHandler}
-            />
+            <div className="status-bar-buttons">
+                <FullscreenButton />
+                {
+                    showHints
+                        ? <HintButton menuHandler={menuHandler} />
+                        : null
+                }
+                <SettingsButton menuHandler={menuHandler} />
+                <MenuButton
+                    initialDigits={initialDigits}
+                    startTime={startTime}
+                    endTime={endTime}
+                    showPencilmarks={showPencilmarks}
+                    menuHandler={menuHandler}
+                />
+            </div>
         </div>
     );
 }

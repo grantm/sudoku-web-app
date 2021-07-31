@@ -2,6 +2,11 @@ import { List } from './not-mutable';
 // import { List } from 'immutable';
 
 test('List()', () => {
+    expect(List.isList(null)).toBe(false);
+    expect(List.isList(undefined)).toBe(false);
+    expect(List.isList({})).toBe(false);
+    expect(List.isList([])).toBe(false);
+
     const l1 = List();
     expect(typeof l1).toBe('object');
     expect(List.isList(l1)).toBe(true);
@@ -250,4 +255,22 @@ test('List.toArray', () => {
     expect(Array.isArray(a2[1])).toBe(false);
     expect(List.isList(a2[0])).toBe(true);
     expect(List.isList(a2[1])).toBe(true);
+});
+
+test('List.find', () => {
+    const l1 = List([1, 1, 2, 3, 5, 8, 13, 21]);
+    expect(l1.size).toBe(8);
+
+    // find no match
+    expect(l1.find(n => {
+        return false;
+    })).toBe(undefined);
+
+    // find first, don't examine elements after match
+    expect(l1.find(n => {
+        if (n > 8) {
+            throw new Error("List.find should not be examining elements after first match");
+        }
+        return n > 7;
+    })).toBe(8);
 });

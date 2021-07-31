@@ -133,8 +133,15 @@ test('findSolutions - timeout', () => {
 });
 
 test('check initialDigits', () => {
-    let grid = newSudokuModel({initialDigits, skipCheck: true});
+    let grid = newSudokuModel({initialDigits, skipCheck: false});
     expect(grid.get('modalState')).toStrictEqual(undefined);
+    expect(grid.get('finalDigits')).toBe(
+        "657941238123658947894237651765123489231894576948765123512376894389412765476589312"
+    );
+
+    grid = newSudokuModel({initialDigits, skipCheck: true});
+    expect(grid.get('modalState')).toStrictEqual(undefined);
+    expect(grid.get('finalDigits')).toBe(undefined);
 
     grid = newSudokuModel({initialDigits: initialDigitsNonUnique});
     expect(grid.get('modalState')).toStrictEqual({

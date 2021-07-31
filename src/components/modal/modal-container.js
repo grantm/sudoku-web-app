@@ -12,8 +12,10 @@ import {
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
     MODAL_TYPE_SOLVER,
     MODAL_TYPE_HELP,
+    MODAL_TYPE_HINT,
     MODAL_TYPE_ABOUT,
     MODAL_TYPE_QR_CODE,
+    MODAL_TYPE_FEATURES,
 } from '../../lib/modal-types';
 
 
@@ -29,6 +31,8 @@ import ModalShare from './modal-share';
 import ModalSolver from './modal-solver';
 import ModalSettings from './modal-settings';
 import ModalQRCode from './modal-qr-code';
+import ModalHint from './modal-hint';
+import ModalFeatures from './modal-features';
 import HelpPage from '../help/help';
 
 import "./modal.css";
@@ -45,6 +49,13 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     let content = null;
     if (!modalState) {
         return null;
+    }
+    const containerClickHandler = (e) => {
+        if (e.target === e.currentTarget) {
+            if (modalState.escapeAction) {
+                modalHandler(modalState.escapeAction);
+            }
+        }
     }
     if (modalState.modalType === MODAL_TYPE_WELCOME) {
         content = <ModalWelcome modalState={modalState} modalHandler={modalHandler} />;
@@ -79,11 +90,17 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     else if (modalState.modalType === MODAL_TYPE_SOLVER) {
         content = <ModalSolver modalState={modalState} modalHandler={modalHandler} />;
     }
+    else if (modalState.modalType === MODAL_TYPE_HINT) {
+        content = <ModalHint modalState={modalState} modalHandler={modalHandler} menuHandler={menuHandler} />;
+    }
     else if (modalState.modalType === MODAL_TYPE_HELP) {
         content = <HelpPage modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_QR_CODE) {
         content = <ModalQRCode modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === MODAL_TYPE_FEATURES) {
+        content = <ModalFeatures modalState={modalState} modalHandler={modalHandler} />;
     }
     else {
         console.log('<Modal />: Unhandled modalState:', modalState);
@@ -91,7 +108,7 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     if (content) {
         return <>
             <ModalBackdrop />
-            <div className="modal-container" onMouseDown={stopPropagation}>
+            <div className="modal-container" onClick={containerClickHandler} onMouseDown={stopPropagation}>
                 {content}
             </div>
         </>;

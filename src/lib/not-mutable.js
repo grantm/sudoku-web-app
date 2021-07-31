@@ -109,6 +109,11 @@ class NMList {
         return l.length;
     }
 
+    find(f) {
+        const l = this[_nm_list];
+        return l.find(f);
+    }
+
     toList () {
         return this;
     }
@@ -137,7 +142,7 @@ function List(...args) {
     return emptyList._new_list([args[0]]);
 }
 
-List.isList = o => o && o.constructor === NMList;
+List.isList = o => !!(o && o.constructor === NMList);
 
 
 // ==========================================================================
@@ -237,7 +242,7 @@ function Map(...args) {
     return emptyMap._new_map(args[0]);
 }
 
-Map.isMap = o => o && o.constructor === NMMap;
+Map.isMap = o => !!(o && o.constructor === NMMap);
 
 
 // ==========================================================================
@@ -318,7 +323,7 @@ function Set(...args) {
     return emptySet._new_set(args[0]);
 }
 
-Set.isSet = o => o && o.constructor === NMSet;
+Set.isSet = o => !!(o && o.constructor === NMSet);
 
 Set.union = a => {
     a = Array.isArray(a) ? a : a.toArray();
@@ -373,7 +378,7 @@ function Range(start, end, step=1) {
     return emptyRange._new_range({start, end, step});
 }
 
-Set.isSet = o => o && o.constructor === NMSet;
+Range.isRange = o => !!(o && o.constructor === NMRange);
 
 
 export { List, Map, Set, Range };

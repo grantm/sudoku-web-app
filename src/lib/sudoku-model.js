@@ -1,6 +1,8 @@
 // import { List, Map, Range, Set } from 'immutable';
 import { List, Map, Range, Set } from './not-mutable';
 import { SudokuHinter } from './sudoku-hinter';
+import { cellSet, cellProp } from './sudoku-cell-sets';
+import SudokuExplainer from './sudoku-explainer';
 
 import {
     MODAL_TYPE_WELCOME,
@@ -13,9 +15,11 @@ import {
     MODAL_TYPE_CONFIRM_RESTART,
     MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS,
     MODAL_TYPE_SOLVER,
+    MODAL_TYPE_HINT,
     MODAL_TYPE_HELP,
     MODAL_TYPE_ABOUT,
     MODAL_TYPE_QR_CODE,
+    MODAL_TYPE_FEATURES,
 } from './modal-types';
 
 export const SETTINGS = {
@@ -31,6 +35,14 @@ export const SETTINGS = {
     showRatings: "show-ratings",
 };
 
+export const AVAILABLE_FEATURE_FLAGS = [
+    {
+        name: "hints",
+        description: "Add a hint button. Note: the hint 'server' is still being debugged.",
+        issueNumber: 34,
+    }
+];
+
 const difficultyLevels = [
     { value: "1", name: "Easy" },
     { value: "2", name: "Medium" },
@@ -38,29 +50,7 @@ const difficultyLevels = [
     { value: "4", name: "Diabolical" },
 ];
 
-const [cellSets, cellProp] = initCellSets();
 const emptySet = Set();
-
-function initCellSets() {
-    const row = {}, col = {}, box = {}, cellProp = [];
-    Range(1, 10).forEach((i) => {
-        row[i] = [];
-        col[i] = [];
-        box[i] = [];
-    });
-    Range(0, 81).forEach((i) => {
-        const r = Math.floor(i / 9) + 1;
-        const c = (i % 9) + 1;
-        const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
-        cellProp[i] = { row: r, col: c, box: b };
-        row[r].push(i);
-        col[c].push(i);
-        box[b].push(i);
-    });
-    return [ {row, col, box}, cellProp ];
-}
-
-
 const charCodeOne = '1'.charCodeAt(0);
 
 function indexFromRC (rc) {
@@ -103,10 +93,12 @@ export function newSudokuModel({initialDigits, difficultyLevel, onGamestateChang
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
+    const featureFlags = modelHelpers.loadFeatureFlags();
     const grid = Map({
         solved: false,
         mode,
         settings,
+        featureFlags,
         difficultyLevel: (difficultyLevel || '').replace(/[^1-4]/g, ''),
         inputMode: 'digit',
         tempInputMode: undefined,
@@ -159,7 +151,7 @@ export const modelHelpers = {
         catch {
             // ignore errors
         };
-        const settings = Object.assign({}, defaults, savedSettings);
+        const settings = {...defaults, ...savedSettings};
         modelHelpers.syncSettingsToDom(settings);
         return settings;
     },
@@ -169,6 +161,34 @@ export const modelHelpers = {
         window.localStorage.setItem('settings', newSettingsJSON);
         modelHelpers.syncSettingsToDom(newSettings);
         return grid.set('settings', newSettings);
+    },
+
+    loadFeatureFlags: () => {
+        let savedFeatureFlags = {};
+        try {
+            const savedFeatureFlagsJSON = window.localStorage.getItem('featureFlags') || '{}';
+            savedFeatureFlags = JSON.parse(savedFeatureFlagsJSON);
+        }
+        catch {
+            // ignore errors
+        };
+        const flags = {};
+        AVAILABLE_FEATURE_FLAGS.forEach((f) => {
+            if (savedFeatureFlags[f.name]) {
+                flags[f.name] = true;
+            }
+        });
+        return flags;
+    },
+
+    saveFeatureFlags: (grid, newFeatureFlags) => {
+        const newFeatureFlagsJSON = JSON.stringify(newFeatureFlags);
+        window.localStorage.setItem("featureFlags", newFeatureFlagsJSON);
+        return grid.set("featureFlags", newFeatureFlags);
+    },
+
+    featureIsEnabled: (grid, featureName) => {
+        return (grid.get("featureFlags") || {})[featureName] === true;
     },
 
     hinter: (grid) => {
@@ -250,7 +270,10 @@ export const modelHelpers = {
         }
         const digits = initialDigits.split('');
         const result = modelHelpers.findSolutions(digits);
-        if (!result.uniqueSolution) {
+        if (result.uniqueSolution) {
+            grid = grid.set('finalDigits', result.finalDigits);
+        }
+        else {
             grid = grid.set('modalState', {
                 modalType: MODAL_TYPE_CHECK_RESULT,
                 icon: 'warning',
@@ -353,7 +376,86 @@ export const modelHelpers = {
         setTimeout(fetchHandler, fetchDelay);
     },
 
-    checkDigits: (digits) => {
+    fetchExplainPlan: (grid, setGrid, retryInterval, maxRetries) => {
+        const modalState = grid.get('modalState');
+        delete modalState.fetchRequired;    // Naughty, but we don't want a re-render
+        const explainURL = '/explain/' + grid.get('initialDigits');
+        let retryCount = 0;
+        const setNewModalState = ({analysis, errorMessage}) => {
+            setGrid(grid => {
+                const modalState = grid.get('modalState');
+                if (!modalState || modalState.modalType !== MODAL_TYPE_HINT) {
+                    return grid;  // user has moved on, so don't change anything
+                }
+                const newModalState = {
+                    modalType: MODAL_TYPE_HINT,
+                    escapeAction: 'close',
+                };
+                if (analysis) {
+                    try {
+                        const explainer = new SudokuExplainer(analysis);  // might throw exception
+                        grid = grid.set("explainer", explainer);
+                        newModalState.hint = modelHelpers.findNextHint(grid);
+                    }
+                    catch (error) {
+                        errorMessage = error.toString();
+                    }
+                }
+                if (errorMessage) {
+                    newModalState.loadingFailed = true;
+                    newModalState.errorMessage = errorMessage;
+                }
+                return grid.set('modalState', newModalState);
+            });
+        };
+        const tryRequest = () => {
+            let userWaiting = true;
+            setGrid(grid => {
+                const modalState = grid.get('modalState');
+                if (!modalState || modalState.modalType !== MODAL_TYPE_HINT) {
+                    userWaiting = false;
+                }
+                return grid;
+            })
+            if (!userWaiting) {
+                return;
+            }
+            if (retryCount++ > maxRetries) {
+                setNewModalState({errorMessage: "Timed out waiting for hints from server."})
+                return;
+            }
+            fetch(explainURL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(analysis => {
+                    if (analysis && analysis.ss) {
+                        setNewModalState({analysis});
+                    }
+                    else {
+                        setTimeout(tryRequest, retryInterval);
+                    }
+                })
+                .catch(error => {
+                    setNewModalState({errorMessage: error.toString()});
+                });
+        };
+        tryRequest();
+    },
+
+    findNextHint: (grid) => {
+        const explainer = grid.get("explainer");
+        const currDigits = grid.get('cells').map(c => c.get('digit')).toArray();
+        const currCandidates = grid.get("cells").map(c => {
+            return c.get("innerPencils").union(c.get("outerPencils")).toArray().join('');
+        }).toArray();
+        return explainer.findNextStep(currDigits, currCandidates);
+    },
+
+    checkDigits: (digits, finalDigits) => {
         const result = {
             isSolved: false,
         };
@@ -388,7 +490,15 @@ export const modelHelpers = {
             c[d] = (digitTally[d] === 9);
             return c;
         }, {});
-        const errorCount = Object.keys(errorAtIndex).length;
+        let errorCount = Object.keys(errorAtIndex).length;
+        if (finalDigits && errorCount === 0) {
+            for (let i = 0; i < 81; i++) {
+                if(digits[i] !== '0' && digits[i] !== finalDigits[i]) {
+                    errorAtIndex[i] = 'Incorrect digit';
+                    errorCount++;
+                }
+            }
+        }
         if (errorCount > 0) {
             result.hasErrors = true;
             result.errorAtIndex = errorAtIndex;
@@ -408,7 +518,7 @@ export const modelHelpers = {
         const r = Math.floor(i / 9) + 1;
         const c = (i % 9) + 1;
         const b = Math.floor((r - 1) / 3) * 3 + Math.floor((c - 1) / 3) + 1;
-        [ cellSets.row[r], cellSets.col[c], cellSets.box[b] ].flat().forEach(j => {
+        [ cellSet.row[r], cellSet.col[c], cellSet.box[b] ].flat().forEach(j => {
             const d = digits[j] || '0';
             if (d !== '0') {
                 const index = d.charCodeAt(0) - digitBase;
@@ -419,7 +529,7 @@ export const modelHelpers = {
     },
 
     findSolutions: (digits, userOpt) => {
-        const opt = Object.assign({findAll: false}, userOpt);
+        const opt = {findAll: false, ...userOpt};
         const state = {
             findAll: opt.findAll,
             solutions: [],
@@ -442,6 +552,7 @@ export const modelHelpers = {
         };
         if (solutions.length === 1  && !state.timedOut) {
             result.uniqueSolution = true;
+            result.finalDigits = solutions[0];
         }
         else if (solutions.length > 1 ) {
             result.error = 'This arrangement does not have a unique solution';
@@ -720,8 +831,7 @@ export const modelHelpers = {
         });
     },
 
-    showQRModal: (grid, args) => {
-        const { puzzleURL } = args;
+    showQRModal: (grid, puzzleURL) => {
         return grid.set('modalState', {
             modalType: MODAL_TYPE_QR_CODE ,
             puzzleURL,
@@ -735,6 +845,47 @@ export const modelHelpers = {
             currentSettings: grid.get('settings'),
             escapeAction: 'close',
         });
+    },
+
+    showHintModal: (grid) => {
+        // Alert user of any error first if there are any
+        grid = modelHelpers.gameOverCheck(grid);
+        const modalState = grid.get('modalState');
+        if (modalState && modalState.icon !== 'ok') {
+            return grid;
+        }
+        grid = grid.set('modalState', undefined);
+
+        // Make sure we have hints available
+        const explainer = grid.get('explainer');
+        if (!explainer) {
+            return grid.set('modalState', {
+                modalType: MODAL_TYPE_HINT,
+                fetchRequired: true,
+                loading: true,
+                retries: 10,
+            });
+        }
+        const currDigits = grid.get('cells').map(c => c.get('digit')).toArray();
+        const currCandidates = grid.get("cells").map(c => {
+            return c.get("innerPencils").union(c.get("outerPencils")).toArray().join('');
+        }).toArray();
+        const hint = explainer.findNextStep(currDigits, currCandidates);
+        if (hint) {
+            grid = grid.set('modalState', {
+                modalType: MODAL_TYPE_HINT,
+                escapeAction: 'close',
+                hint: hint,
+            });
+        }
+        else {
+            grid = grid.set('modalState', {
+                modalType: MODAL_TYPE_HINT,
+                escapeAction: 'close',
+                noHint: true,
+            });
+        }
+        return grid;
     },
 
     showHelpPage: (grid) => {
@@ -751,6 +902,15 @@ export const modelHelpers = {
          });
     },
 
+    showFeaturesModal: (grid) => {
+        return grid.set('modalState', {
+            modalType: MODAL_TYPE_FEATURES,
+            availableFeatures: AVAILABLE_FEATURE_FLAGS,
+            enabledFeatures: grid.get("featureFlags"),
+            escapeAction: 'goto-main-entry',
+         });
+    },
+
     applyModalAction: (grid, args) => {
         const action = args.action || args;
         grid = grid.set('modalState', undefined);
@@ -761,29 +921,32 @@ export const modelHelpers = {
             return modelHelpers.showWelcomeModal(grid);
         }
         else if (action === 'cancel-solver') {
-            return modelHelpers.saveSolverPreferences(grid, args);
+            return modelHelpers.saveSolverPreferences(grid, args.passProgress);
         }
         else if (action === 'goto-main-entry') {
-            window.location.search = '';
+            window.location.href = window.location.href.replace(/[?#].*$/, "");
             return grid;
         }
         else if (action === 'show-share-modal') {
             return modelHelpers.showShareModal(grid);
         }
         else if (action === 'retry-initial-digits') {
-            return modelHelpers.retryInitialDigits(grid, args);
+            return modelHelpers.retryInitialDigits(grid, args.digits);
         }
         else if (action === 'show-paste-modal') {
-            return modelHelpers.showPasteModal(grid, args);
+            return modelHelpers.showPasteModal(grid);
         }
         else if (action === 'show-qr-modal') {
-            return modelHelpers.showQRModal(grid, args);
+            return modelHelpers.showQRModal(grid, args.puzzleURL);
         }
         else if (action === 'paste-initial-digits') {
-            return modelHelpers.retryInitialDigits(grid, args);
+            return modelHelpers.retryInitialDigits(grid, args.digits);
         }
         else if (action === 'save-settings') {
-            return modelHelpers.applyNewSettings(grid, args);
+            return modelHelpers.applyNewSettings(grid, args.newSettings);
+        }
+        else if (action === 'save-feature-flags') {
+            return modelHelpers.applyNewFeatureFlags(grid, args.newFeatureFlags);
         }
         else if (action === 'restart-confirmed') {
             return modelHelpers.applyRestart(grid);
@@ -846,14 +1009,12 @@ export const modelHelpers = {
         return g;
     },
 
-    retryInitialDigits: (grid, args) => {
-        const digits = args.digits;
+    retryInitialDigits: (grid, digits) => {
         window.location.search = `s=${digits}`;
         return grid;
     },
 
-    applyNewSettings: (grid, args) => {
-        const {newSettings} = args;
+    applyNewSettings: (grid, newSettings) => {
         // If simple pencil marking mode is being changed from 'off' to 'on' collapse
         // all pencil marks to inner.
         const oldSimpleMode = modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking);
@@ -861,6 +1022,12 @@ export const modelHelpers = {
             grid = modelHelpers.collapseAllOuterPencilMarks(grid);
         }
         return modelHelpers.saveSettings(grid, newSettings);
+    },
+
+    applyNewFeatureFlags: (grid, newFeatureFlags) => {
+        grid = modelHelpers.saveFeatureFlags(grid, newFeatureFlags);
+        window.location.href = window.location.href.replace(/[?#].*$/, "");
+        return grid;
     },
 
     collapseAllOuterPencilMarks: (grid) => {
@@ -895,12 +1062,12 @@ export const modelHelpers = {
         return modelHelpers.checkCompletedDigits(grid);
     },
 
-    saveSolverPreferences: (grid, args) => {
+    saveSolverPreferences: (grid, passProgress) => {
         const allSettings = grid.get('settings');
-        if (allSettings[SETTINGS.passProgressToSolver] === args.passProgress) {
+        if (allSettings[SETTINGS.passProgressToSolver] === passProgress) {
             return grid;
         }
-        const newSettings = { ...allSettings, [SETTINGS.passProgressToSolver]: args.passProgress }
+        const newSettings = { ...allSettings, [SETTINGS.passProgressToSolver]: passProgress }
         return modelHelpers.saveSettings(grid, newSettings);
     },
 
@@ -927,7 +1094,8 @@ export const modelHelpers = {
 
     gameOverCheck: (grid) => {
         const digits = grid.get('cells').map(c => c.get('digit')).join('');
-        const result = modelHelpers.checkDigits(digits);
+        const finalDigits = grid.get('finalDigits');
+        const result = modelHelpers.checkDigits(digits, finalDigits);
         if (result.hasErrors) {
             grid = modelHelpers.applyErrorHighlights(grid, result.errorAtIndex);
             grid = grid.set('modalState', {
@@ -984,6 +1152,28 @@ export const modelHelpers = {
         return grid.set('cells', cells);
     },
 
+    defaultDigitOpForSelection: (grid) => {
+        const selection = grid.get("cells").filter((c) => c.get("isSelected"));
+        if (selection.size < 2) {
+            return 'setDigit';
+        }
+        const seen = {};
+        const sameRegion = selection.find(c => {
+            return ["row", "col", "box"].find(rType => {
+                const region = rType + c.get(rType);
+                const wasSeen = seen[region];
+                seen[region] = true;
+                return wasSeen;
+            })
+        })
+        return sameRegion ? 'toggleOuterPencilMark' : 'setDigit';
+    },
+
+    selectionHasMatch: (grid, testFunc) => {
+        const selection = grid.get("cells").filter((c) => c.get("isSelected"));
+        return !!(selection.find(testFunc));
+    },
+
     updateSelectedCells: (grid, opName, ...args) => {
         if (actionsBlocked(grid)) {
             return grid;
@@ -991,6 +1181,16 @@ export const modelHelpers = {
         const isSimpleMode = modelHelpers.getSetting(grid, SETTINGS.simplePencilMarking);
         if (opName === 'toggleOuterPencilMark' && isSimpleMode) {
             opName = 'toggleInnerPencilMark'
+        }
+        if (opName === 'toggleInnerPencilMark' || opName === 'toggleOuterPencilMark') {
+            const [digit] = args;
+            const setName = opName === 'toggleInnerPencilMark' ? 'innerPencils' : 'outerPencils'
+            const setMode = modelHelpers.selectionHasMatch(grid, c => {
+                return c.get('digit') !== '0'
+                        ? false  // ignore full digits in selection
+                        : !c.get(setName).includes(digit);
+            });
+            args = [digit, setMode];
         }
         const mode = grid.get('mode');
         const op = modelHelpers[opName + 'AsCellOp'];
@@ -1062,25 +1262,25 @@ export const modelHelpers = {
         });
     },
 
-    toggleInnerPencilMarkAsCellOp: (c, digit) => {
+    toggleInnerPencilMarkAsCellOp: (c, digit, setMode) => {
         if (c.get('digit') !== '0') {
             return c;
         }
         let pencilMarks = c.get('innerPencils');
-        pencilMarks = pencilMarks.includes(digit)
-            ? pencilMarks.delete(digit)
-            : pencilMarks.add(digit);
+        pencilMarks = setMode
+            ? pencilMarks.add(digit)
+            : pencilMarks.delete(digit);
         return c.set('innerPencils', pencilMarks);
     },
 
-    toggleOuterPencilMarkAsCellOp: (c, digit) => {
+    toggleOuterPencilMarkAsCellOp: (c, digit, setMode) => {
         if (c.get('digit') !== '0') {
             return c;
         }
         let pencilMarks = c.get('outerPencils');
-        pencilMarks = pencilMarks.includes(digit)
-            ? pencilMarks.delete(digit)
-            : pencilMarks.add(digit);
+        pencilMarks = setMode
+            ? pencilMarks.add(digit)
+            : pencilMarks.delete(digit);
         return c.set('outerPencils', pencilMarks);
     },
 
@@ -1104,9 +1304,9 @@ export const modelHelpers = {
         cells.forEach(c => {
             if (c.get('isSelected') && !c.get('isGiven')) {
                 [
-                    cellSets.row[c.get('row')],
-                    cellSets.col[c.get('col')],
-                    cellSets.box[c.get('box')],
+                    cellSet.row[c.get('row')],
+                    cellSet.col[c.get('col')],
+                    cellSet.box[c.get('box')],
                 ].flat().forEach(i => isEliminated[i] = true);
             }
         });

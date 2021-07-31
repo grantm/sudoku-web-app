@@ -19,6 +19,7 @@
 }
 
 .modal {
+    position: relative;
     box-sizing: border-box;
     max-width: 50%;
     max-height: 90%;
@@ -31,9 +32,9 @@
     box-shadow: var(--modal-box-shadow);
 }
 
-.modal > h1 {
+.modal h1 {
     margin-top: 0.2em;
-    line-height: 100%;
+    line-height: 1.3;
     font-size: 150%;
     padding-bottom: 0.16em;
     border-bottom: 2px solid var(--modal-heading-underline-color);
@@ -102,6 +103,13 @@
     border-radius: 0.15em;
 }
 
+.portrait .modal .buttons a.btn,
+.portrait .modal .buttons button {
+    margin: 0 0 0.5em 0.5em;
+    min-width: 4em;
+    padding: 0.4em 0.6em;
+}
+
 .modal.welcome {
     max-width: 30em;
 }
@@ -113,8 +121,8 @@
     margin: 1.5em 1.5em 2em;
 }
 
-modal.welcome .spinner {
-    margin: 70px auto;
+.modal.welcome .spinner {
+    margin: 4.3em auto;
 }
 
 .recently-shared .section {
@@ -263,6 +271,40 @@ input.toggle:checked + .indicator::before {
     background-color: var(--input-toggle-on-color);
 }
 
+.modal-container  .modal.features {
+    max-width: min(26em, 94vw);
+}
+
+.feature-list {
+    margin: 0 1em 0 0.6em;
+}
+
+.feature-list th {
+    text-align: left;
+    border-bottom: 1px solid var(--modal-heading-underline-color);
+}
+
+.feature-list td {
+    vertical-align: top;
+}
+
+.feature-list .checkbox-wrapper {
+    display: block;
+    position: relative;
+    width: 2em;
+    margin-top: 0.25em;
+    padding: 0;
+}
+
+.feature-list .description {
+    padding: 0.2em 0.4em;
+}
+
+.feature-list .issue {
+    text-align: right;
+    padding-right: 0.6em;
+}
+
 .modal.about p {
     max-width: 23em;
 }
@@ -402,6 +444,76 @@ input.toggle:checked + .indicator::before {
 .solver input[type=checkbox] {
     margin-right: 0.6em;
     vertical-align: text-bottom;
+}
+
+.modal.hint {
+    height: 100%;
+    max-width: 85vw;
+    max-height: 90vh;
+    padding: 0;
+    overflow-y: hidden;
+}
+
+.modal.hint.loading {
+    max-height: 20rem;
+}
+
+.hint-layout {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1.8rem;
+}
+
+.hint-body {
+    overflow-y: auto;
+    padding: 0 1rem;
+}
+
+.modal .hint-footer {
+    background-color: var(--hint-footer-bg-color);
+    width: 100%;
+    text-align: center;
+}
+
+.hint-footer span {
+    font-size: 1rem;
+    display: inline-block;
+    padding: 0.2em;
+}
+
+.portrait .modal.hint {
+    max-width: 96%;
+    max-height: 90%;
+}
+
+.landscape .hint-body-layout {
+    display: flex;
+}
+
+.landscape .sudoku-grid.hint svg {
+    width: 60vh;
+    max-width: 40vw;
+    margin-right: 1.2em;
+}
+
+.portrait .sudoku-grid.hint svg {
+    height: 50vh;
+    max-height: 88vw;
+    margin-bottom: 1.2em;
+}
+
+.hint-text {
+    max-width: 40em;
+}
+
+.hint-text p {
+    margin: 0 0 1.2em 0;
+}
+
+.modal.features .no-features {
+    font-style: italic;
 }
 
 @media screen and (max-width: 500px) {

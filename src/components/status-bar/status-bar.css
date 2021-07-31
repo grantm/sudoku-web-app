@@ -40,12 +40,18 @@
     width: 38vh;
 }
 
+.status-bar-buttons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+}
+
 .status-bar button {
     width: 6vh;
     height: 6vh;
-    position: absolute;
     background-color: transparent;
-    margin: 0;
+    margin: 0.8vh 0.8vh 0 0;
     padding: 0.5vh;
     border: none;
     border-radius: 0.2em;
@@ -66,19 +72,4 @@
     position: absolute;
     left: 0;
     top: 0;
-}
-
-.menu button {
-    right: 2vh;
-    top: 0.8vh;
-}
-
-#fullscreen-button {
-    right: 18vh;
-    top: 0.8vh;
-}
-
-#settings-button {
-    right: 10vh;
-    top: 0.8vh;
 }

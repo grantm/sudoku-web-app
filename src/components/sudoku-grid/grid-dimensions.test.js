@@ -3,7 +3,8 @@ import calculateGridDimensions from './grid-dimensions';
 test('calculateGridDimensions: normal', () => {
     const cellSize = 100;
     const marginSize = 50;
-    const dim = calculateGridDimensions(cellSize, marginSize);
+    const fontSize = 72;
+    const dim = calculateGridDimensions(cellSize, marginSize, fontSize);
 
     expect(dim.cellSize).toBe(100);
     expect(dim.marginSize).toBe(50);
@@ -55,7 +56,8 @@ test('calculateGridDimensions: normal', () => {
 test('calculateGridDimensions: large', () => {
     const cellSize = 200;
     const marginSize = 200;
-    const dim = calculateGridDimensions(cellSize, marginSize);
+    const fontSize = 144;
+    const dim = calculateGridDimensions(cellSize, marginSize, fontSize);
 
     expect(dim.cellSize).toBe(200);
     expect(dim.marginSize).toBe(200);
@@ -68,7 +70,7 @@ test('calculateGridDimensions: large', () => {
     expect(c11.x).toBe(200);
     expect(c11.y).toBe(200);
     expect(c11.textX).toBe(300);
-    expect(c11.textY).toBe(350);
+    expect(c11.textY).toBe(398);
 
     const offsets = dim.outerPencilOffsets;
     expect(offsets).toStrictEqual([
