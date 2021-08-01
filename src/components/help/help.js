@@ -150,16 +150,37 @@ export default function HelpPage({modalHandler}) {
                 sensitive to flashing lights you should turn this off.</dd>
             </dl>
 
+            <h1>Getting hints</h1>
+
+            <p>If you get stuck, there are a couple of options for working out what to do next.</p>
+            <dl>
+                <dt>The hint button</dt>
+                <dd><i>Note, this feature is still in development, so to use it you
+                need to <a href="https://github.com/grantm/sudoku-web-app/issues/34">turn
+                on the feature flag</a>.</i><br />
+                The hint button works by using SukakuExplainer to find one solution path through
+                the puzzle and then showing you the <em>first</em> step on that path that you have
+                not already completed.
+                </dd>
+                <dt>The SudokuWiki solver</dt>
+                <dd>The menu (top right) includes an option to open the current puzzle in the
+                <a href="https://www.sudokuwiki.org/sudoku.htm">SudokuWiki.org solver</a>. You
+                can then use the <em>Step</em> button to step through the puzzle.</dd>
+            </dl>
+            <p>The hint button is more convenient, whereas the SudokuWiki solver is more flexible
+            and both will likely give different hints for the same puzzle.</p>
+
             <h1>Other operations</h1>
             <p>To switch the app into full-screen mode use the button on the status bar or
             the ‘F’ key on the keyboard.</p>
             <p>A number of other options are available via the menu button (&#9776;) in the
             top right corner:</p>
             <dl>
-                <dt>Sharing a Puzzle</dt>
+                <dt>Sharing a puzzle</dt>
                 <dd>You can share any puzzle by simply copying the link from your browser URL bar.
                 To make this a little easier, this menu option has buttons to share the puzzle
-                using Twitter, Facebook or email.</dd>
+                using Twitter, Facebook, email or QRcode (handy for getting a puzzle onto a phone
+                or tablet).</dd>
                 <dt>Show/Hide pencil marks</dt>
                 <dd>Temporarily hide pencil marks and cell colouring.</dd>
                 <dt>Clear all pencil marks</dt>
