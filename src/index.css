@@ -74,6 +74,10 @@
     --hint-eliminations-fill-color: #fbc4c7;
     --hint-elimination-bg-color: #ff0000;
     --hint-elimination-fill-color: #ffffff;
+    --difficulty-indicator-bg-color: transparent;
+    --difficulty-indicator-border-color: #afafaf;
+    --difficulty-indicator-text-color: #888888;
+    --difficulty-indicator-label-color: #8f8f8f;
     --button-bg-color: #acddfb;
     --button-text-color: #333333;
     --grid-line-width: 2;
@@ -163,6 +167,10 @@
     --hint-eliminations-fill-color: #973838;
     --hint-elimination-bg-color: #fbb6b6;
     --hint-elimination-fill-color: #d70000;
+    --difficulty-indicator-bg-color: transparent;
+    --difficulty-indicator-border-color: #6f6f6f;
+    --difficulty-indicator-text-color: #888888;
+    --difficulty-indicator-label-color: #7f7f7f;
     --button-bg-color: #acddfb;
     --button-text-color: #333333;
     --grid-line-width: 2;
