@@ -621,36 +621,36 @@ export const modelHelpers = {
     },
 
     undoOneAction: (grid) => {
-        return modelHelpers.retainSelection(grid, (g) => {
-            const undoList = g.get('undoList');
-            if (actionsBlocked(g) || undoList.size < 1) {
-                return g;
+        return modelHelpers.retainSelection(grid, (grid) => {
+            const undoList = grid.get('undoList');
+            if (actionsBlocked(grid) || undoList.size < 1) {
+                return grid;
             }
-            const beforeUndo = g.get('currentSnapshot');
+            const beforeUndo = grid.get('currentSnapshot');
             const snapshot = undoList.last();
-            g = modelHelpers.restoreSnapshot(g, snapshot)
+            grid = modelHelpers.restoreSnapshot(grid, snapshot)
                 .set('undoList', undoList.pop())
                 .update('redoList', list => list.push(beforeUndo));
-            g = modelHelpers.checkCompletedDigits(g);
-            modelHelpers.notifyGamestateChange(g);
-            return g;
+            grid = modelHelpers.checkCompletedDigits(grid);
+            modelHelpers.notifyGamestateChange(grid);
+            return grid;
         });
     },
 
     redoOneAction: (grid) => {
-        return modelHelpers.retainSelection(grid, (g) => {
-            const redoList = g.get('redoList');
-            if (actionsBlocked(g) || redoList.size < 1) {
-                return g;
+        return modelHelpers.retainSelection(grid, (grid) => {
+            const redoList = grid.get('redoList');
+            if (actionsBlocked(grid) || redoList.size < 1) {
+                return grid;
             }
-            const beforeRedo = g.get('currentSnapshot');
+            const beforeRedo = grid.get('currentSnapshot');
             const snapshot = redoList.last();
-            g = modelHelpers.restoreSnapshot(g, snapshot)
+            grid = modelHelpers.restoreSnapshot(grid, snapshot)
                 .set('redoList', redoList.pop())
                 .update('undoList', list => list.push(beforeRedo));
-            g = modelHelpers.checkCompletedDigits(g);
-            modelHelpers.notifyGamestateChange(g);
-            return g;
+            grid = modelHelpers.checkCompletedDigits(grid);
+            modelHelpers.notifyGamestateChange(grid);
+            return grid;
         });
     },
 
@@ -966,12 +966,12 @@ export const modelHelpers = {
         return grid;
     },
 
-    persistGamestate: (grid) => {
+    persistGameState: (grid) => {
         const currentSnapshot = grid.get('currentSnapshot');
         const solved = grid.get('solved');
         if (solved) {
             localStorage.removeItem("gamestate");
-        } 
+        }
         else {
             const gameStateJson = JSON.stringify({
                 grid: {
@@ -991,16 +991,16 @@ export const modelHelpers = {
                 },
                 lastUpdatedTime: Date.now()
             });
-    
+
             localStorage.setItem("gamestate", gameStateJson);
         }
     },
 
-    restoreFromGamestate: (grid, gamestate) => {
+    restoreFromGameState: (grid, gamestate) => {
         const {grid: rawGrid, lastUpdatedTime} = gamestate;
 
         let elapsed = (rawGrid.pausedAt ? rawGrid.pausedAt : lastUpdatedTime) - rawGrid.startTime;
-        let g = grid.merge({
+        grid = grid.merge({
             ...rawGrid,
             undoList: List(rawGrid.undoList),
             redoList: List(rawGrid.redoList),
@@ -1008,11 +1008,11 @@ export const modelHelpers = {
             startTime: Date.now() - elapsed,
         })
 
-        g = modelHelpers.setGivenDigits(g, rawGrid.initialDigits, {});
-        g = modelHelpers.restoreSnapshot(g, rawGrid.currentSnapshot);
-        g = modelHelpers.checkCompletedDigits(g);
-        modelHelpers.notifyGamestateChange(g)
-        return g;
+        grid = modelHelpers.setGivenDigits(grid, rawGrid.initialDigits, {});
+        grid = modelHelpers.restoreSnapshot(grid, rawGrid.currentSnapshot);
+        grid = modelHelpers.checkCompletedDigits(grid);
+        modelHelpers.notifyGamestateChange(grid)
+        return grid;
     },
 
     retryInitialDigits: (grid, digits) => {
@@ -1400,25 +1400,25 @@ export const modelHelpers = {
     },
 
     pauseTimer: (grid) => {
-        const g = grid.merge({
+        grid = grid.merge({
             pausedAt: Date.now(),
             modalState: {
                 modalType: MODAL_TYPE_PAUSED,
                 escapeAction: 'resume-timer',
             },
         });
-        modelHelpers.notifyGamestateChange(g);
-        return g;
+        modelHelpers.notifyGamestateChange(grid);
+        return grid;
     },
 
     resumeTimer: (grid) => {
         const elapsed = grid.get('pausedAt') - grid.get('startTime');
-        const g = grid.merge({
+        grid = grid.merge({
             pausedAt: undefined,
             startTime: Date.now() - elapsed,
         });
-        modelHelpers.notifyGamestateChange(g);
-        return g;
+        modelHelpers.notifyGamestateChange(grid);
+        return grid;
     },
 
     toggleShowPencilmarks: (grid) => {

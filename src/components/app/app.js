@@ -54,29 +54,27 @@ const inputModeFromHotKey = {
     v: 'color',
 }
 
-function determineInitialGrid () {
+function initialGridFromURL () {
     const params = new URLSearchParams(window.location.search);
     let grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
         onGamestateChange: grid => {
-            // we must persist this for use by bookmarklets
             document.body.dataset.currentSnapshot = grid.get('currentSnapshot');
-            modelHelpers.persistGamestate(grid);
+            modelHelpers.persistGameState(grid);
         }
     });
-    
+
     if (window.location.hash === "#features") {
         grid = modelHelpers.showFeaturesModal(grid);
     }
-
 
     if (params.get('r') === "1") {
         const gameStateJson = localStorage.getItem('gamestate');
         const gameState = gameStateJson && JSON.parse(gameStateJson);
         const gridObject = gameState && gameState.grid;
         if (gridObject && gridObject.currentSnapshot && !gridObject.solved) {
-            grid = modelHelpers.restoreFromGamestate(grid, gameState);
+            grid = modelHelpers.restoreFromGameState(grid, gameState);
         }
     }
 
@@ -507,7 +505,7 @@ function getDimensions(winSize) {
 }
 
 function App() {
-    const [grid, setGrid] = useState(determineInitialGrid);
+    const [grid, setGrid] = useState(initialGridFromURL);
     const settings = grid.get('settings');
     const pausedAt = grid.get('pausedAt');
     const solved = grid.get('solved');
