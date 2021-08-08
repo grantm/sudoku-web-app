@@ -5,7 +5,7 @@ import { secondsAsHMS } from '../../lib/format-utils';
 import './timer-with-pause.css';
 
 
-function ElapsedTime ({startTime, endTime, pausedAt}) {
+function ElapsedTime ({intervalStartTime, endTime, pausedAt}) {
     const [tickNow, setTickNow] = useState(Date.now());
 
     useEffect(() => {
@@ -17,7 +17,7 @@ function ElapsedTime ({startTime, endTime, pausedAt}) {
         }
     });
 
-    const seconds = Math.floor(((endTime || pausedAt || tickNow) - startTime) / 1000);
+    const seconds = Math.floor(((endTime || pausedAt || tickNow) - intervalStartTime) / 1000);
 
     return (
         <span className="elapsed-time">{secondsAsHMS(seconds)}</span>
@@ -37,12 +37,12 @@ function PauseIcon () {
     )
 }
 
-function TimerWithPause({startTime, endTime, pausedAt, pauseHandler}) {
+function TimerWithPause({startTime, intervalStartTime, endTime, pausedAt, pauseHandler}) {
     if (!startTime) {
         return null;
     }
     return <div id="timer">
-        <ElapsedTime startTime={startTime} endTime={endTime} pausedAt={pausedAt} />
+        <ElapsedTime intervalStartTime={intervalStartTime} endTime={endTime} pausedAt={pausedAt} />
         <button id="pause-btn" title="Pause timer" onClick={pauseHandler}>
             <PauseIcon />
         </button>

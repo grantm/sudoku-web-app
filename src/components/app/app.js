@@ -72,8 +72,7 @@ function initialGridFromURL () {
     if (params.get('r') === "1") {
         const gameStateJson = localStorage.getItem('gamestate');
         const gameState = gameStateJson && JSON.parse(gameStateJson);
-        const gridObject = gameState && gameState.grid;
-        if (gridObject && gridObject.currentSnapshot && !gridObject.solved) {
+        if (gameState && gameState.currentSnapshot) {
             grid = modelHelpers.restoreFromGameState(grid, gameState);
         }
     }
@@ -586,6 +585,7 @@ function App() {
             <StatusBar
                 showTimer={settings[SETTINGS.showTimer]}
                 startTime={grid.get('startTime')}
+                intervalStartTime={grid.get('intervalStartTime')}
                 endTime={grid.get('endTime')}
                 pausedAt={pausedAt}
                 showHints={showHints}

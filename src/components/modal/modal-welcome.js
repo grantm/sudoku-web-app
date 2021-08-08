@@ -68,14 +68,14 @@ function RestoreLocalSession() {
     if (!gameStateJson) {
         return null;
     }
-    const {grid: serialisedGrid, lastUpdatedTime} = JSON.parse(gameStateJson);
-    if (!serialisedGrid || !serialisedGrid.currentSnapshot || serialisedGrid.solved) {
+    const gameState = JSON.parse(gameStateJson);
+    if (!gameState || !gameState.currentSnapshot) {
         return null;
     }
 
     const restoreLocalSessionHandler = () => {
-        const level = modelHelpers.difficultyLevelName(serialisedGrid.difficultyLevel);
-        window.location.search = `s=${serialisedGrid.initialDigits}&d=${level}&r=1`
+        const level = modelHelpers.difficultyLevelName(gameState.difficultyLevel);
+        window.location.search = `s=${gameState.initialDigits}&d=${level}&r=1`
     }
     return (
       <p style={{textAlign: 'center'}}>
@@ -84,7 +84,7 @@ function RestoreLocalSession() {
           onClick={restoreLocalSessionHandler}
         >
           Continue unfinished game from{" "}
-          {new Date(lastUpdatedTime).toLocaleDateString("en-US", {
+          {new Date(gameState.lastUpdatedTime).toLocaleDateString("en-US", {
             weekday: "short",
             month: "short",
             day: "numeric",

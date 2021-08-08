@@ -17,7 +17,7 @@ function MenuIcon () {
     )
 }
 
-function MenuButton ({initialDigits, startTime, endTime, showPencilmarks, menuHandler}) {
+function MenuButton ({initialDigits, showPencilmarks, menuHandler}) {
     const [hidden, setHidden] = useState(true);
 
     const classes = ['menu'];

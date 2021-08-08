@@ -102,8 +102,8 @@ function DifficultySelector({difficulty, changeHandler}) {
 
 
 export default function ModalShare({modalState, modalHandler, menuHandler}) {
-    const {initialDigits, difficultyLevel, startTime, endTime} = modalState;
-    const solveTime = endTime ? formattedTimeToBeat(startTime, endTime) : null;
+    const {initialDigits, difficultyLevel, intervalStartTime, endTime} = modalState;
+    const solveTime = endTime ? formattedTimeToBeat(intervalStartTime, endTime) : null;
 
     const [difficulty, setDifficulty] = useState(difficultyLevel);
     const [shareTime, setShareTime] = useState(!!endTime);

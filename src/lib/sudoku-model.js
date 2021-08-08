@@ -94,6 +94,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, onGamestateChang
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
     const featureFlags = modelHelpers.loadFeatureFlags();
+    const startTime = mode === 'solve' ? Date.now() : undefined;
     const grid = Map({
         solved: false,
         mode,
@@ -102,7 +103,8 @@ export function newSudokuModel({initialDigits, difficultyLevel, onGamestateChang
         difficultyLevel: (difficultyLevel || '').replace(/[^1-4]/g, ''),
         inputMode: 'digit',
         tempInputMode: undefined,
-        startTime: mode === 'solve' ? Date.now() : undefined,
+        startTime: startTime,           // should never change
+        intervalStartTime: startTime,   // gets adjusted if game paused
         endTime: undefined,
         pausedAt: undefined,
         undoList: List(),
@@ -807,7 +809,7 @@ export const modelHelpers = {
             modalType: MODAL_TYPE_SHARE,
             initialDigits: grid.get('initialDigits'),
             difficultyLevel: grid.get('difficultyLevel'),
-            startTime: grid.get('startTime'),
+            intervalStartTime: grid.get('intervalStartTime'),
             endTime: grid.get('endTime'),
             escapeAction: 'close',
         });
@@ -967,51 +969,42 @@ export const modelHelpers = {
     },
 
     persistGameState: (grid) => {
-        const currentSnapshot = grid.get('currentSnapshot');
         const solved = grid.get('solved');
         if (solved) {
             localStorage.removeItem("gamestate");
         }
         else {
+            const elapsedTime = (grid.get('pausedAt') || Date.now()) - grid.get('intervalStartTime');
             const gameStateJson = JSON.stringify({
-                grid: {
-                    solved,
-                    mode: grid.get('mode'),
-                    difficultyLevel: grid.get('difficultyLevel'),
-                    inputMode: grid.get('inputMode'),
-                    startTime: grid.get('startTime'),
-                    endTime: grid.get('endTime'),
-                    pausedAt: grid.get('pausedAt'),
-                    undoList: grid.get('undoList').toArray(),
-                    redoList: grid.get('redoList').toArray(),
-                    currentSnapshot,
-                    focusIndex: grid.get('focusIndex'),
-                    matchDigit: grid.get('matchDigit'),
-                    initialDigits: grid.get('initialDigits')
-                },
-                lastUpdatedTime: Date.now()
+                initialDigits: grid.get('initialDigits'),
+                difficultyLevel: grid.get('difficultyLevel'),
+                startTime: grid.get('startTime'),
+                elapsedTime: elapsedTime,
+                undoList: grid.get('undoList').toArray(),
+                redoList: grid.get('redoList').toArray(),
+                currentSnapshot: grid.get('currentSnapshot'),
+                lastUpdatedTime: Date.now(),
             });
 
             localStorage.setItem("gamestate", gameStateJson);
         }
     },
 
-    restoreFromGameState: (grid, gamestate) => {
-        const {grid: rawGrid, lastUpdatedTime} = gamestate;
-
-        let elapsed = (rawGrid.pausedAt ? rawGrid.pausedAt : lastUpdatedTime) - rawGrid.startTime;
+    restoreFromGameState: (grid, gameState) => {
         grid = grid.merge({
-            ...rawGrid,
-            undoList: List(rawGrid.undoList),
-            redoList: List(rawGrid.redoList),
+            mode: 'solve',
+            initialDigits: gameState.initialDigits,
+            difficultyLevel: gameState.difficultyLevel,
+            startTime: gameState.startTime,
+            intervalStartTime: Date.now() - gameState.elapsedTime,
+            undoList: List(gameState.undoList),
+            redoList: List(gameState.redoList),
             pausedAt: undefined,
-            startTime: Date.now() - elapsed,
-        })
-
-        grid = modelHelpers.setGivenDigits(grid, rawGrid.initialDigits, {});
-        grid = modelHelpers.restoreSnapshot(grid, rawGrid.currentSnapshot);
+        });
+        grid = modelHelpers.setGivenDigits(grid, gameState.initialDigits, {});
+        grid = modelHelpers.restoreSnapshot(grid, gameState.currentSnapshot);
         grid = modelHelpers.checkCompletedDigits(grid);
-        modelHelpers.notifyGamestateChange(grid)
+        modelHelpers.notifyGamestateChange(grid);
         return grid;
     },
 
@@ -1049,9 +1042,11 @@ export const modelHelpers = {
 
     applyRestart: (grid) => {
         if (grid.get('solved')) {
+            const startTime = Date.now();
             grid = grid.merge({
                 'solved': false,
-                'startTime': Date.now(),
+                'startTime': startTime,
+                'intervalStartTime': startTime,
                 'endTime': undefined,
             })
         }
@@ -1412,10 +1407,10 @@ export const modelHelpers = {
     },
 
     resumeTimer: (grid) => {
-        const elapsed = grid.get('pausedAt') - grid.get('startTime');
+        const elapsed = grid.get('pausedAt') - grid.get('intervalStartTime');
         grid = grid.merge({
             pausedAt: undefined,
-            startTime: Date.now() - elapsed,
+            intervalStartTime: Date.now() - elapsed,
         });
         modelHelpers.notifyGamestateChange(grid);
         return grid;

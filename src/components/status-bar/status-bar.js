@@ -24,11 +24,12 @@ function SiteLink () {
 }
 
 
-function StatusBar ({showTimer, startTime, endTime, pausedAt, showHints, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
+function StatusBar ({showTimer, startTime, intervalStartTime, endTime, pausedAt, showHints, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
     const timer = showTimer
         ? (
             <TimerWithPause
                 startTime={startTime}
+                intervalStartTime={intervalStartTime}
                 endTime={endTime}
                 pausedAt={pausedAt}
                 pauseHandler={pauseHandler}
@@ -49,8 +50,6 @@ function StatusBar ({showTimer, startTime, endTime, pausedAt, showHints, showPen
                 <SettingsButton menuHandler={menuHandler} />
                 <MenuButton
                     initialDigits={initialDigits}
-                    startTime={startTime}
-                    endTime={endTime}
                     showPencilmarks={showPencilmarks}
                     menuHandler={menuHandler}
                 />
