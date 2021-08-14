@@ -63,51 +63,43 @@ function RecentlyShared({modalState}) {
     );
 }
 
-function RestoreLocalSession() {
-    const gameStateJson = localStorage.getItem('gamestate');
-    if (!gameStateJson) {
-        return null;
-    }
-    const gameState = JSON.parse(gameStateJson);
-    if (!gameState || !gameState.currentSnapshot) {
-        return null;
-    }
 
-    const restoreLocalSessionHandler = () => {
-        const level = modelHelpers.difficultyLevelName(gameState.difficultyLevel);
-        window.location.search = `s=${gameState.initialDigits}&d=${level}&r=1`
+function CountBadge ({count}) {
+    return <sup className="count-badge">{count}</sup>;
+}
+
+
+function SavedPuzzlesButton({savedPuzzles, modalHandler}) {
+    if (!savedPuzzles || savedPuzzles.length === 0) {
+        return null;
     }
+    const savedPuzzlesHandler = () => modalHandler("show-saved-puzzles-modal");
     return (
-      <p style={{textAlign: 'center'}}>
-        <button
-          className="primary"
-          onClick={restoreLocalSessionHandler}
-        >
-          Continue unfinished game from{" "}
-          {new Date(gameState.lastUpdatedTime).toLocaleDateString("en-US", {
-            weekday: "short",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-          })}
-        </button>
-      </p>
+        <p style={{textAlign: 'center'}}>
+            <button className="primary new-puzzle" onClick={savedPuzzlesHandler}>
+                Resume a puzzle
+                <CountBadge count={savedPuzzles.length} />
+            </button>
+        </p>
     );
 }
 
 
 function ModalWelcome({modalState, modalHandler}) {
+    const {savedPuzzles} = modalState;
     const cancelHandler = () => modalHandler('cancel');
     const showPasteHandler = () => modalHandler('show-paste-modal');
     const twitterUrl = "https://twitter.com/SudokuExchange";
+    const orRestoreMsg = (savedPuzzles && savedPuzzles.length > 0)
+        ? ", or return to a puzzle you started previously"
+        : "";
     return (
         <div className="modal welcome">
             <h1>Welcome to SudokuExchange</h1>
-            <p>You can get started by entering a new puzzle into a blank grid:</p>
+            <p>You can get started by entering a new puzzle into a blank grid{orRestoreMsg}:</p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={cancelHandler}>Enter a new puzzle</button></p>
             <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={showPasteHandler}>Paste a new puzzle</button></p>
-            <RestoreLocalSession />
+            <SavedPuzzlesButton savedPuzzles={savedPuzzles} modalHandler={modalHandler} />
             <p>Or you can select a recently shared puzzle:</p>
             <RecentlyShared modalState={modalState} />
             <div id="welcome-footer">

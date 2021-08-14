@@ -36,17 +36,19 @@ function SudokuMiniGrid({puzzle, size='120px', showRatings}) {
     const cellSize = 100;
     const marginSize = 50;
     const digits = typeof(puzzle) === 'string' ? puzzle : puzzle.digits;
+    const completedDigits = puzzle.completedDigits || digits;
     const difficulty = puzzle.difficulty;
-    const givenDigits = digits.split('').map((digit, i) => {
+    const puzzleDigits = completedDigits.split('').map((digit, i) => {
         if (digit === '0') {
             return null;
         }
+        const className = digits[i] === '0' ? 'user-digit' : 'digit';
         const row = Math.floor(i / 9);
         const col = i % 9;
         return (
             <text
                 key={i}
-                className="digit"
+                className={className}
                 x={col * cellSize + cellSize}
                 y={row * cellSize + 130 * cellSize / 100}
                 fontSize={84 * cellSize / 100}
@@ -63,7 +65,7 @@ function SudokuMiniGrid({puzzle, size='120px', showRatings}) {
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="grid-bg" width="100%" height="100%" />
-                {givenDigits}
+                {puzzleDigits}
                 <GridLines cellSize={cellSize} marginSize={marginSize} />
                 <DifficultyIndicator difficulty={difficulty} showRatings={showRatings} />
             </svg>

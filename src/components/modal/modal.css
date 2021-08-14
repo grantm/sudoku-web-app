@@ -114,6 +114,18 @@
     max-width: 30em;
 }
 
+.count-badge {
+    display: inline-grid;
+    place-items: center;
+    margin-left: 0.1em;
+    color: var(--badge-text-color);
+    background-color: var(--badge-bg-color);
+    font-size: 0.8rem;
+    min-width: 1.2em;
+    height: 1.2em;
+    border-radius: 50%;
+}
+
 .modal.welcome .loading-failed {
     color: var(--error-text-color);
     font-style: italic;
@@ -176,14 +188,16 @@
     border-radius: 4px;
 }
 
-.recently-shared a {
+.recently-shared a,
+.saved-puzzle a.puzzle-selector {
     border: 2px solid transparent;
     border-radius: 4px;
     text-decoration: none;
     line-height: 0;
 }
 
-.recently-shared a:hover {
+.recently-shared a:hover,
+.saved-puzzle a.puzzle-selector:hover {
     border: 2px solid var(--link-hover-text-color);
     background-color: transparent;
 }
@@ -203,6 +217,33 @@
 .modal button.new-puzzle {
     margin: 0 0.8em 0 0;
     white-space: nowrap;
+}
+
+.modal.saved-puzzles .saved-puzzle {
+    display: flex;
+    align-items:center;
+}
+
+.modal.saved-puzzles .puzzle-selector {
+    display: block;
+    margin: 0.4em 0.4em 0 0;
+}
+
+.modal.saved-puzzles .metadata {
+    font-size: 80%;
+    line-height: 1.2;
+    height: 1em;
+}
+
+.modal.saved-puzzles .metadata th,
+.modal.saved-puzzles .metadata td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.1em 0.4em 0.1em 0;
+}
+
+.modal.saved-puzzles .discard button {
+    min-width: auto;
 }
 
 .modal.paste textarea,

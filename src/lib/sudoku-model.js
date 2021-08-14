@@ -6,6 +6,7 @@ import SudokuExplainer from './sudoku-explainer';
 
 import {
     MODAL_TYPE_WELCOME,
+    MODAL_TYPE_SAVED_PUZZLES,
     MODAL_TYPE_INVALID_INITIAL_DIGITS,
     MODAL_TYPE_PASTE,
     MODAL_TYPE_SHARE,
@@ -57,7 +58,6 @@ function indexFromRC (rc) {
     return (rc.charCodeAt(0) - charCodeOne) * 9 + (rc.charCodeAt(1) - charCodeOne);
 }
 
-
 function newCell(index, digit) {
     digit = digit || '0';
     if (!digit.match(/^[0-9]$/)) {
@@ -88,7 +88,7 @@ function newCell(index, digit) {
     });
 }
 
-export function newSudokuModel({initialDigits, difficultyLevel, onGamestateChange, entryPoint, skipCheck}) {
+export function newSudokuModel({initialDigits, difficultyLevel, onPuzzleStateChange, entryPoint, skipCheck}) {
     initialDigits = (initialDigits || '').replace(/[_.-]/g, '0').replace(/\D/g, '');
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
@@ -110,7 +110,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, onGamestateChang
         undoList: List(),
         redoList: List(),
         currentSnapshot: '',
-        onGamestateChange: onGamestateChange,
+        onPuzzleStateChange: onPuzzleStateChange,
         cells: List(),
         showPencilmarks: true,
         hasErrors: false,
@@ -267,6 +267,10 @@ export const modelHelpers = {
             initialDigits,
             cells,
         }));
+        const difficultyRating = modelHelpers.findDifficultyRating(initialDigits);
+        if (difficultyRating) {
+            grid = grid.set('difficultyRating', difficultyRating);
+        }
         if (options.skipCheck) {
             return grid;
         }
@@ -292,12 +296,8 @@ export const modelHelpers = {
             : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i] || '0'));
         let modalState = undefined;
         if (initialError.noStartingDigits) {
-            modalState = {
-                modalType: MODAL_TYPE_WELCOME,
-                loading: true,
-                fetchRequired: true,
-                showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
-            };
+            grid = modelHelpers.showWelcomeModal(grid);
+            modalState = grid.get('modalState');
         }
         else if (initialError.insufficientDigits) {
             modalState = {
@@ -330,7 +330,8 @@ export const modelHelpers = {
                     return grid.set('modalState', {
                         modalType: MODAL_TYPE_WELCOME,
                         recentlyShared: data,
-                        showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
+                        showRatings: modalState.showRatings,
+                        savedPuzzles: modalState.savedPuzzles,
                     });
                 }
                 else {
@@ -357,6 +358,8 @@ export const modelHelpers = {
                             modalType: MODAL_TYPE_WELCOME,
                             loadingFailed: true,
                             errorMessage: error.toString(),
+                            showRatings: modalState.showRatings,
+                            savedPuzzles: modalState.savedPuzzles,
                         });
                     }
                     else {
@@ -376,6 +379,18 @@ export const modelHelpers = {
             }
         }
         setTimeout(fetchHandler, fetchDelay);
+    },
+
+    findDifficultyRating: (initialDigits) => {
+        const cachedPuzzles = modelHelpers.loadCachedRecentlyShared();
+        if (cachedPuzzles && cachedPuzzles.data) {
+            const reducer = (acc, list) => {
+                const m = list.find(p => p.digits === initialDigits);
+                return m ? m.difficulty : acc;
+            };
+            return Object.values(cachedPuzzles.data).reduce(reducer, null);
+        }
+        return null;
     },
 
     fetchExplainPlan: (grid, setGrid, retryInterval, maxRetries) => {
@@ -455,6 +470,36 @@ export const modelHelpers = {
             return c.get("innerPencils").union(c.get("outerPencils")).toArray().join('');
         }).toArray();
         return explainer.findNextStep(currDigits, currCandidates);
+    },
+
+    getSavedPuzzles: () => {
+        return Object.keys(localStorage)
+            .map((k) => {
+                if (k.match(/^save-/)) {
+                    return modelHelpers.parsePuzzleState(k);
+                }
+                return null;
+            })
+            .filter(gs => !!gs)  //filter out the nulls
+            .sort((a, b) => a - b);  // sort most recent activity first
+    },
+
+    parsePuzzleState: (k) => {
+        try {
+            const puzzleStateJSON = localStorage.getItem(k);
+            const ps = JSON.parse(puzzleStateJSON);
+            const {initialDigits, currentSnapshot} = ps;
+            ps.puzzleStateKey = 'save-' + initialDigits;
+            const completedDigits = initialDigits.split('');
+            currentSnapshot.match(/(\d\dD\d)/g).forEach(sn => {
+                const [rc, digit] = sn.split(/D/);
+                completedDigits[ indexFromRC(rc) ] = digit;
+            });
+            ps.completedDigits = completedDigits.join('');
+            return ps;
+        } catch (e) {
+            return null
+        }
     },
 
     checkDigits: (digits, finalDigits) => {
@@ -611,12 +656,12 @@ export const modelHelpers = {
 
     setCurrentSnapshot: (grid, newSnapshot) => {
         grid = grid.set('currentSnapshot', newSnapshot);
-        modelHelpers.notifyGamestateChange(grid);
+        modelHelpers.notifyPuzzleStateChange(grid);
         return grid;
     },
 
-    notifyGamestateChange: (grid) => {
-        const watcher = grid.get('onGamestateChange');
+    notifyPuzzleStateChange: (grid) => {
+        const watcher = grid.get('onPuzzleStateChange');
         if (watcher) {
             watcher(grid);
         }
@@ -634,7 +679,7 @@ export const modelHelpers = {
                 .set('undoList', undoList.pop())
                 .update('redoList', list => list.push(beforeUndo));
             grid = modelHelpers.checkCompletedDigits(grid);
-            modelHelpers.notifyGamestateChange(grid);
+            modelHelpers.notifyPuzzleStateChange(grid);
             return grid;
         });
     },
@@ -651,7 +696,7 @@ export const modelHelpers = {
                 .set('redoList', redoList.pop())
                 .update('undoList', list => list.push(beforeRedo));
             grid = modelHelpers.checkCompletedDigits(grid);
-            modelHelpers.notifyGamestateChange(grid);
+            modelHelpers.notifyPuzzleStateChange(grid);
             return grid;
         });
     },
@@ -783,6 +828,8 @@ export const modelHelpers = {
             modalType: MODAL_TYPE_WELCOME,
             loading: true,
             fetchRequired: true,
+            showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
+            savedPuzzles: modelHelpers.getSavedPuzzles(),
         });
     },
 
@@ -802,6 +849,24 @@ export const modelHelpers = {
             });
         }
         return grid;
+    },
+
+    showSavedPuzzlesModal: (grid, oldModalState) => {
+        if (!oldModalState) {
+            oldModalState = {
+                showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
+                savedPuzzles: modelHelpers.getSavedPuzzles(),
+            };
+        }
+        const {savedPuzzles} = oldModalState;
+        if (!savedPuzzles || savedPuzzles.length === 0) {
+            return modelHelpers.showWelcomeModal(grid);
+        }
+        return grid.set('modalState', {
+            ...oldModalState,
+            modalType: MODAL_TYPE_SAVED_PUZZLES,
+            escapeAction: 'show-welcome-modal',
+        });
     },
 
     showShareModal: (grid) => {
@@ -915,6 +980,7 @@ export const modelHelpers = {
 
     applyModalAction: (grid, args) => {
         const action = args.action || args;
+        const oldModalState = grid.get('modalState');
         grid = grid.set('modalState', undefined);
         if (action === 'cancel' || action === 'close') {
             return grid;
@@ -928,6 +994,15 @@ export const modelHelpers = {
         else if (action === 'goto-main-entry') {
             window.location.href = window.location.href.replace(/[?#].*$/, "");
             return grid;
+        }
+        else if (action === 'show-welcome-modal') {
+            return modelHelpers.showWelcomeModal(grid);
+        }
+        else if (action === 'show-saved-puzzles-modal') {
+            return modelHelpers.showSavedPuzzlesModal(grid, oldModalState);
+        }
+        else if (action === 'discard-saved-puzzle') {
+            return modelHelpers.discardSavedPuzzle(grid, args.puzzleStateKey);
         }
         else if (action === 'show-share-modal') {
             return modelHelpers.showShareModal(grid);
@@ -968,15 +1043,16 @@ export const modelHelpers = {
         return grid;
     },
 
-    persistGameState: (grid) => {
+    persistPuzzleState: (grid) => {
         const solved = grid.get('solved');
         if (solved) {
             localStorage.removeItem("gamestate");
         }
         else {
+            const initialDigits = grid.get('initialDigits');
             const elapsedTime = (grid.get('pausedAt') || Date.now()) - grid.get('intervalStartTime');
-            const gameStateJson = JSON.stringify({
-                initialDigits: grid.get('initialDigits'),
+            const puzzleState = {
+                initialDigits,
                 difficultyLevel: grid.get('difficultyLevel'),
                 startTime: grid.get('startTime'),
                 elapsedTime: elapsedTime,
@@ -984,27 +1060,47 @@ export const modelHelpers = {
                 redoList: grid.get('redoList').toArray(),
                 currentSnapshot: grid.get('currentSnapshot'),
                 lastUpdatedTime: Date.now(),
-            });
-
-            localStorage.setItem("gamestate", gameStateJson);
+            };
+            const difficultyRating = grid.get('difficultyRating');
+            if (difficultyRating) {
+                puzzleState.difficultyRating = difficultyRating;
+            }
+            const puzzleStateJson = JSON.stringify(puzzleState);
+            const puzzleStateKey = `save-${initialDigits}`;
+            localStorage.setItem(puzzleStateKey, puzzleStateJson);
         }
     },
 
-    restoreFromGameState: (grid, gameState) => {
+    discardSavedPuzzle: (grid, puzzleStateKey) => {
+        localStorage.removeItem(puzzleStateKey);
+        return modelHelpers.showSavedPuzzlesModal(grid);
+    },
+
+    restoreFromPuzzleState: (grid, puzzleStateKey) => {
+        let puzzleState;
+        try {
+            const puzzleStateJson = localStorage.getItem(puzzleStateKey);
+            puzzleState =  JSON.parse(puzzleStateJson);
+        } catch (e) {
+            localStorage.removeItem(puzzleStateKey);
+            return modelHelpers.showWelcomeModal(grid);
+        }
+        const {initialDigits, currentSnapshot} = puzzleState;
         grid = grid.merge({
             mode: 'solve',
-            initialDigits: gameState.initialDigits,
-            difficultyLevel: gameState.difficultyLevel,
-            startTime: gameState.startTime,
-            intervalStartTime: Date.now() - gameState.elapsedTime,
-            undoList: List(gameState.undoList),
-            redoList: List(gameState.redoList),
+            initialDigits,
+            difficultyLevel: puzzleState.difficultyLevel,
+            startTime: puzzleState.startTime,
+            intervalStartTime: Date.now() - puzzleState.elapsedTime,
+            undoList: List(puzzleState.undoList),
+            redoList: List(puzzleState.redoList),
             pausedAt: undefined,
+            modalState: undefined,
         });
-        grid = modelHelpers.setGivenDigits(grid, gameState.initialDigits, {});
-        grid = modelHelpers.restoreSnapshot(grid, gameState.currentSnapshot);
+        grid = modelHelpers.setGivenDigits(grid, initialDigits, {skipCheck: true});
+        grid = modelHelpers.restoreSnapshot(grid, currentSnapshot);
         grid = modelHelpers.checkCompletedDigits(grid);
-        modelHelpers.notifyGamestateChange(grid);
+        modelHelpers.notifyPuzzleStateChange(grid);
         return grid;
     },
 
@@ -1402,7 +1498,7 @@ export const modelHelpers = {
                 escapeAction: 'resume-timer',
             },
         });
-        modelHelpers.notifyGamestateChange(grid);
+        modelHelpers.notifyPuzzleStateChange(grid);
         return grid;
     },
 
@@ -1412,7 +1508,7 @@ export const modelHelpers = {
             pausedAt: undefined,
             intervalStartTime: Date.now() - elapsed,
         });
-        modelHelpers.notifyGamestateChange(grid);
+        modelHelpers.notifyPuzzleStateChange(grid);
         return grid;
     },
 
@@ -1454,7 +1550,7 @@ export const modelHelpers = {
         grid = modelHelpers.applySelectionOp(grid, 'clearSelection')
             .set('solved', true)
             .set('endTime', Date.now());
-        modelHelpers.notifyGamestateChange(grid);
+        modelHelpers.notifyPuzzleStateChange(grid);
         return grid;
     },
 

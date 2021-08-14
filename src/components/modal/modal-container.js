@@ -2,6 +2,7 @@ import React from 'react';
 
 import {
     MODAL_TYPE_WELCOME,
+    MODAL_TYPE_SAVED_PUZZLES,
     MODAL_TYPE_INVALID_INITIAL_DIGITS,
     MODAL_TYPE_PASTE,
     MODAL_TYPE_SHARE,
@@ -20,6 +21,7 @@ import {
 
 
 import ModalWelcome from './modal-welcome';
+import ModalSavedPuzzles from './modal-saved-puzzles';
 import ModalInvalidInitialDigits from './modal-invalid-initial-digits';
 import ModalAbout from './modal-about';
 import ModalConfirmRestart from './modal-confirm-restart';
@@ -59,6 +61,9 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
     }
     if (modalState.modalType === MODAL_TYPE_WELCOME) {
         content = <ModalWelcome modalState={modalState} modalHandler={modalHandler} />;
+    }
+    else if (modalState.modalType === MODAL_TYPE_SAVED_PUZZLES) {
+        content = <ModalSavedPuzzles modalState={modalState} modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_INVALID_INITIAL_DIGITS) {
         content = <ModalInvalidInitialDigits modalState={modalState} modalHandler={modalHandler} />;

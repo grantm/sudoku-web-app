@@ -37,6 +37,8 @@
     --input-multi-bg-color: transparent;
     --input-multi-selected-text-color: #333333;
     --input-multi-selected-bg-color: #73e869;
+    --badge-text-color: #ffffff;
+    --badge-bg-color: #ff0000;
     --solved-text-color: #00a000;
     --grid-line-color: #777777;
     --grid-line-color-bold: #333333;
@@ -130,6 +132,8 @@
     --input-multi-bg-color: transparent;
     --input-multi-selected-text-color: #333333;
     --input-multi-selected-bg-color: #73e869;
+    --badge-text-color: #ffdfdf;
+    --badge-bg-color: #ec4141;
     --solved-text-color: #61f061;
     --grid-line-color: #7b7878;
     --grid-line-color-bold: #a6a4a4;

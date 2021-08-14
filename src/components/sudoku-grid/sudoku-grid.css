@@ -84,8 +84,13 @@ a:visited .mini text.digit {
     fill: var(--visited-digit-color);
 }
 
-a:visited:hover .mini text.digit {
+a:visited:hover .mini text.digit,
+.saved-puzzle a .mini text.digit {
     fill: var(--given-digit-color);
+}
+
+.saved-puzzle a .mini text.user-digit {
+    fill: var(--digit-color);
 }
 
 .difficulty-bar {

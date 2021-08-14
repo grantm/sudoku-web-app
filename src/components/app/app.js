@@ -59,9 +59,9 @@ function initialGridFromURL () {
     let grid = newSudokuModel({
         initialDigits: params.get('s'),
         difficultyLevel: params.get('d'),
-        onGamestateChange: grid => {
+        onPuzzleStateChange: grid => {
             document.body.dataset.currentSnapshot = grid.get('currentSnapshot');
-            modelHelpers.persistGameState(grid);
+            modelHelpers.persistPuzzleState(grid);
         }
     });
 
@@ -70,11 +70,8 @@ function initialGridFromURL () {
     }
 
     if (params.get('r') === "1") {
-        const gameStateJson = localStorage.getItem('gamestate');
-        const gameState = gameStateJson && JSON.parse(gameStateJson);
-        if (gameState && gameState.currentSnapshot) {
-            grid = modelHelpers.restoreFromGameState(grid, gameState);
-        }
+        const puzzleStateKey = 'save-' + params.get('s')
+        grid = modelHelpers.restoreFromPuzzleState(grid, puzzleStateKey);
     }
 
     document.body.dataset.initialDigits = grid.get('initialDigits');

@@ -67,10 +67,11 @@ test('initialise grid (partial)', () => {
         "hasErrors",
         "initialDigits",
         "inputMode",
+        "intervalStartTime",
         "matchDigit",
         "modalState",
         "mode",
-        "onGamestateChange",
+        "onPuzzleStateChange",
         "pausedAt",
         "redoList",
         "settings",
@@ -106,7 +107,7 @@ test('initialise grid (partial)', () => {
     expect(grid.get('redoList').size).toBe(0);
     expect(grid.get('solved')).toBe(false);
     expect(grid.get('startTime')/1000).toBeCloseTo(Date.now()/1000, 0);
-    expect(grid.get('onGamestateChange')).toBe(undefined);
+    expect(grid.get('onPuzzleStateChange')).toBe(undefined);
     expect(grid.get('tempInputMode')).toBe(undefined);
     expect(grid.get('undoList').size).toBe(0);
 
