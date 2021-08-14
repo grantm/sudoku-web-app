@@ -7,6 +7,7 @@ import SudokuExplainer from './sudoku-explainer';
 import {
     MODAL_TYPE_WELCOME,
     MODAL_TYPE_SAVED_PUZZLES,
+    MODAL_TYPE_RESUME_OR_RESTART,
     MODAL_TYPE_INVALID_INITIAL_DIGITS,
     MODAL_TYPE_PASTE,
     MODAL_TYPE_SHARE,
@@ -285,6 +286,14 @@ export const modelHelpers = {
                 icon: 'warning',
                 errorMessage: result.error,
                 escapeAction: 'close',
+            });
+        }
+        const puzzleState = modelHelpers.parsePuzzleState(`save-${initialDigits}`);
+        if (puzzleState) {
+            grid = grid.set('modalState', {
+                modalType: MODAL_TYPE_RESUME_OR_RESTART,
+                puzzleState,
+                showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
             });
         }
         return grid;
@@ -1004,6 +1013,14 @@ export const modelHelpers = {
         else if (action === 'discard-saved-puzzle') {
             return modelHelpers.discardSavedPuzzle(grid, args.puzzleStateKey);
         }
+        else if (action === 'resume-saved-puzzle') {
+            // Only called from ResumeRestart modal - the SavedPuzzle modal
+            // achieves similar through a link.
+            return modelHelpers.restoreFromPuzzleState(grid, args.puzzleStateKey);
+        }
+        else if (action === 'restart-over-saved-puzzle') {
+            return modelHelpers.restartOverSavedPuzzle(grid, args.puzzleStateKey);
+        }
         else if (action === 'show-share-modal') {
             return modelHelpers.showShareModal(grid);
         }
@@ -1074,6 +1091,12 @@ export const modelHelpers = {
     discardSavedPuzzle: (grid, puzzleStateKey) => {
         localStorage.removeItem(puzzleStateKey);
         return modelHelpers.showSavedPuzzlesModal(grid);
+    },
+
+    restartOverSavedPuzzle: (grid, puzzleStateKey) => {
+        localStorage.removeItem(puzzleStateKey);
+        grid = grid.set("startTime", Date.now());
+        return grid;
     },
 
     restoreFromPuzzleState: (grid, puzzleStateKey) => {

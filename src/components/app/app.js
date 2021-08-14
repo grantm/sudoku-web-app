@@ -11,7 +11,11 @@ import SudokuGrid from '../sudoku-grid/sudoku-grid';
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
 import ModalContainer from '../modal/modal-container';
 
-import { MODAL_TYPE_WELCOME, MODAL_TYPE_HINT } from '../../lib/modal-types';
+import {
+    MODAL_TYPE_WELCOME,
+    MODAL_TYPE_RESUME_OR_RESTART,
+    MODAL_TYPE_HINT
+} from '../../lib/modal-types';
 
 const FETCH_DELAY = 1000;
 const RETRY_INTERVAL = 3000;
@@ -503,18 +507,24 @@ function getDimensions(winSize) {
 function App() {
     const [grid, setGrid] = useState(initialGridFromURL);
     const settings = grid.get('settings');
+    let showTimer = settings[SETTINGS.showTimer];
     const pausedAt = grid.get('pausedAt');
     const solved = grid.get('solved');
     const mode = grid.get('mode');
     const inputMode = grid.get('tempInputMode') || grid.get('inputMode');
     const completedDigits = grid.get('completedDigits');
     const modalState = grid.get('modalState');
-    if (modalState && modalState.fetchRequired) {
-        if (modalState.modalType === MODAL_TYPE_WELCOME) {
-            modelHelpers.fetchRecentlyShared(grid, setGrid, FETCH_DELAY);
+    if (modalState) {
+        if (modalState.fetchRequired) {
+            if (modalState.modalType === MODAL_TYPE_WELCOME) {
+                modelHelpers.fetchRecentlyShared(grid, setGrid, FETCH_DELAY);
+            }
+            else if (modalState.modalType === MODAL_TYPE_HINT) {
+                modelHelpers.fetchExplainPlan(grid, setGrid, RETRY_INTERVAL, MAX_RETRIES);
+            }
         }
-        else if (modalState.modalType === MODAL_TYPE_HINT) {
-            modelHelpers.fetchExplainPlan(grid, setGrid, RETRY_INTERVAL, MAX_RETRIES);
+        if (modalState.modalType === MODAL_TYPE_RESUME_OR_RESTART) {
+            showTimer = false;
         }
     }
     const modalActive = modalState !== undefined;
@@ -580,7 +590,7 @@ function App() {
     return (
         <div className={classes.join(' ')} onMouseDown={mouseDownHandler}>
             <StatusBar
-                showTimer={settings[SETTINGS.showTimer]}
+                showTimer={showTimer}
                 startTime={grid.get('startTime')}
                 intervalStartTime={grid.get('intervalStartTime')}
                 endTime={grid.get('endTime')}

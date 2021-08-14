@@ -1,64 +1,29 @@
 import React from 'react';
 
-import SudokuMiniGrid from '../sudoku-grid/sudoku-mini-grid';
-
-import { secondsAsHMS } from '../../lib/format-utils';
-
-
-const difficultyLevelName = {
-    "1": "Easy",
-    "2": "Medium",
-    "3": "Hard",
-    "4": "Diabolical",
-};
-
-function formatDate(timestamp) {
-    const dt = new Date(timestamp);
-    return dt.toLocaleString({month: 'short'});
-}
-
-
-function formatDifficulty(difficulty) {
-    return difficultyLevelName[difficulty] || <i>Unknown</i>;
-}
+import SavedPuzzleGrid from "../saved-puzzle/saved-puzzle-grid";
+import SavedPuzzleMetadata from "../saved-puzzle/saved-puzzle-metadata";
 
 
 function SavedPuzzle({puzzleState, showRatings, discardHandler}) {
     const {
-        puzzleStateKey, initialDigits, completedDigits, difficultyLevel, difficultyRating,
+        puzzleStateKey, initialDigits, difficultyLevel,
         startTime, elapsedTime, lastUpdatedTime
     } = puzzleState;
-    const puzzle = {
-        digits: initialDigits,
-        completedDigits: completedDigits,
-        difficulty: difficultyRating,
-    };
     const diffParam = difficultyLevel ? `&d=${difficultyLevel}` : '';
     const puzzleLink = `./?s=${initialDigits}${diffParam}&r=1`;
     return <div className="saved-puzzle">
         <a className="puzzle-selector" href={puzzleLink}>
-            <SudokuMiniGrid puzzle={puzzle} showRatings={showRatings} />
+            <SavedPuzzleGrid
+                puzzleState={puzzleState}
+                showRatings={showRatings}
+            />
         </a>
-        <table className="metadata">
-            <tbody>
-                <tr>
-                    <th>Difficulty:</th>
-                    <td>{formatDifficulty(difficultyLevel)}</td>
-                </tr>
-                <tr>
-                    <th>Started:</th>
-                    <td>{formatDate(startTime)}</td>
-                </tr>
-                <tr>
-                    <th>Last update:</th>
-                    <td>{formatDate(lastUpdatedTime)}</td>
-                </tr>
-                <tr>
-                    <th>Timer:</th>
-                    <td>{secondsAsHMS(Math.floor(elapsedTime/1000))}</td>
-                </tr>
-            </tbody>
-        </table>
+        <SavedPuzzleMetadata
+            difficultyLevel={difficultyLevel}
+            startTime={startTime}
+            lastUpdatedTime={lastUpdatedTime}
+            elapsedTime={elapsedTime}
+        />
         <div className="discard">
             <button
                 onClick={discardHandler}

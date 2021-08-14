@@ -1,5 +1,6 @@
 export const MODAL_TYPE_WELCOME = 'no-initial-digits';
 export const MODAL_TYPE_SAVED_PUZZLES = "saved-puzzles";
+export const MODAL_TYPE_RESUME_OR_RESTART = "resume-or-restart";
 export const MODAL_TYPE_INVALID_INITIAL_DIGITS = 'invalid-initial-digits';
 export const MODAL_TYPE_PASTE = 'paste';
 export const MODAL_TYPE_SHARE = 'share';

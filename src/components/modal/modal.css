@@ -229,14 +229,22 @@
     margin: 0.4em 0.4em 0 0;
 }
 
-.modal.saved-puzzles .metadata {
+.modal .saved-puzzle-detail {
+    display: flex;
+}
+
+.modal .saved-puzzle-detail .sudoku-grid.mini {
+    margin-right: 0.4em;
+}
+
+.modal .puzzle-metadata {
     font-size: 80%;
     line-height: 1.2;
     height: 1em;
 }
 
-.modal.saved-puzzles .metadata th,
-.modal.saved-puzzles .metadata td {
+.modal .puzzle-metadata th,
+.modal .puzzle-metadata td {
     text-align: left;
     vertical-align: top;
     padding: 0.1em 0.4em 0.1em 0;

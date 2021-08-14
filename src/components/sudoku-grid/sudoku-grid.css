@@ -89,6 +89,7 @@ a:visited:hover .mini text.digit,
     fill: var(--given-digit-color);
 }
 
+.saved-puzzle-detail .mini text.user-digit,
 .saved-puzzle a .mini text.user-digit {
     fill: var(--digit-color);
 }
