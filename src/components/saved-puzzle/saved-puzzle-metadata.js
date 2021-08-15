@@ -17,7 +17,11 @@ function formatDifficulty(difficulty) {
 
 function formatDate(timestamp) {
     const dt = new Date(timestamp);
-    return dt.toLocaleString({month: 'short'});
+    try {
+        return new Intl.DateTimeFormat([], {dateStyle: 'medium', timeStyle: 'short'}).format(dt);
+    } catch (e) {
+        return dt.toLocaleString({month: 'short'});
+    }
 }
 
 
