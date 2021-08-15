@@ -110,6 +110,11 @@ function saveScreenshot () {
     );
 }
 
+function handleVisibiltyChange(setGrid) {
+    const isVisible = document.visibilityState === 'visible';
+    setGrid(grid => modelHelpers.handleVisibilityChange(grid, isVisible));
+}
+
 function indexFromCellEvent (e) {
     const index = e.target.dataset.cellIndex;
     if (index === undefined) {
@@ -559,6 +564,16 @@ function App() {
         },
         [setGrid] // This effect will essentially never be re-run
     );
+
+    useEffect(
+        () => {
+            const visibilityHandler = (e) => handleVisibiltyChange(setGrid);
+            document.addEventListener("visibilitychange", visibilityHandler);
+            return () => window.removeEventListener('blur', visibilityHandler);
+        },
+        [setGrid] // This effect will essentially never be re-run
+    );
+
 
     const winSize = useWindowSize(400);
     const dimensions = useMemo(() => getDimensions(winSize), [winSize])

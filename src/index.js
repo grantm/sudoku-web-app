@@ -15,22 +15,6 @@ window.addEventListener('beforeunload', function (e) {
     // otherwise leave page unload to proceed unhindered
 });
 
-document.addEventListener("visibilitychange", function() {
-    // Ensure that we accurately keep track of how long the user has been working on the puzzle 
-    // so we display time correctly if they resume.
-    if (document.visibilityState === "hidden") {
-        const params = new URLSearchParams(window.location.search);
-        const gamestate = localStorage.getItem("gamestate");
-        // Only bump the time if we were working on the puzzle - NOTE: This is a best-effort heuristic.
-        if (params.has("s") && gamestate) {
-            localStorage.setItem("gamestate", JSON.stringify({
-                ...JSON.parse(gamestate),
-                lastUpdatedTime: Date.now(),
-            }));
-        }
-    }
-});
-
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

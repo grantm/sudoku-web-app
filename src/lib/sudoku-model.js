@@ -264,8 +264,10 @@ export const modelHelpers = {
 
     setGivenDigits: (grid, initialDigits, options) => {
         const cells = Range(0, 81).toList().map(i => newCell(i, initialDigits[i]));
+        const puzzleStateKey = 'save-' + initialDigits;
         grid = modelHelpers.checkCompletedDigits(grid.merge({
             initialDigits,
+            puzzleStateKey,
             cells,
         }));
         const difficultyRating = modelHelpers.findDifficultyRating(initialDigits);
@@ -288,13 +290,15 @@ export const modelHelpers = {
                 escapeAction: 'close',
             });
         }
-        const puzzleState = modelHelpers.parsePuzzleState(`save-${initialDigits}`);
-        if (puzzleState) {
-            grid = grid.set('modalState', {
-                modalType: MODAL_TYPE_RESUME_OR_RESTART,
-                puzzleState,
-                showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
-            });
+        if (!options.fromPuzzleState) {
+            const puzzleState = modelHelpers.parsePuzzleState(puzzleStateKey);
+            if (puzzleState) {
+                grid = grid.set('modalState', {
+                    modalType: MODAL_TYPE_RESUME_OR_RESTART,
+                    puzzleState,
+                    showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
+                });
+            }
         }
         return grid;
     },
@@ -493,12 +497,12 @@ export const modelHelpers = {
             .sort((a, b) => a - b);  // sort most recent activity first
     },
 
-    parsePuzzleState: (k) => {
+    parsePuzzleState: (puzzleStateKey) => {
         try {
-            const puzzleStateJSON = localStorage.getItem(k);
+            const puzzleStateJSON = localStorage.getItem(puzzleStateKey);
             const ps = JSON.parse(puzzleStateJSON);
+            ps.puzzleStateKey = puzzleStateKey;
             const {initialDigits, currentSnapshot} = ps;
-            ps.puzzleStateKey = 'save-' + initialDigits;
             const completedDigits = initialDigits.split('');
             currentSnapshot.match(/(\d\dD\d)/g).forEach(sn => {
                 const [rc, digit] = sn.split(/D/);
@@ -1062,11 +1066,12 @@ export const modelHelpers = {
 
     persistPuzzleState: (grid) => {
         const solved = grid.get('solved');
+        const initialDigits = grid.get('initialDigits');
+        const puzzleStateKey = grid.get("puzzleStateKey");
         if (solved) {
-            localStorage.removeItem("gamestate");
+            localStorage.removeItem(puzzleStateKey);
         }
         else {
-            const initialDigits = grid.get('initialDigits');
             const elapsedTime = (grid.get('pausedAt') || Date.now()) - grid.get('intervalStartTime');
             const puzzleState = {
                 initialDigits,
@@ -1083,9 +1088,28 @@ export const modelHelpers = {
                 puzzleState.difficultyRating = difficultyRating;
             }
             const puzzleStateJson = JSON.stringify(puzzleState);
-            const puzzleStateKey = `save-${initialDigits}`;
             localStorage.setItem(puzzleStateKey, puzzleStateJson);
         }
+    },
+
+    handleVisibilityChange: (grid, isVisible) => {
+        if (grid.get('mode') === 'solve') {
+            if (isVisible === false) {
+                modelHelpers.persistPuzzleState(grid);
+                const intervalEnd = grid.get('pausedAt') || Date.now();
+                const intervalBeforePause = intervalEnd - grid.get('intervalStartTime');
+                grid = grid.set('intervalBeforePause', intervalBeforePause);
+            }
+            else {
+                const intervalBeforePause = grid.get('intervalBeforePause');
+                grid = grid.delete('intervalBeforePause');
+                const pausedAt = grid.get('pausedAt');
+                if (intervalBeforePause && !pausedAt) {
+                    grid = grid.set('intervalStartTime', Date.now() - intervalBeforePause);
+                }
+            }
+        }
+        return grid;
     },
 
     discardSavedPuzzle: (grid, puzzleStateKey) => {
@@ -1120,7 +1144,7 @@ export const modelHelpers = {
             pausedAt: undefined,
             modalState: undefined,
         });
-        grid = modelHelpers.setGivenDigits(grid, initialDigits, {skipCheck: true});
+        grid = modelHelpers.setGivenDigits(grid, initialDigits, {fromPuzzleState: true});
         grid = modelHelpers.restoreSnapshot(grid, currentSnapshot);
         grid = modelHelpers.checkCompletedDigits(grid);
         modelHelpers.notifyPuzzleStateChange(grid);

@@ -73,6 +73,7 @@ test('initialise grid (partial)', () => {
         "mode",
         "onPuzzleStateChange",
         "pausedAt",
+        "puzzleStateKey",
         "redoList",
         "settings",
         "showPencilmarks",
