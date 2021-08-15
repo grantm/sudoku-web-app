@@ -33,8 +33,9 @@ export const SETTINGS = {
     autocleanPencilmarks: "autoclean-pencilmarks",
     flipNumericKeys: "flip-numeric-keys",
     playVictoryAnimation: "play-victory-animation",
-    passProgressToSolver: "pass-progress-to-solver",
     showRatings: "show-ratings",
+    autoSave: "auto-save",
+    passProgressToSolver: "pass-progress-to-solver",
 };
 
 export const AVAILABLE_FEATURE_FLAGS = [
@@ -140,8 +141,9 @@ export const modelHelpers = {
         [SETTINGS.autocleanPencilmarks]: true,
         [SETTINGS.flipNumericKeys]: false,
         [SETTINGS.playVictoryAnimation]: true,
-        [SETTINGS.passProgressToSolver]: false,
         [SETTINGS.showRatings]: false,
+        [SETTINGS.autoSave]: true,
+        [SETTINGS.passProgressToSolver]: false,
     },
 
     loadSettings: () => {
@@ -160,6 +162,10 @@ export const modelHelpers = {
     },
 
     saveSettings: (grid, newSettings) => {
+        const oldSettings = grid.get('settings');
+        if (oldSettings[SETTINGS.autoSave] && !newSettings[SETTINGS.autoSave]) {
+            modelHelpers.deleteSavedPuzzles();
+        }
         const newSettingsJSON = JSON.stringify(newSettings);
         window.localStorage.setItem('settings', newSettingsJSON);
         modelHelpers.syncSettingsToDom(newSettings);
@@ -290,7 +296,8 @@ export const modelHelpers = {
                 escapeAction: 'close',
             });
         }
-        if (!options.fromPuzzleState) {
+        const autoSaveEnabled = modelHelpers.getSetting(grid, SETTINGS.autoSave);
+        if (!options.fromPuzzleState && autoSaveEnabled) {
             const puzzleState = modelHelpers.parsePuzzleState(puzzleStateKey);
             if (puzzleState) {
                 grid = grid.set('modalState', {
@@ -485,7 +492,10 @@ export const modelHelpers = {
         return explainer.findNextStep(currDigits, currCandidates);
     },
 
-    getSavedPuzzles: () => {
+    getSavedPuzzles: (grid) => {
+        if (!modelHelpers.getSetting(grid, SETTINGS.autoSave)) {
+            return;
+        }
         return Object.keys(localStorage)
             .map((k) => {
                 if (k.match(/^save-/)) {
@@ -493,8 +503,16 @@ export const modelHelpers = {
                 }
                 return null;
             })
-            .filter(gs => !!gs)  //filter out the nulls
-            .sort((a, b) => a - b);  // sort most recent activity first
+            .filter(ps => !!ps)  //filter out the nulls
+            .sort((a, b) => b.lastUpdatedTime - a.lastUpdatedTime);  // sort most recent activity first
+    },
+
+    deleteSavedPuzzles: () => {
+        Object.keys(localStorage)
+            .filter(k => k.match(/^save-/))
+            .forEach(k => {
+                localStorage.removeItem(k);
+            });
     },
 
     parsePuzzleState: (puzzleStateKey) => {
@@ -504,7 +522,7 @@ export const modelHelpers = {
             ps.puzzleStateKey = puzzleStateKey;
             const {initialDigits, currentSnapshot} = ps;
             const completedDigits = initialDigits.split('');
-            currentSnapshot.match(/(\d\dD\d)/g).forEach(sn => {
+            ((currentSnapshot || '').match(/(\d\dD\d)/g) || []).forEach(sn => {
                 const [rc, digit] = sn.split(/D/);
                 completedDigits[ indexFromRC(rc) ] = digit;
             });
@@ -842,7 +860,7 @@ export const modelHelpers = {
             loading: true,
             fetchRequired: true,
             showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
-            savedPuzzles: modelHelpers.getSavedPuzzles(),
+            savedPuzzles: modelHelpers.getSavedPuzzles(grid),
         });
     },
 
@@ -868,7 +886,7 @@ export const modelHelpers = {
         if (!oldModalState) {
             oldModalState = {
                 showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
-                savedPuzzles: modelHelpers.getSavedPuzzles(),
+                savedPuzzles: modelHelpers.getSavedPuzzles(grid),
             };
         }
         const {savedPuzzles} = oldModalState;
@@ -1065,6 +1083,9 @@ export const modelHelpers = {
     },
 
     persistPuzzleState: (grid) => {
+        if (!modelHelpers.getSetting(grid, SETTINGS.autoSave)) {
+            return;
+        }
         const solved = grid.get('solved');
         const initialDigits = grid.get('initialDigits');
         const puzzleStateKey = grid.get("puzzleStateKey");

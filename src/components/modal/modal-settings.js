@@ -93,6 +93,12 @@ export default function ModalSettings({modalHandler, modalState}) {
                     allSettings={allSettings}
                     setSetting={setSetting}
                 />
+                <CheckBoxSetting
+                    name={SETTINGS.autoSave}
+                    text="Auto-save progress"
+                    allSettings={allSettings}
+                    setSetting={setSetting}
+                />
             </ul>
             <div className="buttons">
                 <button className="cancel" onClick={cancelHandler}>Cancel</button>
