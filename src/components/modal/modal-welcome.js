@@ -75,12 +75,10 @@ function SavedPuzzlesButton({savedPuzzles, modalHandler}) {
     }
     const savedPuzzlesHandler = () => modalHandler("show-saved-puzzles-modal");
     return (
-        <p style={{textAlign: 'center'}}>
-            <button className="primary new-puzzle" onClick={savedPuzzlesHandler}>
-                Resume a puzzle
-                <CountBadge count={savedPuzzles.length} />
-            </button>
-        </p>
+        <button className="primary new-puzzle" onClick={savedPuzzlesHandler}>
+            Resume a puzzle
+            <CountBadge count={savedPuzzles.length} />
+        </button>
     );
 }
 
@@ -97,9 +95,13 @@ function ModalWelcome({modalState, modalHandler}) {
         <div className="modal welcome">
             <h1>Welcome to SudokuExchange</h1>
             <p>You can get started by entering a new puzzle into a blank grid{orRestoreMsg}:</p>
-            <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={cancelHandler}>Enter a new puzzle</button></p>
-            <p style={{textAlign: 'center'}}><button className="primary new-puzzle" onClick={showPasteHandler}>Paste a new puzzle</button></p>
-            <SavedPuzzlesButton savedPuzzles={savedPuzzles} modalHandler={modalHandler} />
+            <div className="primary-buttons">
+                <span>
+                    <button className="primary new-puzzle" onClick={cancelHandler}>Enter a new puzzle</button>
+                    <button className="primary new-puzzle" onClick={showPasteHandler}>Paste a new puzzle</button>
+                    <SavedPuzzlesButton savedPuzzles={savedPuzzles} modalHandler={modalHandler} />
+                </span>
+            </div>
             <p>Or you can select a recently shared puzzle:</p>
             <RecentlyShared modalState={modalState} />
             <div id="welcome-footer">

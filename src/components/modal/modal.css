@@ -214,9 +214,19 @@
     padding-bottom: 1.5em;
 }
 
-.modal button.new-puzzle {
-    margin: 0 0.8em 0 0;
-    white-space: nowrap;
+.modal.welcome .primary-buttons {
+    text-align: center;
+    margin-right: 2em;
+}
+
+.modal.welcome .primary-buttons > span {
+    display: inline-flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.modal.welcome .primary-buttons button {
+    margin-top: 0.5em;
 }
 
 .modal.saved-puzzles .saved-puzzle {
