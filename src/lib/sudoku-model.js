@@ -53,6 +53,8 @@ const difficultyLevels = [
     { value: "4", name: "Diabolical" },
 ];
 
+const MAX_SAVED_PUZZLES = 5;
+
 const emptySet = Set();
 const charCodeOne = '1'.charCodeAt(0);
 
@@ -1093,6 +1095,15 @@ export const modelHelpers = {
             localStorage.removeItem(puzzleStateKey);
         }
         else {
+            // Don't bother saving if there's no progress to save yet
+            const currentSnapshot = grid.get('currentSnapshot');
+            const previousSave = localStorage.getItem(puzzleStateKey) || '';
+            if (previousSave === '') {
+                if (currentSnapshot === '') {
+                    return;
+                }
+                modelHelpers.pruneSavedState(grid);
+            }
             const elapsedTime = (grid.get('pausedAt') || Date.now()) - grid.get('intervalStartTime');
             const puzzleState = {
                 initialDigits,
@@ -1101,7 +1112,7 @@ export const modelHelpers = {
                 elapsedTime: elapsedTime,
                 undoList: grid.get('undoList').toArray(),
                 redoList: grid.get('redoList').toArray(),
-                currentSnapshot: grid.get('currentSnapshot'),
+                currentSnapshot: currentSnapshot,
                 lastUpdatedTime: Date.now(),
             };
             const difficultyRating = grid.get('difficultyRating');
@@ -1111,6 +1122,20 @@ export const modelHelpers = {
             const puzzleStateJson = JSON.stringify(puzzleState);
             localStorage.setItem(puzzleStateKey, puzzleStateJson);
         }
+    },
+
+    pruneSavedState: (grid) => {
+        const savedPuzzles = modelHelpers.getSavedPuzzles(grid) || [];
+        console.log("Saved puzzle count:", savedPuzzles.length);
+        if (savedPuzzles.length <= MAX_SAVED_PUZZLES) {
+            return;
+        }
+        savedPuzzles.forEach((p, i) => {
+            if (i >= (MAX_SAVED_PUZZLES - 1)) {
+                console.log("Pruning saved puzzle:", p.puzzleStateKey);
+                localStorage.removeItem(p.puzzleStateKey);
+            }
+        });
     },
 
     handleVisibilityChange: (grid, isVisible) => {
