@@ -58,10 +58,10 @@ function modalHintContent ({loading, loadingFailed, errorMessage, hint}) {
             ? (
                 <p>The server was unable to provide hints for this puzzle.</p>
             )
-            : (
-                <p>An error occurred while requesting hints from the server.
-                You may wish to try again later.</p>
-            );
+            : <>
+                <p>An error occurred while requesting hints from the server.</p>
+                <p>You may wish to try again later.</p>
+            </>;
         return {
             title: "Failed to load hints",
             modalContent: description,
@@ -77,7 +77,7 @@ function modalHintContent ({loading, loadingFailed, errorMessage, hint}) {
     }
 }
 
-function HintButtons({hint, modalHandler, menuHandler, children}) {
+function HintButtons({loading, hint, modalHandler, menuHandler, children}) {
     const closeHandler = () => modalHandler('cancel');
 
     const candidatesHandler = () => {
@@ -91,9 +91,9 @@ function HintButtons({hint, modalHandler, menuHandler, children}) {
     const applyHintHandler = () => {
         modalHandler({action: 'apply-hint', hint});
     }
-    const applyHintButton = candidatesButton
-        ? null
-        : <button onClick={applyHintHandler}>Apply Hint</button>;
+    const applyHintButton = (!loading && hint && !candidatesButton)
+        ? <button onClick={applyHintHandler}>Apply Hint</button>
+        : null;
 
     return (
         <div className="buttons">
@@ -108,6 +108,7 @@ export default function ModalHint({modalState, modalHandler, menuHandler}) {
     const modalClasses = classList(
         "modal hint",
         modalState.loading && "loading",
+        modalState.loadingFailed && "loading-failed",
     );
 
     const {title, modalContent, primaryButtonText} = modalHintContent(modalState);
@@ -119,6 +120,7 @@ export default function ModalHint({modalState, modalHandler, menuHandler}) {
                     <h1>{title}</h1>
                     {modalContent}
                     <HintButtons
+                        loading={modalState.loading}
                         hint={modalState.hint}
                         modalHandler={modalHandler}
                         menuHandler={menuHandler}

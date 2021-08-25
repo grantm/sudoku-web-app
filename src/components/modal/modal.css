@@ -530,7 +530,8 @@ input.toggle:checked + .indicator::before {
     overflow-y: hidden;
 }
 
-.modal.hint.loading {
+.modal.hint.loading,
+.modal.hint.loading-failed {
     max-height: 20rem;
 }
 
