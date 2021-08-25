@@ -110,7 +110,7 @@ function saveScreenshot () {
     );
 }
 
-function handleVisibiltyChange(setGrid) {
+function handleVisibilityChange(setGrid) {
     const isVisible = document.visibilityState === 'visible';
     setGrid(grid => modelHelpers.handleVisibilityChange(grid, isVisible));
 }
@@ -567,7 +567,7 @@ function App() {
 
     useEffect(
         () => {
-            const visibilityHandler = (e) => handleVisibiltyChange(setGrid);
+            const visibilityHandler = (e) => handleVisibilityChange(setGrid);
             document.addEventListener("visibilitychange", visibilityHandler);
             return () => window.removeEventListener('blur', visibilityHandler);
         },
