@@ -16,12 +16,17 @@ function SavedPuzzle({puzzleState, showRatings, discardHandler}) {
         puzzleStateKey, difficultyLevel,
         startTime, elapsedTime, lastUpdatedTime
     } = puzzleState;
-    const discardButton = discardHandler
-        ? <button
-            onClick={discardHandler}
-            data-puzzle-state-key={puzzleStateKey}
-            title="Discard this saved puzzle"
-          >×</button>
+    const puzzleButtons = discardHandler
+        ? (
+            <div className="puzzle-buttons">
+                <a className="btn primary" href={puzzleLink(puzzleState)}>Select</a>
+                <button
+                    onClick={discardHandler}
+                    data-puzzle-state-key={puzzleStateKey}
+                    title="Discard this saved puzzle"
+                >Discard</button>
+            </div>
+        )
         : null;
     return <div className="saved-puzzle">
         <a className="puzzle-selector" href={puzzleLink(puzzleState)}>
@@ -36,9 +41,7 @@ function SavedPuzzle({puzzleState, showRatings, discardHandler}) {
             lastUpdatedTime={lastUpdatedTime}
             elapsedTime={elapsedTime}
         />
-        <div className="discard">
-            {discardButton}
-        </div>
+        {puzzleButtons}
     </div>;
 }
 

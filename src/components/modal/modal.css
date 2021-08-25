@@ -94,13 +94,19 @@
 }
 
 .modal .buttons a.btn,
-.modal .buttons button {
+.modal .buttons button,
+.modal.saved-puzzles a.btn,
+.modal.saved-puzzles button {
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
     font-family: var(--app-font-family); /* override browser button font */
     font-size: 1.3rem;
     font-weight: bold;
-    margin-left: 1em;
+    margin: 0.3em 0.5em;
     border: none;
     border-radius: 0.15em;
+    padding: 0.4em 0.8em;
 }
 
 .portrait .modal .buttons a.btn,
@@ -229,6 +235,11 @@
     margin-top: 0.5em;
 }
 
+.modal.saved-puzzles {
+    width: 32em;
+    max-width: 95vw;
+}
+
 .modal.saved-puzzles .saved-puzzle {
     display: flex;
     align-items:center;
@@ -239,7 +250,7 @@
     margin: 0.4em 0.4em 0 0;
 }
 
-.modal .saved-puzzle-detail {
+.modal.saved-puzzles .saved-puzzle-detail {
     display: flex;
 }
 
@@ -248,6 +259,7 @@
 }
 
 .modal .puzzle-metadata {
+    flex: 0 0 18em;
     font-size: 80%;
     line-height: 1.2;
     height: 1em;
@@ -260,8 +272,13 @@
     padding: 0.1em 0.4em 0.1em 0;
 }
 
-.modal.saved-puzzles .discard button {
-    min-width: auto;
+.modal.saved-puzzles .puzzle-buttons {
+    flex: 0 0 min-content;
+}
+
+.modal.saved-puzzles a.btn,
+.modal.saved-puzzles button {
+    min-width: 5.5em;
 }
 
 .modal.paste textarea,
@@ -632,7 +649,7 @@ input.toggle:checked + .indicator::before {
 
 @media screen and (max-width: 500px) {
     .modal {
-        max-width: 94%;
+        max-width: 94vw;
         padding: 0.6em 0.6em 0 0.6em;
     }
 
@@ -642,5 +659,24 @@ input.toggle:checked + .indicator::before {
 
     .modal.check-result .icon img {
         width: 2.4em;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .modal.saved-puzzles .saved-puzzle {
+        flex-wrap: wrap;
+        margin-bottom: 0.8em;
+    }
+
+    .modal.saved-puzzles a.btn,
+    .modal.saved-puzzles button {
+        font-size: 1rem;
+        margin-right: 1.8em;
+    }
+
+    .modal.saved-puzzles .puzzle-metadata {
+        order: 3;
+        padding-bottom: 0.8em;
+        border-bottom: 1px solid var(--hint-footer-bg-color);
     }
 }
