@@ -39,11 +39,11 @@ export const SETTINGS = {
 };
 
 export const AVAILABLE_FEATURE_FLAGS = [
-    {
-        name: "hints",
-        description: "Add a hint button. Note: the hint 'server' is still being debugged.",
-        issueNumber: 34,
-    }
+    // {
+    //     name: "hints",
+    //     description: "Add a hint button. Note: the hint 'server' is still being debugged.",
+    //     issueNumber: 34,
+    // }
 ];
 
 const difficultyLevels = [
@@ -318,6 +318,7 @@ export const modelHelpers = {
             : Range(0, 81).toList().map(i => newCell(i, '0').set('digit', initialDigits[i] || '0'));
         let modalState = undefined;
         if (initialError.noStartingDigits) {
+            modelHelpers.pruneSavedState(grid);
             grid = modelHelpers.showWelcomeModal(grid);
             modalState = grid.get('modalState');
         }
@@ -1102,6 +1103,7 @@ export const modelHelpers = {
                 if (currentSnapshot === '') {
                     return;
                 }
+                // We're saving a new puzzle, so check if we need to discard old ones
                 modelHelpers.pruneSavedState(grid);
             }
             const elapsedTime = (grid.get('pausedAt') || Date.now()) - grid.get('intervalStartTime');
@@ -1126,13 +1128,11 @@ export const modelHelpers = {
 
     pruneSavedState: (grid) => {
         const savedPuzzles = modelHelpers.getSavedPuzzles(grid) || [];
-        console.log("Saved puzzle count:", savedPuzzles.length);
         if (savedPuzzles.length <= MAX_SAVED_PUZZLES) {
             return;
         }
         savedPuzzles.forEach((p, i) => {
             if (i >= (MAX_SAVED_PUZZLES - 1)) {
-                console.log("Pruning saved puzzle:", p.puzzleStateKey);
                 localStorage.removeItem(p.puzzleStateKey);
             }
         });

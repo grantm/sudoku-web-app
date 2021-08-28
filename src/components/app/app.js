@@ -537,7 +537,6 @@ function App() {
         }
     }
     const modalActive = modalState !== undefined;
-    const showHints = modelHelpers.featureIsEnabled(grid, 'hints') && mode === 'solve';
 
     const mouseDownHandler = useCallback(e => cellMouseDownHandler(e, setGrid), []);
     const mouseOverHandler = useCallback(e => cellMouseOverHandler(e, setGrid), []);
@@ -614,7 +613,6 @@ function App() {
                 intervalStartTime={grid.get('intervalStartTime')}
                 endTime={grid.get('endTime')}
                 pausedAt={pausedAt}
-                showHints={showHints}
                 showPencilmarks={grid.get('showPencilmarks')}
                 menuHandler={menuHandler}
                 pauseHandler={pauseHandler}

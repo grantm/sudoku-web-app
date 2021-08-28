@@ -148,6 +148,12 @@ export default function HelpPage({modalHandler}) {
                 <dd>When you have successfully solved a puzzle, the app will play a brief,
                 but some would say “satisfying”, animated colour sequence.  If you are
                 sensitive to flashing lights you should turn this off.</dd>
+                <dt>Auto-save progress</dt>
+                <dd>As you solve a puzzle, your progress is saved automatically in your browser's
+                local storage. This allows you to pick up where you left off if you get interrupted
+                and the browser tab is lost. Up to 5 saved games are stored. If you start a 6th game,
+                the oldest saved game will be forgotten. You can also manually discard a saved
+                puzzle.</dd>
             </dl>
 
             <h1>Getting hints</h1>
@@ -155,14 +161,12 @@ export default function HelpPage({modalHandler}) {
             <p>If you get stuck, there are a couple of options for working out what to do next.</p>
             <dl>
                 <dt>The hint button</dt>
-                <dd><i>Note, this feature is still in development, so to use it you
-                need to <a href="https://github.com/grantm/sudoku-web-app/issues/34">turn
-                on the feature flag</a>.</i><br />
-                The hint button works by using SukakuExplainer to find one solution path through
+                <dd>The hint button works by using SukakuExplainer to find one solution path through
                 the puzzle and then showing you the <em>first</em> step on that path that you have
-                not already completed.<br />
+                not already completed. If you don't like the suggested hint, you can investigate
+                alternate solution paths using the SudokuWiki.org link in the menu.<br />
                 <br />
-                You can also use the <b>'?'</b> key as a shortcut to get a hint.
+                The <b>'?'</b> key is a shortcut for requesting a hint.
                 </dd>
                 <dt>The SudokuWiki solver</dt>
                 <dd>The menu (top right) includes an option to open the current puzzle in the

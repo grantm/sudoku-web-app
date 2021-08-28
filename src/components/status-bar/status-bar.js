@@ -24,7 +24,7 @@ function SiteLink () {
 }
 
 
-function StatusBar ({showTimer, startTime, intervalStartTime, endTime, pausedAt, showHints, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
+function StatusBar ({showTimer, startTime, intervalStartTime, endTime, pausedAt, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
     const timer = showTimer
         ? (
             <TimerWithPause
@@ -42,11 +42,7 @@ function StatusBar ({showTimer, startTime, intervalStartTime, endTime, pausedAt,
             {timer}
             <div className="status-bar-buttons">
                 <FullscreenButton />
-                {
-                    showHints
-                        ? <HintButton menuHandler={menuHandler} />
-                        : null
-                }
+                <HintButton menuHandler={menuHandler} />
                 <SettingsButton menuHandler={menuHandler} />
                 <MenuButton
                     initialDigits={initialDigits}
