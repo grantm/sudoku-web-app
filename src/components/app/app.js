@@ -207,6 +207,10 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         setGrid((grid) => modelHelpers.updateSelectedCells(grid, 'pencilMarksToInner'));
         return;
     }
+    else if (e.key === "?") {
+        setGrid((grid) => modelHelpers.showHintModal(grid));
+        return;
+    }
     else if (e.key === "Escape") {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
         return;

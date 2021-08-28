@@ -160,7 +160,9 @@ export default function HelpPage({modalHandler}) {
                 on the feature flag</a>.</i><br />
                 The hint button works by using SukakuExplainer to find one solution path through
                 the puzzle and then showing you the <em>first</em> step on that path that you have
-                not already completed.
+                not already completed.<br />
+                <br />
+                You can also use the <b>'?'</b> key as a shortcut to get a hint.
                 </dd>
                 <dt>The SudokuWiki solver</dt>
                 <dd>The menu (top right) includes an option to open the current puzzle in the
