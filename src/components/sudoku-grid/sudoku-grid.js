@@ -8,6 +8,7 @@ import calculateGridDimensions from './grid-dimensions';
 
 import SudokuCellPaused from './sudoku-cell-paused';
 import SudokuCellBackground from './sudoku-cell-background';
+import SudokuCellRegionOutline from './sudoku-cell-region-outline'
 import SudokuCellPencilMarks from './sudoku-cell-pencil-marks';
 import SudokuCellDigit from './sudoku-cell-digit';
 import SudokuCellCover from './sudoku-cell-cover';
@@ -29,6 +30,17 @@ function layerCellBackgrounds ({cells, cellSize, dim, matchDigit, showPencilmark
             />
         );
     });
+}
+
+function layerSelectionOutline({cells, dim}) {
+    const selectedIndexes = cells.filter(c => c.get('isSelected')).map(c => c.get('index'));
+    return (
+        <SudokuCellRegionOutline
+            className="selection-outline"
+            cellSet={selectedIndexes}
+            dim={dim}
+        />
+    );
 }
 
 function layerCellPencilMarks ({simplePencilMarking, cells, cellSize, dim}) {
@@ -72,12 +84,16 @@ function layerCellPaused ({cells, cellSize, dim}) {
     });
 }
 
-function cellContentLayers({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking}) {
+function cellContentLayers({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking, outlineSelection}) {
     const backgrounds = layerCellBackgrounds({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking});
+    const selectionOutline = outlineSelection
+        ? layerSelectionOutline({cells, dim})
+        : null;
     const pencilMarks = showPencilmarks ? layerCellPencilMarks({simplePencilMarking, cells, cellSize, dim}) : [];
     const digits      = layerCellDigits({cells, cellSize, dim});
     return <>
         {backgrounds}
+        {selectionOutline}
         {pencilMarks}
         {digits}
     </>;
@@ -133,16 +149,18 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
     const settings = grid.get('settings');
     const simplePencilMarking = settings[SETTINGS.simplePencilMarking];
     const highlightMatches = settings[SETTINGS.highlightMatches];
+    const outlineSelection = settings[SETTINGS.outlineSelection];
     const showPencilmarks = grid.get('showPencilmarks');
     const matchDigit = highlightMatches ? grid.get('matchDigit') : undefined;
     const cells = grid.get('cells').toArray();
     const cellContents = isPaused
         ? layerCellPaused({cells, cellSize, dim})
-        : cellContentLayers({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking});
+        : cellContentLayers({cells, cellSize, dim, matchDigit, showPencilmarks, simplePencilMarking, outlineSelection});
     const cellCovers = layerCellCovers({cells, cellSize, dim, mouseDownHandler, mouseOverHandler});
     const rawTouchHandler = useCellTouch(inputHandler);
+    const selectionClass = outlineSelection ? 'selection-style-outline' : 'selection-style-solid';
     return (
-        <div className="sudoku-grid"
+        <div className={`sudoku-grid ${selectionClass}`}
             id={gridId || null}
             onTouchStart={rawTouchHandler}
             onTouchEnd={rawTouchHandler}

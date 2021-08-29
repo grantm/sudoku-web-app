@@ -24,6 +24,7 @@ function calculateGridDimensions(cellSize, marginSize, fontSize) {
             textY: y + scaledFontSize + scaledTextOffset,
         };
     });
+    const borderInset = 5 * cellSize / 100;
     const dim = {
         cellSize,
         marginSize,
@@ -53,6 +54,12 @@ function calculateGridDimensions(cellSize, marginSize, fontSize) {
             '8': { x: 49 * cellSize / 100, y: 90 * cellSize / 100 },
             '9': { x: 80 * cellSize / 100, y: 90 * cellSize / 100 },
         },
+        outlinePoints: [
+            [ cellSize - borderInset, borderInset ],
+            [ cellSize - borderInset, cellSize - borderInset ],
+            [ borderInset, cellSize - borderInset ],
+            [ borderInset, borderInset ],
+        ],
     };
     return dim;
 }

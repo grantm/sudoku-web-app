@@ -118,6 +118,11 @@ export default function HelpPage({modalHandler}) {
                 <dd>If you don’t wish to use two different types of pencil marks, turn this
                 option on. This will cause the pencil-marked digits to be arranged in a 3x3
                 grid within each cell.</dd>
+                <dt>Show selection as outline</dt>
+                <dd>Selected cells are normally indicated by a partially transparent coloured
+                background. Enable this option if you prefer to see just a coloured border
+                around the selected cells. This is particularly useful if you're applying
+                background colours to cells.</dd>
                 <dt>Highlight matching digits</dt>
                 <dd>When you select a cell containing a digit, the app will highlight all
                 other cells that contain the same digit (either full digit or pencil mark).

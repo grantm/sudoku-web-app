@@ -58,6 +58,12 @@ export default function ModalSettings({modalHandler, modalState}) {
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
+                    name={SETTINGS.outlineSelection}
+                    text="Show selection as outline"
+                    allSettings={allSettings}
+                    setSetting={setSetting}
+                />
+                <CheckBoxSetting
                     name={SETTINGS.highlightMatches}
                     text="Highlight matching digits"
                     allSettings={allSettings}
