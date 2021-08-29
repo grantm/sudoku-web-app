@@ -168,22 +168,27 @@ test('List.join', () => {
 
 test('List.map', () => {
     const l1 = List(['one', 'two', 'three']);
+    expect(List.isList(l1)).toBe(true);
     expect(l1.size).toBe(3);
 
     const l2 = l1.map(x => x.toUpperCase());
+    expect(List.isList(l2)).toBe(true);
     expect(l2.size).toBe(3);
     expect(l2.join(',')).toBe('ONE,TWO,THREE');
 });
 
 test('List.filter', () => {
     const l1 = List(['one', 'two', 'three', 'four', 'five']);
+    expect(List.isList(l1)).toBe(true);
     expect(l1.size).toBe(5);
 
     const l2 = l1.filter(x => x.match(/e/));
+    expect(List.isList(l2)).toBe(true);
     expect(l2.size).toBe(3);
     expect(l2.join(',')).toBe('one,three,five');
 
     const l3 = l1.map(x => x.toUpperCase()).filter(x => x.match(/E/));
+    expect(List.isList(l3)).toBe(true);
     expect(l3.size).toBe(3);
     expect(l3.join(',')).toBe('ONE,THREE,FIVE');
 });
@@ -255,6 +260,10 @@ test('List.toArray', () => {
     expect(Array.isArray(a2[1])).toBe(false);
     expect(List.isList(a2[0])).toBe(true);
     expect(List.isList(a2[1])).toBe(true);
+
+    const l6 = List(['one', 2, 'three', 0x04, 'Five']);
+    const a3 = l6.filter(x => typeof(x) === 'string').map(s => s.toUpperCase()).toArray();
+    expect(a3).toStrictEqual(['ONE', 'THREE', 'FIVE']);
 });
 
 test('List.find', () => {
