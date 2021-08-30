@@ -1139,6 +1139,9 @@ export const modelHelpers = {
     },
 
     handleVisibilityChange: (grid, isVisible) => {
+        if (grid.get('solved')) {
+            return grid;
+        }
         if (grid.get('mode') === 'solve') {
             if (isVisible === false) {
                 modelHelpers.persistPuzzleState(grid);
