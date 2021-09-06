@@ -1141,7 +1141,7 @@ export const modelHelpers = {
     },
 
     handleVisibilityChange: (grid, isVisible) => {
-        if (grid.get('solved')) {
+        if (grid.get('solved') || grid.get('modalState')) {
             return grid;
         }
         if (grid.get('mode') === 'solve') {
