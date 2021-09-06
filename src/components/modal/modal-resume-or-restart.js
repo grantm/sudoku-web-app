@@ -19,7 +19,7 @@ function ModalResumeRestart({modalState, modalHandler}) {
             <h1>Continue or start over?</h1>
             <p>You've made a start on this puzzle already. You can either pick up
             where you left off, or start again from the beginning.</p>
-            <div className="saved-puzzle-detail">
+            <div className="saved-puzzle">
                 <SavedPuzzleGrid
                     puzzleState={puzzleState}
                     showRatings={showRatings}

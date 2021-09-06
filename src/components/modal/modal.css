@@ -103,6 +103,7 @@
     font-family: var(--app-font-family); /* override browser button font */
     font-size: 1.3rem;
     font-weight: bold;
+    line-height: 1.3;
     margin: 0.3em 0.5em;
     border: none;
     border-radius: 0.15em;
@@ -235,11 +236,17 @@
     margin-top: 0.5em;
 }
 
+.modal.resume-restart {
+    width: 26em;
+    max-width: 95vw;
+}
+
 .modal.saved-puzzles {
     width: 32em;
     max-width: 95vw;
 }
 
+.modal.resume-restart .saved-puzzle,
 .modal.saved-puzzles .saved-puzzle {
     display: flex;
     align-items:center;
@@ -250,11 +257,7 @@
     margin: 0.4em 0.4em 0 0;
 }
 
-.modal.saved-puzzles .saved-puzzle-detail {
-    display: flex;
-}
-
-.modal .saved-puzzle-detail .sudoku-grid.mini {
+.modal .saved-puzzle .sudoku-grid.mini {
     margin-right: 0.4em;
 }
 
@@ -664,6 +667,7 @@ input.toggle:checked + .indicator::before {
 }
 
 @media screen and (max-width: 600px) {
+    .modal.resume-restart .saved-puzzle,
     .modal.saved-puzzles .saved-puzzle {
         flex-wrap: wrap;
         margin-bottom: 0.8em;
@@ -675,7 +679,7 @@ input.toggle:checked + .indicator::before {
         margin-right: 1.8em;
     }
 
-    .modal.saved-puzzles .puzzle-metadata {
+    .modal.saved-puzzles 'saved-puzzle:not(.last)'.puzzle-metadata {
         order: 3;
         padding-bottom: 0.8em;
         border-bottom: 1px solid var(--hint-footer-bg-color);

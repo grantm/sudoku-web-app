@@ -11,7 +11,7 @@ function puzzleLink(puzzleState) {
 }
 
 
-function SavedPuzzle({puzzleState, showRatings, discardHandler}) {
+function SavedPuzzle({puzzleState, showRatings, discardHandler, isLast}) {
     const {
         puzzleStateKey, difficultyLevel,
         startTime, elapsedTime, lastUpdatedTime
@@ -28,7 +28,7 @@ function SavedPuzzle({puzzleState, showRatings, discardHandler}) {
             </div>
         )
         : null;
-    return <div className="saved-puzzle">
+    return <div className={`saved-puzzle ${isLast ? 'last' : ''}`}>
         <a className="puzzle-selector" href={puzzleLink(puzzleState)}>
             <SavedPuzzleGrid
                 puzzleState={puzzleState}
@@ -49,11 +49,12 @@ function SavedPuzzle({puzzleState, showRatings, discardHandler}) {
 function OneSavedPuzzle({puzzleState, showRatings, discardHandler, cancelHandler}) {
     return <>
         <h1>Continue or discard?</h1>
-        <p>You can either return to this saved puzzle and<br />
-        pick up where you left off, or you can discard it.</p>
+        <p>Click <b>Continue</b> to return to this saved puzzle and pick up where
+        you left off, <b>Discard</b> to forget it, or <b>Cancel</b> to go back to the main menu.</p>
         <SavedPuzzle
             puzzleState={puzzleState}
             showRatings={showRatings}
+            isLast={true}
         />
         <div className="buttons">
             <a className="btn primary" href={puzzleLink(puzzleState)}>Continue</a>
@@ -72,6 +73,7 @@ function SavedPuzzleList({savedPuzzles=[], showRatings, discardHandler, cancelHa
             puzzleState={puzzleState}
             showRatings={showRatings}
             discardHandler={discardHandler}
+            isLast={i === savedPuzzles.length - 1}
         />
     });
     return <>
@@ -103,8 +105,8 @@ function ModalSavedPuzzles({modalState, modalHandler}) {
                 discardHandler={discardHandler}
                 cancelHandler={cancelHandler}
             />
-           )
-         : (
+          )
+        : (
              <SavedPuzzleList
                  savedPuzzles={savedPuzzles}
                  showRatings={showRatings}
