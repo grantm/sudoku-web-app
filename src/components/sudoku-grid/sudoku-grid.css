@@ -139,6 +139,12 @@ text.inner-pencil,
     fill: var(--hint-eliminations-fill-color);
 }
 
+.sudoku-grid.hint .hot-spot-highlight {
+    fill: transparent;
+    stroke: var(--hint-hot-spot-highlight-color);
+    stroke-width: var(--hint-hot-spot-highlight-line-width);
+}
+
 .sudoku-grid.hint text {
     fill: var(--given-digit-color);
 }

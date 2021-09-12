@@ -551,6 +551,16 @@ input.toggle:checked + .indicator::before {
     padding: 0 1rem;
 }
 
+.modal.hint  .rc-hot-spot {
+    padding: 0 0.15em;
+    background-color: var(--hint-hot-spot-bg-color);
+    border-radius: 0.15em;
+}
+
+.modal.hint  .rc-hot-spot:hover {
+    background-color: var(--hint-hot-spot-hover-bg-color);
+}
+
 .modal .hint-footer {
     background-color: var(--hint-footer-bg-color);
     width: 100%;

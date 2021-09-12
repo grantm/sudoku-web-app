@@ -69,6 +69,9 @@
     --solved-given-digit-color: #333333;
     --solved-fill-color: #b9ffb9;
     --error-selected-fill-color: #ff8c8c;
+    --hint-hot-spot-bg-color: #f1f1f1;
+    --hint-hot-spot-hover-bg-color: #acddfb70;
+    --hint-hot-spot-highlight-color: #ff0000;
     --hint-footer-bg-color: #f0f0f0;
     --hint-target-fill-color: #caf9ca;
     --hint-highlight-fill-color: #ffffd3;
@@ -85,6 +88,7 @@
     --button-text-color: #333333;
     --grid-line-width: 2;
     --grid-line-width-bold: 5;
+    --hint-hot-spot-highlight-line-width: 7;
     --vkbd-bg-fill-color: #cccccc;
     --vkbd-button-fill-color: #ffffff;
     --vkbd-button-text-color: #333333;
@@ -164,6 +168,9 @@
     --solved-given-digit-color: #595959;
     --solved-fill-color: #77e877;
     --error-selected-fill-color: #ff8c8c;
+    --hint-hot-spot-bg-color: #575757;
+    --hint-hot-spot-hover-bg-color: #acddfb;
+    --hint-hot-spot-highlight-color: #cc3333;
     --hint-footer-bg-color: #312e2e;
     --hint-target-fill-color: #796827;
     --hint-highlight-fill-color: #796c03;

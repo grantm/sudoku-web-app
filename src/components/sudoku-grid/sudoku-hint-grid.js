@@ -51,7 +51,9 @@ function CellCandidates({dim, pmOffsets, candidates, targetCandidate, isEliminat
 }
 
 
-function HintCell({digit, candidates, i, dim, targetCandidate, isHintTarget, isHighlighted, eliminations}) {
+function HintCell({
+    digit, candidates, i, dim, targetCandidate, isHintTarget, isHighlighted, eliminations
+}) {
     const pmOffsets = dim.simplePencilOffsets;
     const cellDim = dim.cell[i];
     const bgClasses = classList(
@@ -92,7 +94,7 @@ function HintCell({digit, candidates, i, dim, targetCandidate, isHintTarget, isH
 }
 
 
-function SudokuHintGrid({digits, candidates, digitIndex, digitValue, highlightCell, eliminationsByCell}) {
+function SudokuHintGrid({digits, candidates, digitIndex, digitValue, highlightCell, eliminationsByCell, hotSpotIndex}) {
     const cellSize = 100;
     const marginSize = 5;
     const fontSize = 84;
@@ -108,10 +110,16 @@ function SudokuHintGrid({digits, candidates, digitIndex, digitValue, highlightCe
                 targetCandidate={digitValue}
                 isHintTarget={i === digitIndex}
                 isHighlighted={highlightCell[i]}
+                isHotSpotHighlight={i === hotSpotIndex}
                 eliminations={eliminationsByCell[i]}
             />
         )
     });
+    const hsDim = hotSpotIndex && dim.cell[hotSpotIndex];
+    const hotSpot = hsDim
+        ? <rect className="hot-spot-highlight" x={hsDim.x} y={hsDim.y} width={dim.cellSize} height={dim.cellSize} />
+        : null;
+
     return (
         <div className="sudoku-grid hint">
             <svg version="1.1"
@@ -121,6 +129,7 @@ function SudokuHintGrid({digits, candidates, digitIndex, digitValue, highlightCe
                 <rect className="grid-bg" width="100%" height="100%" />
                 {digitLayer}
                 <GridLines cellSize={cellSize} marginSize={marginSize} />
+                {hotSpot}
             </svg>
         </div>
     );

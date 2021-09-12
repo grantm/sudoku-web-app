@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Spinner from '../spinner/spinner';
 import SudokuHintGrid from '../sudoku-grid/sudoku-hint-grid.js';
@@ -23,9 +23,36 @@ function DifficultyIndicator({hint}) {
     );
 }
 
-function HintBody({hint}) {
+function textWithRCHotSpots(text, hotSpotHandler) {
+    return text.match(/(\b[rR][1-9][cC][1-9]\b|.+?(?=$|\b[rR][1-9][cC][1-9]\b))/g).map((s, i) => {
+        const m = s.match(/^[rR]([1-9])[cC]([1-9])$/);
+        if (m) {
+            const index = (parseInt(m[1], 10) - 1) * 9 + parseInt(m[2], 10) - 1;
+            return (
+                <span
+                    key={i}
+                    className="rc-hot-spot"
+                    data-cell-index={index}
+                    onMouseEnter={hotSpotHandler}
+                    onMouseLeave={hotSpotHandler}
+                    onClick={hotSpotHandler}
+                    onTouchStart={hotSpotHandler}
+                >{s.toUpperCase()}</span>
+            );
+        }
+        else {
+            return s;
+        }
+    })
+}
+
+function HintBody({hint, hotSpotHandler, hotSpotIndex}) {
     const digits = hint.digits;
     const candidates = hint.candidates;
+
+    const hintParas = hint.html.split(/<\/?p>/).filter(s => s && s.length > 0).map((s, i) => {
+        return <p key={i}>{textWithRCHotSpots(s, hotSpotHandler)}</p>;
+    })
 
     return (
         <div className="hint-body-layout">
@@ -36,16 +63,19 @@ function HintBody({hint}) {
                 digitValue={hint.digitValue}
                 highlightCell={hint.highlightCell || {}}
                 eliminationsByCell={hint.eliminationsByCell || {}}
+                hotSpotIndex={hotSpotIndex}
             />
             <div className="hint-text-wrapper">
                 <DifficultyIndicator hint={hint} />
-                <div className="hint-text" dangerouslySetInnerHTML={{ __html: hint.html }} />
+                <div className="hint-text">
+                    {hintParas}
+                </div>
             </div>
         </div>
     );
 }
 
-function modalHintContent ({loading, loadingFailed, errorMessage, hint}) {
+function modalHintContent ({loading, loadingFailed, errorMessage, hint, hotSpotHandler, hotSpotIndex}) {
     if (loading) {
         return {
             title: "Loading hints",
@@ -70,8 +100,8 @@ function modalHintContent ({loading, loadingFailed, errorMessage, hint}) {
     }
     else if (hint) {
         return {
-            title: hint.title.replace(/,/g, ',\u200B'),
-            modalContent: <HintBody hint={hint} />,
+            title: textWithRCHotSpots(hint.title.replace(/,/g, ',\u200B'), hotSpotHandler),
+            modalContent: <HintBody hint={hint} hotSpotHandler={hotSpotHandler} hotSpotIndex={hotSpotIndex}/>,
             primaryButtonText: "OK",
         }
     }
@@ -105,13 +135,37 @@ function HintButtons({loading, hint, modalHandler, menuHandler, children}) {
 }
 
 export default function ModalHint({modalState, modalHandler, menuHandler}) {
+    const [hotSpot, setHotSpot] = useState(null);
+    const hotSpotHandler = (e) => {
+        e.stopPropagation();
+        const eventType = e.type;
+        const index = parseInt(e.target.dataset.cellIndex, 10);
+        if (index === undefined) {
+            return setHotSpot(null);
+        }
+        if (eventType === 'mouseleave') {
+            if (hotSpot && hotSpot.type === 'mouseenter') {
+                return setHotSpot(null);
+            }
+        }
+        else if (eventType === 'touchStart' && hotSpot && hotSpot.type === 'touchstart') {
+            return setHotSpot(null);
+        }
+        else {
+            return setHotSpot({
+                type: eventType,
+                index: index,
+            })
+        }
+    }
     const modalClasses = classList(
         "modal hint",
         modalState.loading && "loading",
         modalState.loadingFailed && "loading-failed",
     );
 
-    const {title, modalContent, primaryButtonText} = modalHintContent(modalState);
+    const hotSpotIndex = hotSpot && hotSpot.index;
+    const {title, modalContent, primaryButtonText} = modalHintContent({...modalState, hotSpotHandler, hotSpotIndex});
 
     return (
         <div className={modalClasses}>
