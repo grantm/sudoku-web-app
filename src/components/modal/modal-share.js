@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 
 import { modelHelpers } from '../../lib/sudoku-model.js';
-import { secondsAsHMS } from '../../lib/format-utils';
+import { secondsAsHMS } from '../../lib/string-utils';
 
 
 function puzzleURL(initialDigits, difficulty, vector) {

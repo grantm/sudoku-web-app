@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { secondsAsHMS } from '../../lib/format-utils';
+import { secondsAsHMS } from '../../lib/string-utils';
 
 import './timer-with-pause.css';
 

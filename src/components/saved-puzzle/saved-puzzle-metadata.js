@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { secondsAsHMS } from '../../lib/format-utils';
+import { secondsAsHMS } from '../../lib/string-utils';
 
 
 const difficultyLevelName = {
