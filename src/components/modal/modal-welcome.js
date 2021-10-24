@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { modelHelpers } from '../../lib/sudoku-model';
+import { compressPuzzleDigits } from '../../lib/string-utils';
 
 import SudokuMiniGrid from '../sudoku-grid/sudoku-mini-grid';
 import Spinner from '../spinner/spinner';
@@ -9,16 +10,19 @@ function stopPropagation (e) {
     e.stopPropagation();
 }
 
-function RecentlySharedSection ({level, puzzles, showRatings}) {
+function RecentlySharedSection ({level, puzzles, showRatings, shortenLinks}) {
     const [collapsed, setCollapsed] = useState(true);
     const levelName = modelHelpers.difficultyLevelName(level);
     if (!levelName || !puzzles || puzzles.length < 1) {
         return null;
     }
     const puzzleLinks = puzzles.map((puzzle, i) => {
+        const puzzleString = shortenLinks
+            ? compressPuzzleDigits(puzzle.digits || puzzle)
+            : (puzzle.digits || puzzle);
         return (
             <li key={i}>
-                <a href={`./?s=${puzzle.digits || puzzle}&d=${level}&i=${i+1}`} onClick={stopPropagation}>
+                <a href={`./?s=${puzzleString}&d=${level}&i=${i+1}`} onClick={stopPropagation}>
                     <SudokuMiniGrid puzzle={puzzle} showRatings={showRatings} />
                 </a>
             </li>
@@ -54,6 +58,7 @@ function RecentlyShared({modalState}) {
             level={level}
             puzzles={recentlyShared[level]}
             showRatings={modalState.showRatings}
+            shortenLinks={modalState.shortenLinks}
         />;
     });
     return (

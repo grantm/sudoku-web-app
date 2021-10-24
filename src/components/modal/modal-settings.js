@@ -82,6 +82,12 @@ export default function ModalSettings({modalHandler, modalState}) {
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
+                    name={SETTINGS.shortenLinks}
+                    text="Shorten links"
+                    allSettings={allSettings}
+                    setSetting={setSetting}
+                />
+                <CheckBoxSetting
                     name={SETTINGS.showRatings}
                     text="Show puzzle rating numbers"
                     allSettings={allSettings}

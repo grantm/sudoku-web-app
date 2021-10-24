@@ -3,6 +3,7 @@ import { List, Map, Range, Set } from './not-mutable';
 import { SudokuHinter } from './sudoku-hinter';
 import { cellSet, cellProp } from './sudoku-cell-sets';
 import SudokuExplainer from './sudoku-explainer';
+import { expandPuzzleDigits, compressPuzzleDigits } from './string-utils';
 
 import {
     MODAL_TYPE_WELCOME,
@@ -36,6 +37,7 @@ export const SETTINGS = {
     playVictoryAnimation: "play-victory-animation",
     showRatings: "show-ratings",
     autoSave: "auto-save",
+    shortenLinks: "shorten-links",
     passProgressToSolver: "pass-progress-to-solver",
 };
 
@@ -94,7 +96,11 @@ function newCell(index, digit) {
 }
 
 export function newSudokuModel({initialDigits, difficultyLevel, onPuzzleStateChange, entryPoint, skipCheck}) {
-    initialDigits = (initialDigits || '').replace(/[_.-]/g, '0').replace(/\D/g, '');
+    initialDigits = (initialDigits || '').replace(/[_.-]/g, '0');
+    if (initialDigits.length < 81) {
+        initialDigits = expandPuzzleDigits(initialDigits);
+    }
+    initialDigits = initialDigits.replace(/\D/g, '')
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
@@ -147,6 +153,7 @@ export const modelHelpers = {
         [SETTINGS.playVictoryAnimation]: true,
         [SETTINGS.showRatings]: false,
         [SETTINGS.autoSave]: true,
+        [SETTINGS.shortenLinks]: true,
         [SETTINGS.passProgressToSolver]: false,
     },
 
@@ -357,6 +364,7 @@ export const modelHelpers = {
                         recentlyShared: data,
                         showRatings: modalState.showRatings,
                         savedPuzzles: modalState.savedPuzzles,
+                        shortenLinks: modalState.shortenLinks,
                     });
                 }
                 else {
@@ -385,6 +393,7 @@ export const modelHelpers = {
                             errorMessage: error.toString(),
                             showRatings: modalState.showRatings,
                             savedPuzzles: modalState.savedPuzzles,
+                            shortenLinks: modalState.shortenLinks,
                         });
                     }
                     else {
@@ -866,6 +875,7 @@ export const modelHelpers = {
             fetchRequired: true,
             showRatings: modelHelpers.getSetting(grid, SETTINGS.showRatings),
             savedPuzzles: modelHelpers.getSavedPuzzles(grid),
+            shortenLinks: modelHelpers.getSetting(grid, SETTINGS.shortenLinks),
         });
     },
 
@@ -901,6 +911,7 @@ export const modelHelpers = {
         return grid.set('modalState', {
             ...oldModalState,
             modalType: MODAL_TYPE_SAVED_PUZZLES,
+            shortenLinks: modelHelpers.getSetting(grid, SETTINGS.shortenLinks),
             escapeAction: 'show-welcome-modal',
         });
     },
@@ -912,6 +923,7 @@ export const modelHelpers = {
             difficultyLevel: grid.get('difficultyLevel'),
             intervalStartTime: grid.get('intervalStartTime'),
             endTime: grid.get('endTime'),
+            shortenLinks: modelHelpers.getSetting(grid, SETTINGS.shortenLinks),
             escapeAction: 'close',
         });
     },
@@ -1203,6 +1215,10 @@ export const modelHelpers = {
     },
 
     retryInitialDigits: (grid, digits) => {
+        if(modelHelpers.getSetting(grid, SETTINGS.shortenLinks)) {
+            digits = compressPuzzleDigits(digits);
+        }
+
         window.location.search = `s=${digits}`;
         return grid;
     },

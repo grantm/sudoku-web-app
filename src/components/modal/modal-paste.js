@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 
+import { expandPuzzleDigits } from '../../lib/string-utils';
+
 
 export default function ModalPaste({modalHandler}) {
     const [newDigits, setNewDigits] = useState('');
 
     const inputHandler = (e) => {
-        const text = e.target.value;
-        let match = text.replace(/\s+/gs, '').replace(/[_.-]/g, '0').match(/^(\d{81})$/);
-        setNewDigits(match ? match[1] : text);
+        let text = e.target.value;
+        const match = text.replace(/\s+/gs, '').replace(/[_.-]/g, '0').match(/^(\d{81}|[0-9a-zA-Z]{13,81})$/);
+        text = match ? match[1] : text;
+        if(text.match(/^[0-9a-zA-Z]+$/)) {
+            text = expandPuzzleDigits(text);
+        }
+        setNewDigits(text);
     };
     const haveValidDigits = newDigits.match(/^\d{81}$/);
     const submitClass = haveValidDigits ? 'primary' : null;

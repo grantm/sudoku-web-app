@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 
+import { expandPuzzleDigits } from '../../lib/string-utils';
+
 
 function ModalInsufficientInitialDigits({modalHandler}) {
     const [linkText, setLinkText] = useState('');
 
     const inputHandler = (e) => {
-        const text = e.target.value;
-        let match = text.replace(/\s+/gs, '').match(/s=(\d{81})/);
-        setLinkText(match ? match[1] : text);
+        let text = e.target.value;
+        let match = text.replace(/\s+/gs, '').match(/s=(\d{81}|[0-9a-zA-Z]{13,81})/);
+        text = match ? match[1] : text;
+        if(text.match(/^[0-9a-zA-Z]+$/)) {
+            text = expandPuzzleDigits(text);
+        }
+        setLinkText(text);
     };
     const haveValidDigits = linkText.match(/^\d{81}$/);
     const submitClass = haveValidDigits ? 'primary' : null;

@@ -1,17 +1,20 @@
 import React from 'react';
 
+import { compressPuzzleDigits } from '../../lib/string-utils';
+
 import SavedPuzzleGrid from "../saved-puzzle/saved-puzzle-grid";
 import SavedPuzzleMetadata from "../saved-puzzle/saved-puzzle-metadata";
 
 
-function puzzleLink(puzzleState) {
+function puzzleLink(puzzleState, shortenLinks) {
     const {initialDigits, difficultyLevel} = puzzleState;
+    const puzzleString = shortenLinks ? compressPuzzleDigits(initialDigits) : initialDigits;
     const diffParam = difficultyLevel ? `&d=${difficultyLevel}` : '';
-    return `./?s=${initialDigits}${diffParam}&r=1`;
+    return `./?s=${puzzleString}${diffParam}&r=1`;
 }
 
 
-function SavedPuzzle({puzzleState, showRatings, discardHandler, isLast}) {
+function SavedPuzzle({puzzleState, showRatings, shortenLinks, discardHandler, isLast}) {
     const {
         puzzleStateKey, difficultyLevel,
         startTime, elapsedTime, lastUpdatedTime
@@ -19,7 +22,7 @@ function SavedPuzzle({puzzleState, showRatings, discardHandler, isLast}) {
     const puzzleButtons = discardHandler
         ? (
             <div className="puzzle-buttons">
-                <a className="btn primary" href={puzzleLink(puzzleState)}>Select</a>
+                <a className="btn primary" href={puzzleLink(puzzleState, shortenLinks)}>Select</a>
                 <button
                     onClick={discardHandler}
                     data-puzzle-state-key={puzzleStateKey}
@@ -29,7 +32,7 @@ function SavedPuzzle({puzzleState, showRatings, discardHandler, isLast}) {
         )
         : null;
     return <div className={`saved-puzzle ${isLast ? 'last' : ''}`}>
-        <a className="puzzle-selector" href={puzzleLink(puzzleState)}>
+        <a className="puzzle-selector" href={puzzleLink(puzzleState, shortenLinks)}>
             <SavedPuzzleGrid
                 puzzleState={puzzleState}
                 showRatings={showRatings}
@@ -46,7 +49,7 @@ function SavedPuzzle({puzzleState, showRatings, discardHandler, isLast}) {
 }
 
 
-function OneSavedPuzzle({puzzleState, showRatings, discardHandler, cancelHandler}) {
+function OneSavedPuzzle({puzzleState, showRatings, shortenLinks, discardHandler, cancelHandler}) {
     return <>
         <h1>Continue or discard?</h1>
         <p>Click <b>Continue</b> to return to this saved puzzle and pick up where
@@ -54,10 +57,11 @@ function OneSavedPuzzle({puzzleState, showRatings, discardHandler, cancelHandler
         <SavedPuzzle
             puzzleState={puzzleState}
             showRatings={showRatings}
+            shortenLinks={shortenLinks}
             isLast={true}
         />
         <div className="buttons">
-            <a className="btn primary" href={puzzleLink(puzzleState)}>Continue</a>
+            <a className="btn primary" href={puzzleLink(puzzleState, shortenLinks)}>Continue</a>
             <button className="cancel" onClick={discardHandler}
                 data-puzzle-state-key={puzzleState.puzzleStateKey}>Discard</button>
             <button className="cancel" onClick={cancelHandler}>Cancel</button>
@@ -66,12 +70,13 @@ function OneSavedPuzzle({puzzleState, showRatings, discardHandler, cancelHandler
 }
 
 
-function SavedPuzzleList({savedPuzzles=[], showRatings, discardHandler, cancelHandler}) {
+function SavedPuzzleList({savedPuzzles=[], showRatings, shortenLinks, discardHandler, cancelHandler}) {
     const puzzles = savedPuzzles.map((puzzleState, i) => {
         return <SavedPuzzle
             key={puzzleState.puzzleStateKey}
             puzzleState={puzzleState}
             showRatings={showRatings}
+            shortenLinks={shortenLinks}
             discardHandler={discardHandler}
             isLast={i === savedPuzzles.length - 1}
         />
@@ -88,7 +93,7 @@ function SavedPuzzleList({savedPuzzles=[], showRatings, discardHandler, cancelHa
 
 
 function ModalSavedPuzzles({modalState, modalHandler}) {
-    const {savedPuzzles, showRatings} = modalState;
+    const {savedPuzzles, showRatings, shortenLinks} = modalState;
     const cancelHandler = () => modalHandler('show-welcome-modal');
     const discardHandler = (e) => {
         const puzzleStateKey = e.target.dataset.puzzleStateKey;
@@ -102,6 +107,7 @@ function ModalSavedPuzzles({modalState, modalHandler}) {
             <OneSavedPuzzle
                 puzzleState={savedPuzzles[0]}
                 showRatings={showRatings}
+                shortenLinks={shortenLinks}
                 discardHandler={discardHandler}
                 cancelHandler={cancelHandler}
             />
@@ -110,6 +116,7 @@ function ModalSavedPuzzles({modalState, modalHandler}) {
              <SavedPuzzleList
                  savedPuzzles={savedPuzzles}
                  showRatings={showRatings}
+                 shortenLinks={shortenLinks}
                  discardHandler={discardHandler}
                  cancelHandler={cancelHandler}
              />

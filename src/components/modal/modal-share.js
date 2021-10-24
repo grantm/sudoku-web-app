@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 
 import { modelHelpers } from '../../lib/sudoku-model.js';
-import { secondsAsHMS } from '../../lib/string-utils';
+import { secondsAsHMS, compressPuzzleDigits } from '../../lib/string-utils';
 
 
 function puzzleURL(initialDigits, difficulty, vector) {
@@ -102,13 +102,14 @@ function DifficultySelector({difficulty, changeHandler}) {
 
 
 export default function ModalShare({modalState, modalHandler, menuHandler}) {
-    const {initialDigits, difficultyLevel, intervalStartTime, endTime} = modalState;
+    const {initialDigits, difficultyLevel, intervalStartTime, endTime, shortenLinks} = modalState;
     const solveTime = endTime ? formattedTimeToBeat(intervalStartTime, endTime) : null;
 
     const [difficulty, setDifficulty] = useState(difficultyLevel);
     const [shareTime, setShareTime] = useState(!!endTime);
 
-    const thisURL = puzzleURL(initialDigits, difficulty);
+    const puzzleString = shortenLinks ? compressPuzzleDigits(initialDigits) : initialDigits;
+    const thisURL = puzzleURL(puzzleString, difficulty);
     const saveScreenshotHandler = (e) => {
         e.preventDefault();
         menuHandler("save-screenshot");
@@ -155,17 +156,17 @@ export default function ModalShare({modalState, modalHandler, menuHandler}) {
                 <ul>
                     <li>
                         <a className="btn btn-facebook" target="_blank" rel="noopener noreferrer"
-                            href={facebookShareURL(initialDigits, difficulty)}
+                            href={facebookShareURL(puzzleString, difficulty)}
                         >Share on Facebook</a>
                     </li>
                     <li>
                         <a className="btn btn-twitter" target="_blank" rel="noopener noreferrer"
-                            href={twitterShareURL(initialDigits, difficulty, shareSolveTime)}
+                            href={twitterShareURL(puzzleString, difficulty, shareSolveTime)}
                         >Share on Twitter</a>
                     </li>
                     <li>
                         <a className="btn btn-email"
-                            href={emailShareURL(initialDigits, difficulty, shareSolveTime)}
+                            href={emailShareURL(puzzleString, difficulty, shareSolveTime)}
                         >Share by Email</a>
                     </li>
                     <li>
