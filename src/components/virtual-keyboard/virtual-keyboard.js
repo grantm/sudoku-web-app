@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 
 import { keyboardLayout } from './vkbd-keyboard-layouts';
 import VkbdButtonIcon from './vkbd-button-icons';
@@ -11,24 +11,29 @@ const stopPropagation = (e) => e.stopPropagation();
 let seenTouchEvent = false;
 
 function keyValueFromTouchEvent (e) {
-    const t = (e.touches || {})[0];
+    const t = (e.touches || [])[0];
     if (t) {
-        const keyValue = t.target.dataset.keyValue
-        return [keyValue, t.target.dataset.wantDoubleClick];
+        const keyValue = t.target.dataset.keyValue;
+        const wantDoubleClick = t.target.dataset.wantDoubleClick;
+        return [keyValue, wantDoubleClick];
     }
     return [];
 }
 
-function buttonTouchHandler (e, inputHandler) {
+function buttonTouchHandler (e, touchState, inputHandler) {
     e.preventDefault();
     e.stopPropagation();
     seenTouchEvent = true;
-    const eventType = e.type;
+    const eventType = e && e.type;  // Weirdly, have seen e === null here
     if (eventType === 'touchstart') {
         const [keyValue, wantDoubleClick] = keyValueFromTouchEvent(e);
         if (keyValue !== undefined) {
-            inputHandler({type: 'vkbdKeyPress', wantDoubleClick, keyValue, value: keyValue, source: 'touch'});
+            touchState.current = {type: 'vkbdKeyPress', wantDoubleClick, keyValue, value: keyValue, source: 'touch'};
         }
+    }
+    else if (eventType === 'touchend') {
+        inputHandler(touchState.current);
+        touchState.current = null;
     }
 }
 
@@ -120,7 +125,8 @@ function VkbdButtonSet({buttonDefs, inputMode, completedDigits, toolTipText}) {
 }
 
 export default function VirtualKeyboard({dimensions, inputMode, completedDigits, flipNumericKeys, inputHandler, simplePencilMarking}) {
-    const rawTouchHandler = useCallback(e => buttonTouchHandler(e, inputHandler), [inputHandler]);
+    const touchState = useRef(null);
+    const rawTouchHandler = useCallback(e => buttonTouchHandler(e, touchState, inputHandler), [inputHandler]);
     const rawClickHandler = useCallback(e => buttonClickHandler(e, inputHandler), [inputHandler]);
     const layout = keyboardLayout(dimensions, flipNumericKeys);
     const toolTipText = {
@@ -145,6 +151,7 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
     return (
         <div className="vkbd"
             onTouchStart={rawTouchHandler}
+            onTouchEnd={rawTouchHandler}
             onClick={rawClickHandler}
             onMouseDown={stopPropagation}
         >
