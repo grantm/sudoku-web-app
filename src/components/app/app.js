@@ -9,6 +9,7 @@ import useWindowSize from '../../lib/use-window-size.js';
 import StatusBar from '../status-bar/status-bar';
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
+import SolvedPuzzleOptions from '../solved-puzzle-options/solved-puzzle-options';
 import ModalContainer from '../modal/modal-container';
 
 import {
@@ -478,6 +479,9 @@ function dispatchMenuAction(action, setGrid) {
     else if (action === 'show-hint-modal') {
         setGrid((grid) => modelHelpers.showHintModal(grid));
     }
+    else if (action === 'restart-puzzle') {
+        setGrid((grid) => modelHelpers.applyRestart(grid));
+    }
     else {
         console.log(`Unrecognised menu action: '${action}'`);
     }
@@ -517,6 +521,8 @@ function App() {
     const [grid, setGrid] = useState(initialGridFromURL);
     const settings = grid.get('settings');
     let showTimer = settings[SETTINGS.showTimer];
+    const intervalStartTime = grid.get('intervalStartTime');
+    const endTime = grid.get('endTime');
     const pausedAt = grid.get('pausedAt');
     const solved = grid.get('solved');
     const mode = grid.get('mode');
@@ -610,8 +616,8 @@ function App() {
             <StatusBar
                 showTimer={showTimer}
                 startTime={grid.get('startTime')}
-                intervalStartTime={grid.get('intervalStartTime')}
-                endTime={grid.get('endTime')}
+                intervalStartTime={intervalStartTime}
+                endTime={endTime}
                 pausedAt={pausedAt}
                 showPencilmarks={grid.get('showPencilmarks')}
                 menuHandler={menuHandler}
@@ -629,15 +635,26 @@ function App() {
                     inputHandler={inputHandler}
                 />
                 <div>
-                    <VirtualKeyboard
-                        dimensions={dimensions}
-                        inputMode={inputMode}
-                        flipNumericKeys={settings[SETTINGS.flipNumericKeys]}
-                        completedDigits={completedDigits}
-                        inputHandler={inputHandler}
-                        simplePencilMarking={settings[SETTINGS.simplePencilMarking]}
-                    />
-                    {startButton}
+                    {
+                        solved
+                            ? (
+                                <SolvedPuzzleOptions
+                                    elapsedTime={Math.floor((endTime - intervalStartTime) / 1000)}
+                                    menuHandler={menuHandler}
+                                />
+                            )
+                            : <>
+                                <VirtualKeyboard
+                                    dimensions={dimensions}
+                                    inputMode={inputMode}
+                                    flipNumericKeys={settings[SETTINGS.flipNumericKeys]}
+                                    completedDigits={completedDigits}
+                                    inputHandler={inputHandler}
+                                    simplePencilMarking={settings[SETTINGS.simplePencilMarking]}
+                                />
+                                {startButton}
+                            </>
+                    }
                 </div>
             </div>
             {modal}

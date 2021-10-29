@@ -1,0 +1,40 @@
+
+.solved-puzzle-options {
+    background-color: var(--vkbd-mode-panel-fill-color);
+    border-radius: 0.55em;
+    padding: 0.65em;
+}
+
+.landscape .solved-puzzle-options {
+    font-size: min(3.2vw, 3.2vh);
+}
+
+.portrait .solved-puzzle-options {
+    font-size: max(2.4vw, 2.6vh);
+}
+
+.solved-puzzle-options > * + *{
+    margin: 0.65em 0 0 0;
+}
+
+.solved-puzzle-options p {
+    text-align: center;
+    margin: 0;
+}
+
+.solved-puzzle-options button,
+.solved-puzzle-options a.btn {
+    display: block;
+    box-sizing: border-box;
+    width: 11em;
+    text-decoration: none;
+    text-align: center;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    padding: 0.4em 0;
+    color: var(--button-text-color);
+    background-color: var(--button-bg-color);
+    border-radius: 0.25em;
+    border: none;
+}
