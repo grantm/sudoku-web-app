@@ -86,7 +86,7 @@ export default function ModalContainer({modalState, modalHandler, menuHandler}) 
         content = <ModalSettings modalState={modalState} modalHandler={modalHandler} />;
     }
     else if (modalState.modalType === MODAL_TYPE_CONFIRM_RESTART) {
-        content = <ModalConfirmRestart modalHandler={modalHandler} />;
+        content = <ModalConfirmRestart modalHandler={modalHandler} solved={modalState.solved} />;
     }
     else if (modalState.modalType === MODAL_TYPE_CONFIRM_CLEAR_COLOR_HIGHLIGHTS) {
         content = <ModalConfirmClearColorHighlights modalHandler={modalHandler} />;

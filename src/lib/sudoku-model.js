@@ -882,6 +882,7 @@ export const modelHelpers = {
     confirmRestart: (grid) => {
         return grid.set('modalState', {
             modalType: MODAL_TYPE_CONFIRM_RESTART,
+            solved: grid.get("solved"),
             escapeAction: 'close',
         });
     },

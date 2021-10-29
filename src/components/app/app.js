@@ -480,7 +480,7 @@ function dispatchMenuAction(action, setGrid) {
         setGrid((grid) => modelHelpers.showHintModal(grid));
     }
     else if (action === 'restart-puzzle') {
-        setGrid((grid) => modelHelpers.applyRestart(grid));
+        setGrid((grid) => modelHelpers.confirmRestart(grid));
     }
     else {
         console.log(`Unrecognised menu action: '${action}'`);

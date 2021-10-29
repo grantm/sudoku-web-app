@@ -45,6 +45,7 @@ test('restart', () => {
     grid = modelHelpers.confirmRestart(grid);
     expect(grid.get('modalState')).toStrictEqual({
         modalType: "confirm-restart",
+        solved: false,
         "escapeAction": "close"
     });
     grid = modelHelpers.applyModalAction(grid, 'cancel');
@@ -56,6 +57,7 @@ test('restart', () => {
     grid = modelHelpers.confirmRestart(grid);
     expect(grid.get('modalState')).toStrictEqual({
         modalType: "confirm-restart",
+        solved: false,
         "escapeAction": "close"
     });
     grid = modelHelpers.applyModalAction(grid, 'restart-confirmed');
