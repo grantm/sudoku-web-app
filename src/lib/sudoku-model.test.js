@@ -65,6 +65,7 @@ test('initialise grid (partial)', () => {
         "featureFlags",
         "focusIndex",
         "hasErrors",
+        "hintsUsed",
         "initialDigits",
         "inputMode",
         "intervalStartTime",

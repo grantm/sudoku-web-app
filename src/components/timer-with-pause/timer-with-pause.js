@@ -37,12 +37,21 @@ function PauseIcon () {
     )
 }
 
-function TimerWithPause({startTime, intervalStartTime, endTime, pausedAt, pauseHandler}) {
+function TimerWithPause({startTime, intervalStartTime, endTime, pausedAt, pauseHandler, hintsUsedCount}) {
     if (!startTime) {
         return null;
     }
+    const hintCount = hintsUsedCount > 0
+        ? (
+            <span
+                className="hints-used"
+                title={`${hintsUsedCount} hint${hintsUsedCount === 1 ? "" : "s"} used`}
+            >{hintsUsedCount}</span>
+        )
+        : null;
     return <div id="timer">
         <ElapsedTime intervalStartTime={intervalStartTime} endTime={endTime} pausedAt={pausedAt} />
+        {hintCount}
         <button id="pause-btn" title="Pause timer" onClick={pauseHandler}>
             <PauseIcon />
         </button>

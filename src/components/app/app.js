@@ -524,6 +524,7 @@ function App() {
     const intervalStartTime = grid.get('intervalStartTime');
     const endTime = grid.get('endTime');
     const pausedAt = grid.get('pausedAt');
+    const hintsUsedCount = grid.get('hintsUsed').size;
     const solved = grid.get('solved');
     const mode = grid.get('mode');
     const inputMode = grid.get('tempInputMode') || grid.get('inputMode');
@@ -619,6 +620,7 @@ function App() {
                 intervalStartTime={intervalStartTime}
                 endTime={endTime}
                 pausedAt={pausedAt}
+                hintsUsedCount={hintsUsedCount}
                 showPencilmarks={grid.get('showPencilmarks')}
                 menuHandler={menuHandler}
                 pauseHandler={pauseHandler}
@@ -640,6 +642,7 @@ function App() {
                             ? (
                                 <SolvedPuzzleOptions
                                     elapsedTime={Math.floor((endTime - intervalStartTime) / 1000)}
+                                    hintsUsedCount={hintsUsedCount}
                                     menuHandler={menuHandler}
                                 />
                             )

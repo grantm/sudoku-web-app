@@ -129,6 +129,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, onPuzzleStateCha
         completedDigits: {},
         matchDigit: '0',
         modalState: undefined,
+        hintsUsed: emptySet,
     });
     return initialError
         ? modelHelpers.setInitialDigits(grid, initialDigits, initialError, entryPoint)
@@ -447,6 +448,7 @@ export const modelHelpers = {
                         const explainer = new SudokuExplainer(analysis);  // might throw exception
                         grid = grid.set("explainer", explainer);
                         newModalState.hint = modelHelpers.findNextHint(grid);
+                        grid = modelHelpers.markHintUsed(grid, newModalState.hint);
                     }
                     catch (error) {
                         errorMessage = error.toString();
@@ -504,6 +506,14 @@ export const modelHelpers = {
             return c.get("innerPencils").union(c.get("outerPencils")).toArray().join('');
         }).toArray();
         return explainer.findNextStep(currDigits, currCandidates);
+    },
+
+    markHintUsed: (grid, hint) => {
+        const hintsUsed = grid.get("hintsUsed");
+        if (hint.hintIndex !== undefined && !hintsUsed.includes(hint.hintIndex)) {
+            grid = grid.set("hintsUsed", hintsUsed.add(hint.hintIndex));
+        }
+        return grid;
     },
 
     getSavedPuzzles: (grid) => {
@@ -982,17 +992,14 @@ export const modelHelpers = {
                 retries: 10,
             });
         }
-        const currDigits = grid.get('cells').map(c => c.get('digit')).toArray();
-        const currCandidates = grid.get("cells").map(c => {
-            return c.get("innerPencils").union(c.get("outerPencils")).toArray().join('');
-        }).toArray();
-        const hint = explainer.findNextStep(currDigits, currCandidates);
+        const hint = modelHelpers.findNextHint(grid);
         if (hint) {
             grid = grid.set('modalState', {
                 modalType: MODAL_TYPE_HINT,
                 escapeAction: 'close',
                 hint: hint,
             });
+            grid = modelHelpers.markHintUsed(grid, hint);
         }
         else {
             grid = grid.set('modalState', {
@@ -1130,6 +1137,7 @@ export const modelHelpers = {
                 undoList: grid.get('undoList').toArray(),
                 redoList: grid.get('redoList').toArray(),
                 currentSnapshot: currentSnapshot,
+                hintsUsed: grid.get('hintsUsed').toArray(),
                 lastUpdatedTime: Date.now(),
             };
             const difficultyRating = grid.get('difficultyRating');
@@ -1205,6 +1213,7 @@ export const modelHelpers = {
             intervalStartTime: Date.now() - puzzleState.elapsedTime,
             undoList: List(puzzleState.undoList),
             redoList: List(puzzleState.redoList),
+            hintsUsed: List(puzzleState.hintsUsed || []),
             pausedAt: undefined,
             modalState: undefined,
         });
@@ -1259,6 +1268,7 @@ export const modelHelpers = {
                 'startTime': startTime,
                 'intervalStartTime': startTime,
                 'endTime': undefined,
+                'hintsUsed': emptySet,
             })
         }
         const emptySnapshot = '';
@@ -1270,6 +1280,7 @@ export const modelHelpers = {
                 'matchDigit': '0',
                 'completedDigits': {},
                 'inputMode': 'digit',
+                'hintsUsed': emptySet,
             });
         return modelHelpers.checkCompletedDigits(grid);
     },

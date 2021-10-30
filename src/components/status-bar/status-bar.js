@@ -24,7 +24,10 @@ function SiteLink () {
 }
 
 
-function StatusBar ({showTimer, startTime, intervalStartTime, endTime, pausedAt, showPencilmarks, menuHandler, pauseHandler, initialDigits}) {
+function StatusBar ({
+    showTimer, startTime, intervalStartTime, endTime, pausedAt, hintsUsedCount,
+    showPencilmarks, menuHandler, pauseHandler, initialDigits
+}) {
     const timer = showTimer
         ? (
             <TimerWithPause
@@ -33,6 +36,7 @@ function StatusBar ({showTimer, startTime, intervalStartTime, endTime, pausedAt,
                 endTime={endTime}
                 pausedAt={pausedAt}
                 pauseHandler={pauseHandler}
+                hintsUsedCount={hintsUsedCount}
             />
         )
         : null;

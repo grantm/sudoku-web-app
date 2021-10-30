@@ -3,11 +3,29 @@
 }
 
 .elapsed-time {
-    display: inline-block;
     min-width: 2.8em;
-    margin: 2vh 0.4vh 0 2vh;
+    margin: 2vh 0 0 1.2vh;
+    text-align: right;
+}
+
+.hints-used {
+    margin: 2vh 0 0 0.3em;
+}
+
+.elapsed-time,
+.hints-used {
+    display: inline-block;
     opacity: 0.6;
     line-height: 1;
+}
+
+.hints-used::before {
+    content: "/";
+    margin-right: 0.2em
+}
+
+#pause-btn {
+    margin-left: 0.2vh;
 }
 
 .solved .elapsed-time {

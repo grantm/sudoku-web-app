@@ -98,6 +98,7 @@ class SudokuExplainer {
                         digits: currDigits,
                         candidates: candidates,
                         puzzleRating: this.rating,
+                        hintIndex: i,
                     };
                 }
             }
@@ -112,6 +113,7 @@ class SudokuExplainer {
                         digits: currDigits,
                         candidates: currCandidates,
                         puzzleRating: this.rating,
+                        hintIndex: i,
                     };
                 }
             }

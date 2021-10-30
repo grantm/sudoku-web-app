@@ -58,6 +58,11 @@
     opacity: 0.6;
 }
 
+.portrait .status-bar button {
+    margin-right: 0;
+    padding: 0.3vh;
+}
+
 .status-bar button:hover,
 .status-bar button:focus {
     background-color: var(--status-bar-button-hover-color);
