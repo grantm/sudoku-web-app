@@ -84,6 +84,7 @@ function modalHintContent ({loading, loadingFailed, errorMessage, hint, hotSpotH
         }
     }
     else if (loadingFailed) {
+        console.log("Failed to load hint: ", errorMessage);
         const description = errorMessage === "Error: 400 Bad Request"
             ? (
                 <p>The server was unable to provide hints for this puzzle.</p>

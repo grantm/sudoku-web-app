@@ -1213,7 +1213,7 @@ export const modelHelpers = {
             intervalStartTime: Date.now() - puzzleState.elapsedTime,
             undoList: List(puzzleState.undoList),
             redoList: List(puzzleState.redoList),
-            hintsUsed: List(puzzleState.hintsUsed || []),
+            hintsUsed: Set(puzzleState.hintsUsed || []),
             pausedAt: undefined,
             modalState: undefined,
         });
