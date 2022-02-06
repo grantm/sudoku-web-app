@@ -75,7 +75,7 @@ function initialGridFromURL () {
     }
 
     if (params.get('r') === "1") {
-        const puzzleStateKey = 'save-' + params.get('s')
+        const puzzleStateKey = 'save-' + grid.get('initialDigits')
         grid = modelHelpers.restoreFromPuzzleState(grid, puzzleStateKey);
     }
 
