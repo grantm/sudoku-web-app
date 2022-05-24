@@ -22,36 +22,6 @@ const FETCH_DELAY = 1000;
 const RETRY_INTERVAL = 3000;
 const MAX_RETRIES = 10;
 
-// Keycode definitions (independent of shift/ctrl/etc)
-const KEYCODE = {
-    digit0: 48,
-    digit9: 57,
-    numPadDigit0: 96,
-    numPadDigit9: 105,
-    W: 87,
-    A: 65,
-    S: 83,
-    D: 68,
-    F: 70,
-    P: 80,
-    Y: 89,
-    Z: 90,
-    bracketLeft: 219,
-    bracketRight: 221,
-};
-
-const digitFromShiftNumKey = {
-    "End": "1",
-    "ArrowDown": "2",
-    "PageDown": "3",
-    "ArrowLeft": "4",
-    "Unidentified": "5",
-    "ArrowRight": "6",
-    "Home": "7",
-    "ArrowUp": "8",
-    "PageUp": "9",
-}
-
 const inputModeFromHotKey = {
     z: 'digit',
     x: 'outer',
@@ -155,8 +125,9 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     if (solved) {
         return;
     }
+    const keyName = e.code;
     if (modalActive) {
-        if (e.key === 'Escape') {
+        if (keyName === 'Escape') {
             escapeFromModal(setGrid);
         }
         return;
@@ -167,14 +138,9 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
     const ctrlOrMeta = e.ctrlKey || e.metaKey;
     const shiftOrCtrl = e.shiftKey || ctrlOrMeta;
     let digit = undefined;
-    if (KEYCODE.digit0 <= e.keyCode && e.keyCode <= KEYCODE.digit9) {
-        digit = String.fromCharCode(e.keyCode);
-    }
-    else if (KEYCODE.numPadDigit0 <= e.keyCode && e.keyCode <= KEYCODE.numPadDigit9) {
-        digit = String.fromCharCode(KEYCODE.digit0 + e.keyCode - KEYCODE.numPadDigit0);
-    }
-    else if (shiftOrCtrl && e.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
-        digit = digitFromShiftNumKey[e.key];
+    const match = RegExp(/^(?:Digit|Numpad)([0-9])$/).exec(keyName)
+    if (match) {
+        digit = match[1];
     }
     if (digit !== undefined) {
         setGrid((grid) => {
@@ -196,7 +162,7 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         e.preventDefault();
         return;
     }
-    else if (e.key === "Backspace" || e.key === "Delete") {
+    else if (keyName === "Backspace" || keyName === "Delete") {
         if (e.target === document.body) {
             // We don't want browser to treat this as a back button action
             e.preventDefault();
@@ -212,42 +178,42 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         setGrid((grid) => modelHelpers.showHintModal(grid));
         return;
     }
-    else if (e.key === "Escape") {
+    else if (keyName === "Escape") {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'clearSelection'));
         return;
     }
-    else if ((e.keyCode === KEYCODE.Z && ctrlOrMeta) || e.keyCode === KEYCODE.bracketLeft) {
+    else if ((keyName === "KeyZ" && ctrlOrMeta) || keyName === "BracketLeft") {
         setGrid((grid) => modelHelpers.undoOneAction(grid));
         return;
     }
-    else if ((e.keyCode === KEYCODE.Y && ctrlOrMeta) || e.keyCode === KEYCODE.bracketRight) {
+    else if ((keyName === "KeyY" && ctrlOrMeta) || keyName === "BracketRight") {
         setGrid((grid) => modelHelpers.redoOneAction(grid));
         return;
     }
-    else if (e.key === "ArrowRight" || e.keyCode === KEYCODE.D) {
+    else if (keyName === "ArrowRight" || keyName === "KeyD") {
         setGrid((grid) => modelHelpers.moveFocus(grid, 1, 0, shiftOrCtrl));
         e.preventDefault();
         return;
     }
-    else if (e.key === "ArrowLeft" || e.keyCode === KEYCODE.A) {
+    else if (keyName === "ArrowLeft" || keyName === "KeyA") {
         setGrid((grid) => modelHelpers.moveFocus(grid, -1, 0, shiftOrCtrl));
         e.preventDefault();
         return;
     }
-    else if (e.key === "ArrowUp" || e.keyCode === KEYCODE.W) {
+    else if (keyName === "ArrowUp" || keyName === "KeyW") {
         setGrid((grid) => modelHelpers.moveFocus(grid, 0, -1, shiftOrCtrl));
         // Don't prevent Cmd-W closing the window (#32)
-        if (!(ctrlOrMeta && e.keyCode === KEYCODE.W)) {
+        if (!(ctrlOrMeta && keyName === "KeyW")) {
             e.preventDefault();
         }
         return;
     }
-    else if (e.key === "ArrowDown" || e.keyCode === KEYCODE.S) {
+    else if (keyName === "ArrowDown" || keyName === "KeyS") {
         setGrid((grid) => modelHelpers.moveFocus(grid, 0, 1, shiftOrCtrl));
         e.preventDefault();
         return;
     }
-    else if (e.keyCode === KEYCODE.F) {
+    else if (keyName === "KeyF") {
         if (window.document.fullscreen) {
             window.document.exitFullscreen();
         }
@@ -256,22 +222,22 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         }
         return;
     }
-    else if (e.keyCode === KEYCODE.P) {
+    else if (keyName === "KeyP") {
         setGrid((grid) => modelHelpers.toggleShowPencilmarks(grid));
     }
-    else if (e.key === "F1") {
+    else if (keyName === "F1") {
         setGrid((grid) => modelHelpers.showHelpPage(grid));
         return;
     }
-    else if (e.key === "Enter") {
+    else if (keyName === "Enter") {
         setGrid((grid) => modelHelpers.gameOverCheck(grid));
         return;
     }
-    else if (e.key === "Home") {
+    else if (keyName === "Home") {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'setSelection', modelHelpers.CENTER_CELL));
         return;
     }
-    else if (e.key === " ") {
+    else if (keyName === "Space") {
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'toggleExtendSelection', grid.get('focusIndex')));
         return;
     }
