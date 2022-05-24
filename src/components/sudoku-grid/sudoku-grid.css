@@ -20,6 +20,7 @@
 .sudoku-grid .line-bold {
     stroke: var(--grid-line-color-bold);
     stroke-width: var(--grid-line-width-bold);
+    stroke-linejoin: round;
 }
 
 .grid-bg { fill: var(--background-color); }
