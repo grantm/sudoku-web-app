@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './components/app/app';
 import * as serviceWorker from './serviceWorker';
@@ -15,7 +15,8 @@ window.addEventListener('beforeunload', function (e) {
     // otherwise leave page unload to proceed unhindered
 });
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -1,6 +1,9 @@
 import React from 'react';
 
-import {version} from '../../../package.json';
+import projectPackageJson from '../../../package.json';
+
+const appVersion = projectPackageJson.version || "unknown";
+
 
 export default function ModalAbout({modalHandler}) {
     const closeHandler = () => modalHandler('cancel');
@@ -8,7 +11,7 @@ export default function ModalAbout({modalHandler}) {
     return (
         <div className="modal about">
             <h1>About this app</h1>
-            <p>Application version: {version}</p>
+            <p>Application version: {appVersion}</p>
             <p>This Sudoku web application was created for <a href="https://sudokuexchange.com/"
             >SudokuExchange.com</a> by <a href="https://grantm.github.io/">Grant McLean</a>.</p>
             <p>It is <a href="https://www.fsf.org/about/what-is-free-software">free software</a>{' '}
