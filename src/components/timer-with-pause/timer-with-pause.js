@@ -26,11 +26,7 @@ function ElapsedTime ({intervalStartTime, endTime, pausedAt}) {
 
 function PauseIcon () {
     return (
-        <svg version="1.1"
-            baseProfile="full"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg version="1.1" viewBox="0 0 48 48">
             <rect className="stroke" x="15" y="12" width="6" height="24" />
             <rect className="stroke" x="27" y="12" width="6" height="24" />
         </svg>

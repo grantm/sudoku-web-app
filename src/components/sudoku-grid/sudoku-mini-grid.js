@@ -60,10 +60,7 @@ function SudokuMiniGrid({puzzle, size='120px', showRatings}) {
     });
     return (
         <div className="sudoku-grid mini" style={{width: size}}>
-            <svg version="1.1"
-                viewBox="0 0 1000 1100"
-                xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg version="1.1" viewBox="0 0 1000 1100">
                 <rect className="grid-bg" width="100%" height="100%" />
                 {puzzleDigits}
                 <GridLines cellSize={cellSize} marginSize={marginSize} />

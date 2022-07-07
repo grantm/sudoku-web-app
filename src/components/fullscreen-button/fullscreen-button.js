@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 function EnterFullscreenIcon () {
     return (
-        <svg version="1.1"
-            baseProfile="full"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg version="1.1" viewBox="0 0 48 48">
             <rect className="stroke" x="8" y="8" width="12" height="4" />
             <rect className="stroke" x="8" y="8" width="4" height="12" />
             <rect className="stroke" x="28" y="8" width="12" height="4" />
@@ -21,11 +17,7 @@ function EnterFullscreenIcon () {
 
 function ExitFullscreenIcon () {
     return (
-        <svg version="1.1"
-            baseProfile="full"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg version="1.1" viewBox="0 0 48 48">
             <rect className="stroke" x="8"  y="16" width="12" height="4" />
             <rect className="stroke" x="16" y="8"  width="4" height="12" />
             <rect className="stroke" x="28" y="16" width="12" height="4" />

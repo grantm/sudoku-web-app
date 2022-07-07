@@ -122,10 +122,7 @@ function SudokuHintGrid({digits, candidates, digitIndex, digitValue, highlightCe
 
     return (
         <div className="sudoku-grid hint">
-            <svg version="1.1"
-                viewBox="0 0 910 910"
-                xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg version="1.1" viewBox="0 0 910 910">
                 <rect className="grid-bg" width="100%" height="100%" />
                 {digitLayer}
                 <GridLines cellSize={cellSize} marginSize={marginSize} />

@@ -3,11 +3,7 @@ import React, { useCallback } from 'react';
 
 function SettingsIcon () {
     return (
-        <svg version="1.1"
-            baseProfile="full"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg version="1.1" viewBox="0 0 48 48">
             <g
                transform="translate(0,-249)"
                id="layer1">

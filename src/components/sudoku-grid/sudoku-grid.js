@@ -169,7 +169,6 @@ function SudokuGrid({grid, gridId, dimensions, isPaused, mouseDownHandler, mouse
             <svg version="1.1"
                 style={{width: dimensions.gridLength}}
                 viewBox={`0 0 ${dim.width} ${dim.height}`}
-                xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="grid-bg" width="100%" height="100%" />
                 {cellContents}

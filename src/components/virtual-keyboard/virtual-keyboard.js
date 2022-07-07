@@ -157,9 +157,7 @@ export default function VirtualKeyboard({dimensions, inputMode, completedDigits,
         >
             <svg version="1.1"
                 style={{width: dimensions.vkbdWidth}}
-                baseProfile="full"
                 viewBox={`0 0 ${layout.width} ${layout.height}`}
-                xmlns="http://www.w3.org/2000/svg"
             >
                 <rect className="vkbd-background" width="100%" height="100%" rx="40" />
                 <VkbdModePanel

@@ -2,11 +2,7 @@ import React, { useCallback } from 'react';
 
 function HintIcon () {
     return (
-        <svg version="1.1"
-            baseProfile="full"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg version="1.1" viewBox="0 0 48 48">
             <g>
                 <path
                     className="stroke"

@@ -5,11 +5,7 @@ import './menu-button.css';
 
 function MenuIcon () {
     return (
-        <svg version="1.1"
-            baseProfile="full"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg version="1.1" viewBox="0 0 48 48">
             <rect className="stroke" x="12" y="12" width="24" height="4" />
             <rect className="stroke" x="12" y="22" width="24" height="4" />
             <rect className="stroke" x="12" y="32" width="24" height="4" />
