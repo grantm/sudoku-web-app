@@ -1,17 +1,9 @@
 import React, { useState, useCallback } from 'react';
 
+import ButtonIcon from '../svg-sprites/button-icon';
+
 import './menu-button.css';
 
-
-function MenuIcon () {
-    return (
-        <svg version="1.1" viewBox="0 0 48 48">
-            <rect className="stroke" x="12" y="12" width="24" height="4" />
-            <rect className="stroke" x="12" y="22" width="24" height="4" />
-            <rect className="stroke" x="12" y="32" width="24" height="4" />
-        </svg>
-    )
-}
 
 function MenuButton ({initialDigits, showPencilmarks, menuHandler}) {
     const [hidden, setHidden] = useState(true);
@@ -54,7 +46,9 @@ function MenuButton ({initialDigits, showPencilmarks, menuHandler}) {
     return (
         <div className={classes.join(' ')}>
             { overlay }
-            <button type="button" title="Menu" onClick={toggleHandler}><MenuIcon /></button>
+            <button type="button" title="Menu" onClick={toggleHandler}>
+                <ButtonIcon name="menu" />
+            </button>
             <ul onClick={clickHandler}>
                 <li className={shareLinkClass}>
                     <a href="./" data-menu-action="show-share-modal"

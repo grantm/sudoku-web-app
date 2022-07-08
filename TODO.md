@@ -1,13 +1,15 @@
+Example of slow solver
+https://sudokuexchange.com/play/?s=000000000500006100060040030020050040300007800001000000000100002430020050600008700&d=3
+
 ## Things to do:
 (Not necessarily in priority order)
 
-* Track progress in localStorage to allow resume after reload or back/fwd
-* Protect against accidental reload or back button with "are you sure you want
-  to leave this page?"
+* Switch from deprecated document.fullscreen to document.fullscreenElement
+* Investigate check reporting "may not have a unique solution" when no solution
+  is possible
 * Menu option to share with pencilmarks
 * Investigate honouring back button to close modal/menu (without propagating
   state when sharing current URL)
-* Tests for model
 * Tests for UI
 * Allow pasting in a digit string in 'enter' mode
 * Allow copy to digit string
@@ -16,6 +18,10 @@
 * Add native sharing implementation (https://css-tricks.com/on-the-web-share-api/)
 
 ## Things done
+* Track progress in localStorage to allow resume after reload or back/fwd
+* Protect against accidental reload or back button with "are you sure you want
+  to leave this page?"
+* Tests for model
 * Render cell layout and text using SVG+CSS
 * Mouse input for selecting cells
 * Keyboard input for entering/clearing digits

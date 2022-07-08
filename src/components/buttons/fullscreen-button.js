@@ -1,38 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-function EnterFullscreenIcon () {
-    return (
-        <svg version="1.1" viewBox="0 0 48 48">
-            <rect className="stroke" x="8" y="8" width="12" height="4" />
-            <rect className="stroke" x="8" y="8" width="4" height="12" />
-            <rect className="stroke" x="28" y="8" width="12" height="4" />
-            <rect className="stroke" x="36" y="8" width="4" height="12" />
-            <rect className="stroke" x="8" y="28" width="4" height="12" />
-            <rect className="stroke" x="8" y="36" width="12" height="4" />
-            <rect className="stroke" x="28" y="36" width="12" height="4" />
-            <rect className="stroke" x="36" y="28" width="4" height="12" />
-        </svg>
-    )
-}
-
-function ExitFullscreenIcon () {
-    return (
-        <svg version="1.1" viewBox="0 0 48 48">
-            <rect className="stroke" x="8"  y="16" width="12" height="4" />
-            <rect className="stroke" x="16" y="8"  width="4" height="12" />
-            <rect className="stroke" x="28" y="16" width="12" height="4" />
-            <rect className="stroke" x="28" y="8"  width="4" height="12" />
-            <rect className="stroke" x="16" y="28" width="4" height="12" />
-            <rect className="stroke" x="8"  y="28" width="12" height="4" />
-            <rect className="stroke" x="28" y="28" width="12" height="4" />
-            <rect className="stroke" x="28" y="28" width="4" height="12" />
-        </svg>
-    )
-}
+import ButtonIcon from '../svg-sprites/button-icon';
 
 function FullscreenButton () {
     const [fsEnabled, setFsEnabled] = useState(window.document.fullscreen);
-    const content = fsEnabled ? <ExitFullscreenIcon /> : <EnterFullscreenIcon />;
     const title = fsEnabled ? 'Exit full screen' : 'Full screen';
     const clickHandler = (e) => {
         e.currentTarget.blur();
@@ -52,7 +23,7 @@ function FullscreenButton () {
     );
     return (
         <button id="fullscreen-button" type="button" title={title} onClick={clickHandler}>
-            {content}
+            {fsEnabled ? <ButtonIcon name="exit-fullscreen" /> : <ButtonIcon name="enter-fullscreen" />}
         </button>
     );
 }

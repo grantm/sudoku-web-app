@@ -28,6 +28,9 @@
     --modal-button-primary-bg-color: #acddfb;
     --modal-button-danger-text-color: #333333;
     --modal-button-danger-bg-color: #ff9e9e;
+    --modal-icon-ok-fill-color: #23a359;
+    --modal-icon-warning-fill-color: #ffdd55;
+    --modal-icon-error-fill-color: #c83737;
     --button-hover-shadow: 0 0 1px #00000099;
     --input-toggle-bg-color: #dddddd;
     --input-toggle-inset-color: #dddddd20;

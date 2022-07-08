@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import './app.css';
 
 import {saveSvgAsPng} from 'save-svg-as-png';
 
 import { newSudokuModel, modelHelpers, SETTINGS } from '../../lib/sudoku-model.js';
 import useWindowSize from '../../lib/use-window-size.js';
 
+import SvgSprites from '../svg-sprites/svg-sprites';
 import StatusBar from '../status-bar/status-bar';
 import SudokuGrid from '../sudoku-grid/sudoku-grid';
 import VirtualKeyboard from '../virtual-keyboard/virtual-keyboard';
@@ -580,6 +580,7 @@ function App() {
 
     return (
         <div className={classes.join(' ')} onMouseDown={mouseDownHandler}>
+            <SvgSprites />
             <StatusBar
                 showTimer={showTimer}
                 startTime={grid.get('startTime')}

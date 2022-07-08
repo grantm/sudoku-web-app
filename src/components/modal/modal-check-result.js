@@ -6,7 +6,7 @@ export default function ModalCheckResult({modalState, modalHandler}) {
     const errorMessage = modalState.errorMessage;
     const cancelHandler = () => modalHandler('cancel');
     const icon = modalState.icon
-        ? <span className="icon"><ModalIcon icon={modalState.icon} /></span>
+        ? <span className={`icon check-result-${modalState.icon}`}><ModalIcon icon={modalState.icon} /></span>
         : null;
     return (
         <div className="modal check-result">

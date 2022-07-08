@@ -1,0 +1,7 @@
+#svg-sprites {
+    display: none;
+}
+
+#svg-sprites .fill {
+    fill: inherit;
+}

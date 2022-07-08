@@ -4,6 +4,7 @@ import { secondsAsHMS } from '../../lib/string-utils';
 
 import './timer-with-pause.css';
 
+import ButtonIcon from '../svg-sprites/button-icon';
 
 function ElapsedTime ({intervalStartTime, endTime, pausedAt}) {
     const [tickNow, setTickNow] = useState(Date.now());
@@ -24,15 +25,6 @@ function ElapsedTime ({intervalStartTime, endTime, pausedAt}) {
     );
 }
 
-function PauseIcon () {
-    return (
-        <svg version="1.1" viewBox="0 0 48 48">
-            <rect className="stroke" x="15" y="12" width="6" height="24" />
-            <rect className="stroke" x="27" y="12" width="6" height="24" />
-        </svg>
-    )
-}
-
 function TimerWithPause({startTime, intervalStartTime, endTime, pausedAt, pauseHandler, hintsUsedCount}) {
     if (!startTime) {
         return null;
@@ -48,8 +40,8 @@ function TimerWithPause({startTime, intervalStartTime, endTime, pausedAt, pauseH
     return <div id="timer">
         <ElapsedTime intervalStartTime={intervalStartTime} endTime={endTime} pausedAt={pausedAt} />
         {hintCount}
-        <button id="pause-btn" title="Pause timer" onClick={pauseHandler}>
-            <PauseIcon />
+        <button id="pause-btn" type="button" title="Pause timer" onClick={pauseHandler}>
+            <ButtonIcon name="pause" />
         </button>
     </div>;
 }

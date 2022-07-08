@@ -46,9 +46,21 @@
     margin: 0.3em;
 }
 
-.modal.check-result .icon img {
+.modal.check-result .icon svg {
     margin-right: 1em;
     width: 2.4em;
+}
+
+.icon.check-result-ok use {
+    fill: var(--modal-icon-ok-fill-color);
+}
+
+.icon.check-result-warning use {
+    fill: var(--modal-icon-warning-fill-color);
+}
+
+.icon.check-result-error use {
+    fill: var(--modal-icon-error-fill-color);
 }
 
 .modal.check-result .message {
@@ -100,7 +112,8 @@
     display: inline-block;
     box-sizing: border-box;
     text-align: center;
-    font-family: var(--app-font-family); /* override browser button font */
+    /* override browser button font */
+    font-family: var(--app-font-family);
     font-size: 1.3rem;
     font-weight: bold;
     line-height: 1.3;
@@ -226,7 +239,7 @@
     margin-right: 2em;
 }
 
-.modal.welcome .primary-buttons > span {
+.modal.welcome .primary-buttons>span {
     display: inline-flex;
     flex-direction: column;
     margin: 0 auto;
@@ -249,7 +262,7 @@
 .modal.resume-restart .saved-puzzle,
 .modal.saved-puzzles .saved-puzzle {
     display: flex;
-    align-items:center;
+    align-items: center;
 }
 
 .modal.saved-puzzles .puzzle-selector {
@@ -315,7 +328,7 @@ input.toggle {
     display: none;
 }
 
-input.toggle + .indicator {
+input.toggle+.indicator {
     display: inline-block;
     position: absolute;
     right: 0;
@@ -330,7 +343,7 @@ input.toggle + .indicator {
     border-radius: 11px;
 }
 
-input.toggle + .indicator::before {
+input.toggle+.indicator::before {
     display: inline-block;
     position: absolute;
     content: '';
@@ -345,12 +358,12 @@ input.toggle + .indicator::before {
     transition: all 250ms;
 }
 
-input.toggle:checked + .indicator::before {
+input.toggle:checked+.indicator::before {
     left: 17px;
     background-color: var(--input-toggle-on-color);
 }
 
-.modal-container  .modal.features {
+.modal-container .modal.features {
     max-width: min(26em, 94vw);
 }
 
@@ -466,7 +479,7 @@ input.toggle:checked + .indicator::before {
     margin-bottom: 0.6em;
 }
 
-.share-buttons a ,
+.share-buttons a,
 .share-buttons button {
     display: block;
     text-align: left;
@@ -475,11 +488,13 @@ input.toggle:checked + .indicator::before {
     color: #ffffff;
     padding: 0.4em 1em 0.5em 0.5em;
     border-radius: 0.3em;
-    font-family: var(--app-font-family); /* override browser button font */
+    /* override browser button font */
+    font-family: var(--app-font-family);
     font-weight: bold;
 }
 
-.share-buttons a, .share-buttons a:hover {
+.share-buttons a,
+.share-buttons a:hover {
     border: none;
 }
 
@@ -551,13 +566,13 @@ input.toggle:checked + .indicator::before {
     padding: 0 1rem;
 }
 
-.modal.hint  .rc-hot-spot {
+.modal.hint .rc-hot-spot {
     padding: 0 0.15em;
     background-color: var(--hint-hot-spot-bg-color);
     border-radius: 0.15em;
 }
 
-.modal.hint  .rc-hot-spot:hover {
+.modal.hint .rc-hot-spot:hover {
     background-color: var(--hint-hot-spot-hover-bg-color);
 }
 
@@ -615,7 +630,7 @@ input.toggle:checked + .indicator::before {
         "label1 label2";
 }
 
-.difficulty-indicator > * {
+.difficulty-indicator>* {
     line-height: 1;
     text-align: center;
     color: var(--difficulty-indicator-label-color);
@@ -677,6 +692,7 @@ input.toggle:checked + .indicator::before {
 }
 
 @media screen and (max-width: 600px) {
+
     .modal.resume-restart .saved-puzzle,
     .modal.saved-puzzles .saved-puzzle {
         flex-wrap: wrap;
@@ -689,7 +705,7 @@ input.toggle:checked + .indicator::before {
         margin-right: 1.8em;
     }
 
-    .modal.saved-puzzles 'saved-puzzle:not(.last)'.puzzle-metadata {
+    .modal.saved-puzzles saved-puzzle:not(.last) .puzzle-metadata {
         order: 3;
         padding-bottom: 0.8em;
         border-bottom: 1px solid var(--hint-footer-bg-color);

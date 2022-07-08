@@ -6,8 +6,6 @@ import SettingsButton from '../buttons/settings-button';
 import HintButton from '../buttons/hint-button';
 import FullscreenButton from '../buttons/fullscreen-button';
 
-import SiteDomainImg from '../../assets/site-domain.svg';
-
 
 import './status-bar.css';
 
@@ -17,12 +15,14 @@ const stopPropagation = (e) => e.stopPropagation();
 function SiteLink () {
     return (
         <div className="site-link">
-            <a href="https://sudokuexchange.com/"><img src={SiteDomainImg}
-                alt="SudokuExchange.com" /></a>
+            <a href="https://sudokuexchange.com/">
+                <svg className="site-domain-image" version="1.1" viewBox="0 0 650 120" title="SudokuExchange.com">
+                    <use href="#site-domain" />
+                </svg>
+            </a>
         </div>
     );
 }
-
 
 function StatusBar ({
     showTimer, startTime, intervalStartTime, endTime, pausedAt, hintsUsedCount,
