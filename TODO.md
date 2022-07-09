@@ -4,7 +4,6 @@ https://sudokuexchange.com/play/?s=000000000500006100060040030020050040300007800
 ## Things to do:
 (Not necessarily in priority order)
 
-* Switch from deprecated document.fullscreen to document.fullscreenElement
 * Investigate check reporting "may not have a unique solution" when no solution
   is possible
 * Menu option to share with pencilmarks
@@ -18,6 +17,7 @@ https://sudokuexchange.com/play/?s=000000000500006100060040030020050040300007800
 * Add native sharing implementation (https://css-tricks.com/on-the-web-share-api/)
 
 ## Things done
+* Switch from deprecated document.fullscreen to document.fullscreenElement
 * Track progress in localStorage to allow resume after reload or back/fwd
 * Protect against accidental reload or back button with "are you sure you want
   to leave this page?"
