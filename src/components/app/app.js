@@ -114,8 +114,8 @@ function cellMouseDownHandler (e, setGrid) {
 
 function cellMouseOverHandler (e, setGrid) {
     e.stopPropagation();
-    const index = indexFromCellEvent(e);
     if ((e.buttons & 1) === 1) {
+        const index = indexFromCellEvent(e);
         setGrid((grid) => modelHelpers.applySelectionOp(grid, 'extendSelection', index));
         e.preventDefault();
     }

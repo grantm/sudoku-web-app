@@ -22,6 +22,7 @@ function calculateGridDimensions(cellSize, marginSize, fontSize) {
             y,
             textX: x + (cellSize / 2),
             textY: y + scaledFontSize + scaledTextOffset,
+            dragCoverPoints: cellDragCoverPoints(x, y, cellSize),
         };
     });
     const borderInset = 5 * cellSize / 100;
@@ -64,4 +65,17 @@ function calculateGridDimensions(cellSize, marginSize, fontSize) {
     return dim;
 }
 
+function cellDragCoverPoints(x, y, cellSize) {
+    const d1 = cellSize * 0.1;
+    const d2 = cellSize * 0.3;
+    const xa = x + d1;
+    const xb = x + d2;
+    const xc = x + cellSize - d2;
+    const xd = x + cellSize - d1;
+    const ya = y + d1;
+    const yb = y + d2;
+    const yc = y + cellSize - d2;
+    const yd = y + cellSize - d1;
+    return `${xb},${ya} ${xc},${ya} ${xd},${yb} ${xd},${yc} ${xc},${yd} ${xb},${yd} ${xa},${yc} ${xa},${yb}`;
+}
 export default calculateGridDimensions;
