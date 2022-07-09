@@ -105,7 +105,7 @@ function indexFromTouchEvent (e) {
         let index = t.target.dataset.cellIndex;
         if (t.pageX) {
             const el = document.elementFromPoint(t.pageX, t.pageY);
-            if (el && el !== t.target) {
+            if (el && el !== t.target && el.classList.contains("cell-drag-cover")) {
                 index = el.dataset.cellIndex;
             }
         }
