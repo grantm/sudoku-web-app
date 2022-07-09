@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
     MODAL_TYPE_WELCOME,
     MODAL_TYPE_SAVED_PUZZLES,

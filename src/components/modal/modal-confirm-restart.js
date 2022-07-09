@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ModalConfirmRestart({modalHandler, solved}) {
     const cancelHandler = () => modalHandler('cancel');
     const restartHandler = () => modalHandler('restart-confirmed');

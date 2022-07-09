@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function SudokuCellDigit({cell, dim, fontSize}) {
     const digit = cell.get('digit');
     if (digit === '0') {

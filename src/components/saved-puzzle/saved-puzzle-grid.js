@@ -1,5 +1,3 @@
-import React from 'react';
-
 import SudokuMiniGrid from '../sudoku-grid/sudoku-mini-grid';
 
 

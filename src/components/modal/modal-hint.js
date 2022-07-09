@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import Spinner from '../spinner/spinner';
 import SudokuHintGrid from '../sudoku-grid/sudoku-hint-grid.js';

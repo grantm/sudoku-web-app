@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 
 import { keyboardLayout } from './vkbd-keyboard-layouts';
 import VkbdButtonIcon from './vkbd-button-icons';

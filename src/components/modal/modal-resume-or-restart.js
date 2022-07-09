@@ -1,5 +1,3 @@
-import React from 'react';
-
 import SavedPuzzleGrid from "../saved-puzzle/saved-puzzle-grid";
 import SavedPuzzleMetadata from "../saved-puzzle/saved-puzzle-metadata";
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function SudokuCellPaused({cell, dim}) {
     return (
         <g className="cell">

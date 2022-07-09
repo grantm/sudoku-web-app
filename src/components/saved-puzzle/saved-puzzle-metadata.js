@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { secondsAsHMS } from '../../lib/string-utils';
 
 

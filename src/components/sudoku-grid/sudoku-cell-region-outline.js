@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { calculateOutlinePath } from '../../lib/region-outlines';
 
 export default function SudokuCellRegionOutline({className, cellSet, dim}) {

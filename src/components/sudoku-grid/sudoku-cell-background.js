@@ -1,5 +1,3 @@
-import React from 'react';
-
 function cellHasPencilledDigit(cell, d, simplePencilMarking) {
     return cell.get('innerPencils').includes(d) || (!simplePencilMarking && cell.get('outerPencils').includes(d));
 }

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { compressPuzzleDigits } from '../../lib/string-utils';
 
 import SavedPuzzleGrid from "../saved-puzzle/saved-puzzle-grid";

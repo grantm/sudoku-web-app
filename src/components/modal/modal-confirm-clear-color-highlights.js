@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ModalConfirmClearColorHighlights({modalHandler}) {
     const cancelHandler = () => modalHandler('cancel');
     const restartHandler = () => modalHandler('clear-color-highlights-confirmed');

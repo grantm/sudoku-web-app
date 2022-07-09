@@ -1,5 +1,3 @@
-import React from 'react';
-
 import './sudoku-grid.css';
 
 import GridLines from './grid-lines.js';

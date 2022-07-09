@@ -1,5 +1,3 @@
-import React from 'react';
-
 import './help.css';
 
 export default function HelpPage({modalHandler}) {

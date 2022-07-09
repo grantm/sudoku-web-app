@@ -1,5 +1,3 @@
-import React from 'react';
-
 import projectPackageJson from '../../../package.json';
 
 const appVersion = projectPackageJson.version || "unknown";

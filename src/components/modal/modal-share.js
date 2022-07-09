@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 import { modelHelpers } from '../../lib/sudoku-model.js';
 import { secondsAsHMS, compressPuzzleDigits } from '../../lib/string-utils';

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import TimerWithPause from '../timer-with-pause/timer-with-pause';
 import MenuButton from '../buttons/menu-button';
 import SettingsButton from '../buttons/settings-button';

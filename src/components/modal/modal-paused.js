@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ModalPaused({modalHandler}) {
     const resumeHandler = () => modalHandler('resume-timer');
     return (

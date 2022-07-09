@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ModalIcon from './modal-icon';
 
 export default function ModalCheckResult({modalState, modalHandler}) {
