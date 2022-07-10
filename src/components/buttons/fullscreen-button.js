@@ -22,7 +22,7 @@ function FullscreenButton () {
                 document.body.removeEventListener('fullscreenchange', resizeHandler);
             }
         },
-        [fsApi, setFsEnabled]
+        [setFsEnabled]
     );
     return fsApi
         ? (
