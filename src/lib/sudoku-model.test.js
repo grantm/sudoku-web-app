@@ -619,6 +619,7 @@ test('set pencilmarks', () => {
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 6);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 7);
     grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '2');
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleOuterPencilMark', '0');
     expect(grid.get('matchDigit')).toBe('2');
 
     expect(grid.get('currentSnapshot')).toBe('11D7,15T123,17T2,18T2,93D7');
@@ -639,6 +640,7 @@ test('set pencilmarks', () => {
     grid = modelHelpers.applySelectionOp(grid, 'setSelection', 3);
     grid = modelHelpers.applySelectionOp(grid, 'extendSelection', 4);
     grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '1');
+    grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '0');
     grid = modelHelpers.updateSelectedCells(grid, 'toggleInnerPencilMark', '3');
     expect(grid.get('matchDigit')).toBe('3');
 

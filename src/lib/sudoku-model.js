@@ -1540,7 +1540,7 @@ export const modelHelpers = {
     },
 
     toggleInnerPencilMarkAsCellOp: (c, digit, setMode) => {
-        if (c.get('digit') !== '0') {
+        if (c.get('digit') !== '0' || digit === '0') {
             return c;
         }
         let pencilMarks = c.get('innerPencils');
@@ -1551,7 +1551,7 @@ export const modelHelpers = {
     },
 
     toggleOuterPencilMarkAsCellOp: (c, digit, setMode) => {
-        if (c.get('digit') !== '0') {
+        if (c.get('digit') !== '0' || digit === '0') {
             return c;
         }
         let pencilMarks = c.get('outerPencils');

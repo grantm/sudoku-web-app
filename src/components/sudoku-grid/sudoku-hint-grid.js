@@ -10,7 +10,7 @@ import './sudoku-grid.css';
 
 
 function CellCandidates({dim, pmOffsets, candidates, targetCandidate, isEliminated, fontSize}) {
-    const marks = candidates.split('').map(d => {
+    const marks = candidates.split('').filter(c => c !== "0").map(d => {
         const isNewDigit = d === targetCandidate;
         const digitClasses = classList(
             isEliminated[d] && 'elimination',
