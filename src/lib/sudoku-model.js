@@ -1737,7 +1737,7 @@ export const modelHelpers = {
 
     invertSelection: (c) => {
         c.set('isSelected', !c.get('isSelected'));
-        return ;
+        return c;
     },
 
     moveFocus: (grid, deltaX, deltaY, isExtend) => {
