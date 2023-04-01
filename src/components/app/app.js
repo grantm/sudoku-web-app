@@ -222,6 +222,9 @@ function docKeyDownHandler (e, modalActive, setGrid, solved, inputMode) {
         }
         return;
     }
+    else if (keyName == "KeyI") {
+        setGrid((grid) => modelHelpers.applySelectionOp(grid, 'invertSelection'));
+    }
     else if (keyName === "KeyP") {
         setGrid((grid) => modelHelpers.toggleShowPencilmarks(grid));
     }
