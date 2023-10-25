@@ -57,6 +57,7 @@ const difficultyLevels = [
 ];
 
 const MAX_SAVED_PUZZLES = 5;
+const ALL_CANDIDATES_SUM = 1022;
 
 const emptySet = Set();
 const charCodeOne = '1'.charCodeAt(0);
@@ -100,7 +101,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, onPuzzleStateCha
     if (initialDigits.length < 81) {
         initialDigits = expandPuzzleDigits(initialDigits);
     }
-    initialDigits = initialDigits.replace(/\D/g, '')
+    initialDigits = initialDigits.replace(/\D/g, '') // clues
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
@@ -951,7 +952,37 @@ export const modelHelpers = {
         return grid.set('modalState', {
             modalType: MODAL_TYPE_SOLVER,
             initialDigits: grid.get('initialDigits'),
-            allDigits: grid.get('cells').map(c => c.get('digit')).join(''),
+            allDigits: grid.get('cells')
+                .map(c => {
+                    const encode_as_str = (encoded_cell) => {
+                        let encoded_str = encoded_cell.toString(32);
+                        if (encoded_str.length < 2) {
+                            encoded_str = '0' + encoded_str;
+                        }
+                        return encoded_str;
+                    };
+                    
+                    const digit = parseInt(c.get('digit'));
+                    if (c.get('isGiven')) {
+                        // increment to set 'clue' flag
+                        const encoded_cell = Math.pow(2, digit) + 1;
+                        return encode_as_str(encoded_cell);
+                    }
+                 
+                    // cell based on user input
+                    if (digit === 0) {
+                        const candidates = c.get('innerPencils').toArray();
+                        const encoded_cell = candidates.length !== 0
+                            ? candidates.map(c => Math.pow(2, parseInt(c)))
+                                .reduce((a, b) => a + b, 0)
+                            : ALL_CANDIDATES_SUM;
+                        return encode_as_str(encoded_cell);
+                    } else {
+                        // return digit as is
+                        const encoded_cell = Math.pow(2, digit);
+                        return encode_as_str(encoded_cell);
+                    }
+                }).join(''),
             passProgressSetting,
             escapeAction: 'close',
         });
