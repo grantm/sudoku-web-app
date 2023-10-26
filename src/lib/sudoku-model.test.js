@@ -1039,3 +1039,100 @@ test('check digits', () => {
         },
     });
 });
+
+test('check modal solver', () => {
+    let grid = newSudokuModel({initialDigits: initialDigitsComplete, skipCheck: true});
+    let result = modelHelpers.showSolverModal(grid).get('modalState');
+    expect(result['allDigits']).toBe(
+        'vuvuvuvuvu030509vu' +
+        '030509vuvu81vu0hvu' +
+        '81vu0hvuvu412111vu' +
+        '412111vuvuvuvuvuvu' +
+        'vuvuvuvuvuvuvuvuvu' +
+        'vuvuvuvuvuvu030509' +
+        'vu030509vuvu81vu0h' +
+        'vu81vu0hvuvu412111' +
+        'vu412111vuvuvuvuvu'
+    );
+
+    grid = modelHelpers.showCalculatedCandidates(grid);
+    expect(grid.get('currentSnapshot')).toBe(
+        '11N569,12N59,13N79,14N69,15N4569,19N789,' +
+        '24N69,25N569,27N9,29N79,' +
+        '32N9,34N29,35N239,39N19,' +
+        '44N1289,45N123489,46N2349,47N49,48N89,49N89,' +
+        '51N2349,52N349,53N189,54N126789,55N123456789,56N234569,57N459,58N789,59N6789,' +
+        '61N49,62N49,63N89,64N6789,65N456789,66N4569,' +
+        '71N59,75N679,76N69,78N9,' +
+        '81N39,83N9,85N129,86N29,' +
+        '91N349,95N1289,96N29,97N39,98N19,99N129'
+    );
+    result = modelHelpers.showSolverModal(grid).get('modalState');
+    expect(result['allDigits']).toBe(
+        'j0h0k0i0jg030509s0' +
+        '030509i0j081g00hk0' +
+        '81g00hg4gc412111g2' +
+        '412111o6ougsggo0o0' +
+        'gsgoo2u6vujshgs0u0' +
+        'ggggo0u0vgjg030509' +
+        'h0030509m0i081g00h' +
+        'g881g00hg6g4412111' +
+        'go412111o6g4g8g2g6'
+    );
+    
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 72);
+    grid = modelHelpers.updateSelectedCells(grid, 'setDigit', 4);
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 34);
+    grid = modelHelpers.updateSelectedCells(grid, 'setDigit', 8);
+    expect(grid.get('currentSnapshot')).toBe(
+        '11N569,12N59,13N79,14N69,15N4569,19N789,' +
+        '24N69,25N569,27N9,29N79,' +
+        '32N9,34N29,35N239,39N19,' +
+        '44N129,45N12349,46N2349,47N49,48D8,49N9,' +
+        '51N239,52N349,53N189,54N126789,55N123456789,56N234569,57N459,58N79,59N679,' +
+        '61N9,62N49,63N89,64N6789,65N456789,66N4569,' +
+        '71N59,75N679,76N69,78N9,' +
+        '81N39,83N9,85N129,86N29,' +
+        '91D4,95N1289,96N29,97N39,98N19,99N129'
+    );
+    result = modelHelpers.showSolverModal(grid).get('modalState');
+    expect(result['allDigits']).toBe(
+        'j0h0k0i0jg030509s0' +
+        '030509i0j081g00hk0' +
+        '81g00hg4gc412111g2' +
+        '412111g6gugsgg80g0' +
+        'gcgoo2u6vujshgk0m0' +
+        'g0ggo0u0vgjg030509' +
+        'h0030509m0i081g00h' +
+        'g881g00hg6g4412111' +
+        '0g412111o6g4g8g2g6'
+    );
+
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 13);
+    grid = modelHelpers.updateSelectedCells(grid, 'clearCell');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 50);
+    grid = modelHelpers.updateSelectedCells(grid, 'clearCell');
+    expect(grid.get('currentSnapshot')).toBe(
+        '11N569,12N59,13N79,14N69,15N4569,19N789,' +
+        '24N69,27N9,29N79,' +
+        '32N9,34N29,35N239,39N19,' +
+        '44N129,45N12349,46N2349,47N49,48D8,49N9,' +
+        '51N239,52N349,53N189,54N126789,55N123456789,56N234569,57N459,58N79,59N679,' +
+        '61N9,62N49,63N89,64N6789,65N456789,' +
+        '71N59,75N679,76N69,78N9,' +
+        '81N39,83N9,85N129,86N29,' +
+        '91D4,95N1289,96N29,97N39,98N19,99N129'
+    );
+    result = modelHelpers.showSolverModal(grid).get('modalState');
+    expect(result['allDigits']).toBe(
+        'j0h0k0i0jg030509s0' +
+        '030509i0vu81g00hk0' +
+        '81g00hg4gc412111g2' +
+        '412111g6gugsgg80g0' +
+        'gcgoo2u6vujshgk0m0' +
+        'g0ggo0u0vgvu030509' +
+        'h0030509m0i081g00h' +
+        'g881g00hg6g4412111' +
+        '0g412111o6g4g8g2g6'
+    );
+});
