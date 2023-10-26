@@ -101,7 +101,7 @@ export function newSudokuModel({initialDigits, difficultyLevel, onPuzzleStateCha
     if (initialDigits.length < 81) {
         initialDigits = expandPuzzleDigits(initialDigits);
     }
-    initialDigits = initialDigits.replace(/\D/g, '') // clues
+    initialDigits = initialDigits.replace(/\D/g, '')
     const initialError = skipCheck ? undefined : modelHelpers.initialErrorCheck(initialDigits);
     const mode = initialError ? 'enter' : 'solve';
     const settings = modelHelpers.loadSettings();
