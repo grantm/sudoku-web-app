@@ -32,6 +32,7 @@ export const SETTINGS = {
     outlineSelection: "outline-selection",
     highlightMatches: "highlight-matches",
     highlightConflicts: "highlight-conflicts",
+    highlightErrors: "highlight-errors",
     autocleanPencilmarks: "autoclean-pencilmarks",
     flipNumericKeys: "flip-numeric-keys",
     playVictoryAnimation: "play-victory-animation",
@@ -149,6 +150,7 @@ export const modelHelpers = {
         [SETTINGS.outlineSelection]: false,
         [SETTINGS.highlightMatches]: true,
         [SETTINGS.highlightConflicts]: true,
+        [SETTINGS.highlightErrors]: false,
         [SETTINGS.autocleanPencilmarks]: true,
         [SETTINGS.flipNumericKeys]: false,
         [SETTINGS.playVictoryAnimation]: true,
@@ -1415,7 +1417,8 @@ export const modelHelpers = {
     },
 
     applyErrorHighlights: (grid, errorAtIndex = {}) => {
-        if (!modelHelpers.getSetting(grid, SETTINGS.highlightConflicts)) {
+        if (!modelHelpers.getSetting(grid, SETTINGS.highlightConflicts)
+            && !modelHelpers.getSetting(grid, SETTINGS.highlightErrors)) {
             return grid;
         }
         const cells = grid.get('cells').map((c) => {
@@ -1607,7 +1610,10 @@ export const modelHelpers = {
 
     checkCompletedDigits: (grid) => {
         const digits = grid.get('cells').map(c => c.get('digit')).join('');
-        const result = modelHelpers.checkDigits(digits);
+        const finalDigits = grid.get('finalDigits');
+        const result = modelHelpers.getSetting(grid, SETTINGS.highlightErrors)
+            ? modelHelpers.checkDigits(digits, finalDigits)
+            : modelHelpers.checkDigits(digits);
         grid = grid.set('completedDigits', result.completedDigits);
         if (result.isSolved && !grid.get('endTime')) {
             return modelHelpers.setGridSolved(grid);
