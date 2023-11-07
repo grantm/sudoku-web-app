@@ -557,6 +557,39 @@ test('no highlight conflicts', () => {
     });
 });
 
+test('set highlight errors', () => {
+    let grid = newSudokuModel({initialDigits: initialDigitsComplete});
+    const settings = grid.get('settings');
+    grid = grid.set('settings', { ...settings, [SETTINGS.highlightErrors]: true});
+
+    expect(grid.get('currentSnapshot')).toBe('');
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 8);
+    grid = modelHelpers.updateSelectedCells(grid, 'setDigit', '9');
+
+    expect(grid.get('currentSnapshot')).toBe('19D9');
+    expect(grid.get('matchDigit')).toBe('9');
+
+    let c8 = grid.get('cells').get(8);
+    expect(c8.get('digit')).toBe('9');
+    expect(c8.get('snapshot')).toBe('D9');
+    expect(c8.get('errorMessage')).toBe('Incorrect digit');
+    expect(c8.get('isGiven')).toBe(false);
+    expect(c8.get('isSelected')).toBe(true);
+
+    // clear the cell and expect it should have no error
+    grid = modelHelpers.applySelectionOp(grid, 'setSelection', 8);
+    grid = modelHelpers.updateSelectedCells(grid, 'clearCell');
+
+    expect(grid.get('currentSnapshot')).toBe('');
+
+    c8 = grid.get('cells').get(8);
+    expect(c8.get('digit')).toBe('0');
+    expect(c8.get('snapshot')).toBe('');
+    expect(c8.get('errorMessage')).toBe(undefined);
+    expect(c8.get('isGiven')).toBe(false);
+    expect(c8.get('isSelected')).toBe(true);
+});
+
 test('set cell color', () => {
     let grid = newSudokuModel({initialDigits: initialDigitsPartial, skipCheck: true});
 
