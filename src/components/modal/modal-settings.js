@@ -76,6 +76,12 @@ export default function ModalSettings({modalHandler, modalState}) {
                     setSetting={setSetting}
                 />
                 <CheckBoxSetting
+                    name={SETTINGS.highlightErrors}
+                    text="Highlight errors"
+                    allSettings={allSettings}
+                    setSetting={setSetting}
+                />
+                <CheckBoxSetting
                     name={SETTINGS.autocleanPencilmarks}
                     text="Auto-clean pencil marks"
                     allSettings={allSettings}
